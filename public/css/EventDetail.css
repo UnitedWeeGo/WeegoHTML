@@ -2,19 +2,21 @@
 	display: none;
 	width: 100%;
 	height: 100%;
-	background-color: #F3F3F3;
 }
 
 #eventDetail .eventInfo {
 	margin: 8px;
 	padding: 12px;
-	min-height: 52px;
+	min-height: 50px;
 	background-color: #FFF;
 	border: 1px solid #CCC;
+	-webkit-border-radius: 5px; -moz-border-radius: 5px;
 }
 
 #eventDetail .eventInfo IMG.userAvatar {
 	float: left;
+	width: 48px;
+	height: 48px;
 	border: 1px solid #333;
 }
 
@@ -24,13 +26,13 @@
 }
 
 #eventDetail .eventInfo P {
-	font-size: 11px;
+	font-size: 1.2em;
 	margin: 0;
 	padding: 0;
 }
 
 #eventDetail .eventInfo H2 {
-	font-size: 14px;
+	font-size: 1.6em;
 	margin: 0;
 	padding: 0;
 }
@@ -42,6 +44,7 @@
 	border: 1px solid #CCC;
 	margin: 8px;
 	padding: 0;
+	-webkit-border-radius: 5px; -moz-border-radius: 5px;
 }
 
 #eventDetail UL.locationList LI {
@@ -57,7 +60,9 @@
 }
 
 #eventDetail UL.locationList LI.hideLocations, #eventDetail UL.locationList LI.showLocations {
-	min-height: 20px !important;
+	font-size: 1.6em;
+	font-weight: bold;
+	min-height: 10px !important;
 }
 
 #eventDetail .voteButton {
@@ -74,13 +79,13 @@
 }
 
 #eventDetail .locationInfo P {
-	font-size: 11px;
+	font-size: 1.2em;
 	margin: 0;
 	padding: 0;
 }
 
 #eventDetail .locationInfo H3 {
-	font-size: 14px;
+	font-size: 1.6em;
 	margin: 0;
 	padding: 0;
 }
@@ -108,6 +113,7 @@
 	border: 1px solid #CCC;
 	margin: 8px;
 	padding: 0;
+	-webkit-border-radius: 5px; -moz-border-radius: 5px;
 }
 
 #eventDetail UL.participantList LI {
@@ -131,26 +137,7 @@
 
 #eventDetail UL.participantList LI H3 {
 	float: left;
-	font-size: 14px;
+	font-size: 1.6em;
 	margin: 0;
-	padding: 8px 10px 0 10px;
+	padding: 9px 10px 0 10px;
 }
-
-
-
-
-#locationDetail .voteButton {
-	display: block;
-	width: 52px;
-	height: 52px;
-	background-image: url('/assets/images/button_add_annotation_default.png');
-}
-
-#locationDetail .iVotedFor {
-	background-image: url('/assets/images/button_unlike_annonation_default.png') !important;
-}
-
-#locationDetail .notVotedFor {
-	background-image: url('/assets/images/button_like_annonation_default.png') !important;
-}
-

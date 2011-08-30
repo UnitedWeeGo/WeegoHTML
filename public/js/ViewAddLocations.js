@@ -188,8 +188,8 @@ AddLocations.prototype.getMarkerImage = function(state) {
 
 AddLocations.prototype.setEvents = function() {
 	var callback = this;
-	$('#addLocation').find('.backButton').unbind('click');
-	$('#addLocation').find('.backButton').click(function() {
+	$('#addLocations').find('.backButton').unbind('click');
+	$('#addLocations').find('.backButton').click(function() {
 		ViewController.getInstance().showEventDetail(callback.event.eventId);
 	});
 	$('#locationSearch').find('#submit').unbind('click');

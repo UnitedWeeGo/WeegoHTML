@@ -1,0 +1,27 @@
+@font-face {
+	font-family: WeegoFont;
+	src: url( '/assets/fonts/MyriadPro-Light.otf' ),
+	 	 url( '/assets/fonts/MyriadPro-Light.eot' ) format("opentype");
+}
+
+@font-face {
+	font-family: WeegoFont;
+	src: url( '/assets/fonts/MyriadPro-Regular.otf' ),
+		 url( '/assets/fonts/MyriadPro-Regular.eot' ) format("opentype");
+	font-weight: bold;
+}
+
+HTML {
+	width: 100%;
+	height: 100%;
+}
+
+BODY {
+	font-family: WeegoFont, Helvetica, sans-serif;
+	font-size: 10px;
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	height: 100%;
+	background-color: #F3F3F3;
+}

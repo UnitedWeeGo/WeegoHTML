@@ -28,8 +28,9 @@ function Event() {
 Event.prototype.populateWithXML = function(xml) {
 	if ($(xml).attr('id').length) this.eventId = $(xml).attr('id');
 	if ($(xml).find('eventTitle').text().length) this.eventTitle = $(xml).find('eventTitle').text();
-	if ($(xml).find('eventInfo').attr('eventDate')) this.eventDate = new Date($(xml).find('eventInfo').attr('eventDate'));
-	if ($(xml).find('eventInfo').attr('eventExpireDate')) this.eventExpireDate = new Date($(xml).find('eventInfo').attr('eventExpireDate'));
+	var eventDateStr = $(xml).find('eventInfo').attr('eventDate');
+	if ($(xml).find('eventInfo').attr('eventDate')) this.eventDate = this.getDateFromString($(xml).find('eventInfo').attr('eventDate'));
+	if ($(xml).find('eventInfo').attr('eventExpireDate')) this.eventExpireDate = this.getDateFromString($(xml).find('eventInfo').attr('eventExpireDate'));
 	if ($(xml).find('creatorId').text().length) this.creatorId = $(xml).find('creatorId').text();
 	if ($(xml).find('acceptedParticipantList').text().length) this.acceptedParticipantList = $(xml).find('acceptedParticipantList').text();
 	if ($(xml).find('declinedParticipantList').text().length) this.declinedParticipantList = $(xml).find('declinedParticipantList').text();
@@ -55,6 +56,18 @@ Event.prototype.populateWithXML = function(xml) {
 	});
 	
 	this.creatorParticipant = this.getParticipantById(this.creatorId);
+}
+
+Event.prototype.getDateFromString = function(dateStr) {
+	var testDate = new Date(2000,12,1);
+	var monthCorrection = 0;
+	if (testDate.getFullYear() != 2000) {
+		monthCorrection = 1;
+	}
+	var a=dateStr.split(" ");
+	d=a[0].split("-");
+	t=a[1].split(":");
+	return new Date(d[0],parseInt(d[1],10)-monthCorrection,d[2],t[0],t[1],t[2]);
 }
 
 Event.prototype.displayForDashboard = function() {
