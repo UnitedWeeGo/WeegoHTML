@@ -3,10 +3,12 @@ function EventDetail() {
 	this.eventId = '';
 	this.event = null;
 	this.lastUpdatedTimestamp = null;
+	this.otherLocationsShowing = false; // Doesn't come into play until event decided
 }
 
 EventDetail.prototype.init = function(eventId) {
 	this.eventId = eventId;
+	$("#eventDetail").find('.content').html("");
 	this.getSingleEvent();
 	this.setEvents();
 }
@@ -45,6 +47,18 @@ EventDetail.prototype.setUpUI = function() {
 	var eventDetail = $("#eventDetail");
 	eventDetail.find('.content').html("");
 	eventDetail.find('.content').append(this.event.displayForEventDetail());
+	if (this.event.getEventState() >= Event.state.decided) {
+		eventDetail.find('UL.locationList').addClass('hideLocations');
+		eventDetail.find('LI.showLocations').css('display', 'list-item');
+		eventDetail.find('LI.hideLocations').css('display', 'none');
+		var callback = this;
+		eventDetail.find('LI.hideLocations').click(function() {
+			callback.toggleShowLocations();
+		});
+		eventDetail.find('LI.showLocations').click(function() {
+			callback.toggleShowLocations();
+		});
+	}
 	this.enableLocationButtons();
 	this.enableVoteButtons();
 }
@@ -82,4 +96,17 @@ EventDetail.prototype.toggleVoteForLocationWithId = function(locationId) {
 	$.post(url, params, function(data) {
 		callback.handleGetSingleEvent(data);
 	});
+}
+
+EventDetail.prototype.toggleShowLocations = function() {
+	this.otherLocationsShowing = !this.otherLocationsShowing;
+	$("#eventDetail").find('LI.showLocations').css('display', 'none');
+	$("#eventDetail").find('LI.hideLocations').css('display', 'none');
+	if (this.otherLocationsShowing) {
+		$("#eventDetail").find('UL.locationList').removeClass('hideLocations');
+		$("#eventDetail").find('LI.hideLocations').css('display', 'list-item');
+	} else {
+		$("#eventDetail").find('UL.locationList').addClass('hideLocations');
+		$("#eventDetail").find('LI.showLocations').css('display', 'list-item');
+	}
 }

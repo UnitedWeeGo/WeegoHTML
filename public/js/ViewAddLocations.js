@@ -143,7 +143,7 @@ AddLocations.prototype.removeMarkers = function() {
 }
 
 AddLocations.prototype.getMarkerImage = function(state) {
-	var url = '/assets/images/app/';
+	var url = '/assets/images/';
 	switch (state) {
 		case 	this.markerStateAdded.def :
 				url += 'POIs_place_default_sm.png';

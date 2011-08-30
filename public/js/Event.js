@@ -61,7 +61,7 @@ Event.prototype.displayForDashboard = function() {
 	var winningLocation = this.getLocationById(this.topLocationId);
 	var locHtml = (winningLocation) ? winningLocation.displayForLocationDetail() : ''
 	var output = 	'<li class="dashboardEvent" eventId="'+ this.eventId +'">' +
- 						'<img src="'+ this.creatorParticipant.avatarURL +'" />'+
+ 						'<img class="userAvatar" src="'+ this.creatorParticipant.avatarURL +'" />'+
  						'<p>'+ this.creatorParticipant.getFullName() +'</p>'+
 						'<h2>'+ this.eventTitle +'</h2>'+
 						'<p>'+ this.getFormattedDate() +'</p>'+
@@ -71,25 +71,40 @@ Event.prototype.displayForDashboard = function() {
 }
 
 Event.prototype.displayForEventDetail = function() {
-	var output =	'<img src="'+ this.creatorParticipant.avatarURL +'" />'+
-					'<p>'+ this.creatorParticipant.getFullName() +'</p>'+
-					'<h2>'+ this.eventTitle +'</h2>'+
-					'<p>'+ this.getFormattedDate() +'</p>'+
-					'<p>Voting ends in '+ this.minutesToGoUntilVotingEnds() +' minutes</p>'+
-					'<ul class="locationList">'+ this.locationList() +'</ul>'+
-					'<ul>'+ this.participantList() +'</ul>';
+	var output =	'<div class="eventInfo">';
+		output +=		'<img class="userAvatar" src="'+ this.creatorParticipant.avatarURL +'" />';
+		output +=		'<div class="content">';
+		output +=			'<p>'+ this.creatorParticipant.getFullName() +'</p>';
+		output +=			'<h2>'+ this.eventTitle +'</h2>';
+		output +=			'<p>'+ this.getFormattedDate() +'</p>';
+		if (this.getEventState() < Event.state.decided) {
+			if (this.getEventState() == Event.state.votingWarning) {
+				output +=	'<p>Voting ends in '+ this.minutesToGoUntilVotingEnds() +' minutes</p>';
+			} else {
+				output +=	'<p>Voting is open</p>';
+			}
+		}
+		output += 		'</div>';
+		output += 	'</div>';
+		output +=	this.locationList();
+		output +=	this.participantList();
 	return output;
 }
 
 Event.prototype.locationList = function() {
-	var output = '';
+	var output = '<ul class="locationList">';
 	for (var i=0; i<this.currentLocationOrder.length; i++) {
 		for (var j=0; j<this.allLocations.length; j++) {
 			var loc = this.allLocations[j];
 			if (loc.locationId == this.currentLocationOrder[i]) output += loc.displayForEventDetail();
 		}
 	}
-	output += '<li class="locationCell"><div class="locationInfo">Add Locations</div></li>';
+	if (this.getEventState() < Event.state.decided) output += '<li class="locationCell"><div class="locationInfo">Add Locations</div></li>';
+	else {
+		output += '<li class="locationCell showLocations"><div>Show other locations</div></li>';
+		output += '<li class="locationCell hideLocations"><div>Hide other locations</div></li>';
+	}
+	output += '</ul>';
 	return output;
 }
 
@@ -112,11 +127,12 @@ Event.prototype.getOfficialLocationByTempId = function(id) {
 }
 
 Event.prototype.participantList = function() {
-	var output = '';
+	var output = '<ul class="participantList">';
 	for (var i=0; i<this.allParticipants.length; i++) {
 		var p = this.allParticipants[i];
 		output += p.displayForEventDetail();
 	}
+	output += '</ul>';
 	return output;
 }
 
@@ -178,8 +194,20 @@ Event.prototype.getFormattedDate = function() {
     return output;
 }
 
+Event.state = {newEvent:0, voting:1, votingWarning:2, decided:3, started:4, ended:5, cancelled:6};
+
 Event.prototype.getEventState = function() {
-	
+	var state = 0;
+    
+    if (this.minutesToGoUntilVotingEnds() > 90) state = Event.state.voting;
+    if (this.minutesToGoUntilVotingEnds() <= 90) state = Event.state.votingWarning;
+    if (this.minutesToGoUntilVotingEnds() <= 0) state = Event.state.decided;
+    if (this.minutesToGoUntilEventStarts() <= 0) state = Event.state.started;
+    if (this.minutesToGoUntilEventStarts() < -120) state = Event.state.ended;
+//    if (self.isTemporary) state = EventStateNew;
+    if (this.hasBeenCancelled) state = Event.state.cancelled;
+
+    return state;
 }
 
 Event.prototype.minutesToGoUntilVotingEnds = function() {
@@ -191,5 +219,9 @@ Event.prototype.minutesToGoUntilVotingEnds = function() {
 }
 
 Event.prototype.minutesToGoUntilEventStarts = function() {
-	
+	var now = new Date();
+	now.setSeconds(0);
+	now.setMilliseconds(0);
+	var adjustedEventDate = new Date(this.eventDate - (this.eventDate.getTimezoneOffset() * 60 * 1000));
+	return Math.floor((adjustedEventDate - now) / (1000 * 60));
 }
