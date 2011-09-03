@@ -70,23 +70,35 @@ Event.prototype.getDateFromString = function(dateStr) {
 	return new Date(d[0],parseInt(d[1],10)-monthCorrection,d[2],t[0],t[1],t[2]);
 }
 
+Event.prototype.displayForDashboardFull = function() {
+	var winningLocation = this.getLocationById(this.topLocationId);
+	var locHtml = (winningLocation) ? winningLocation.displayForLocationDetail() : '<p class="noLocation callToAction"><i>No locations added</i></p>'
+	var output = 	'<li class="dashboardEvent" eventId="'+ this.eventId +'">';
+ 	output +=			this.getEventInfoView();
+	output +=			'<div class="winningLocation">'+ locHtml +'</div>';
+	output +=		'</li>';
+	return output;
+}
+
 Event.prototype.displayForDashboard = function() {
 	var winningLocation = this.getLocationById(this.topLocationId);
-	var locHtml = (winningLocation) ? winningLocation.displayForLocationDetail() : ''
-	var output = 	'<li class="dashboardEvent" eventId="'+ this.eventId +'">' +
- 						'<img class="userAvatar" src="'+ this.creatorParticipant.avatarURL +'" />'+
- 						'<p>'+ this.creatorParticipant.getFullName() +'</p>'+
-						'<h2>'+ this.eventTitle +'</h2>'+
-						'<p>'+ this.getFormattedDate() +'</p>'+
-						locHtml +
-					'</li>';
+	var output = 	'<li class="dashboardEvent" eventId="'+ this.eventId +'">';
+ 	output +=			this.getEventInfoView();
+	output +=		'</li>';
 	return output;
 }
 
 Event.prototype.displayForEventDetail = function() {
+	var output =	this.getEventInfoView();
+		output +=	this.locationList();
+		output +=	this.participantList();
+	return output;
+}
+
+Event.prototype.getEventInfoView = function() {
 	var output =	'<div class="eventInfo">';
 		output +=		'<img class="userAvatar" src="'+ this.creatorParticipant.avatarURL +'" />';
-		output +=		'<div class="content">';
+		output +=		'<div class="textContent">';
 		output +=			'<p>'+ this.creatorParticipant.getFullName() +'</p>';
 		output +=			'<h2>'+ this.eventTitle +'</h2>';
 		output +=			'<p>'+ this.getFormattedDate() +'</p>';
@@ -99,23 +111,21 @@ Event.prototype.displayForEventDetail = function() {
 		}
 		output += 		'</div>';
 		output += 	'</div>';
-		output +=	this.locationList();
-		output +=	this.participantList();
 	return output;
 }
 
 Event.prototype.locationList = function() {
-	var output = '<ul class="locationList">';
+	var output = '<ul class="collapseableList locationList">';
 	for (var i=0; i<this.currentLocationOrder.length; i++) {
 		for (var j=0; j<this.allLocations.length; j++) {
 			var loc = this.allLocations[j];
 			if (loc.locationId == this.currentLocationOrder[i]) output += loc.displayForEventDetail();
 		}
 	}
-	if (this.getEventState() < Event.state.decided) output += '<li class="locationCell"><div class="locationInfo">Add Locations</div></li>';
+	if (this.getEventState() < Event.state.decided) output += '<li class="locationCell callToAction"><div class="locationInfo">Add Locations</div></li>';
 	else {
-		output += '<li class="locationCell showLocations"><div>Show other locations</div></li>';
-		output += '<li class="locationCell hideLocations"><div>Hide other locations</div></li>';
+		output += '<li class="locationCell callToAction showLocations">Show other locations</li>';
+		output += '<li class="locationCell callToAction hideLocations">Hide other locations</li>';
 	}
 	output += '</ul>';
 	return output;
@@ -140,7 +150,7 @@ Event.prototype.getOfficialLocationByTempId = function(id) {
 }
 
 Event.prototype.participantList = function() {
-	var output = '<ul class="participantList">';
+	var output = '<ul class="collapseableList participantList">';
 	for (var i=0; i<this.allParticipants.length; i++) {
 		var p = this.allParticipants[i];
 		output += p.displayForEventDetail();
@@ -164,6 +174,10 @@ Event.prototype.iVotedFor = function(id) {
 		}
 	}
 	return false;
+}
+
+Event.prototype.didVoteForWinningLocation = function() {
+	return this.iVotedFor(this.topLocationId);
 }
 
 Event.prototype.getFormattedDate = function() {

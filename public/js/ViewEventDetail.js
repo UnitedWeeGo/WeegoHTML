@@ -15,10 +15,6 @@ EventDetail.prototype.init = function(eventId) {
 
 EventDetail.prototype.setEvents = function() {
 	var callback = this;
-	$('#eventDetail').find('.backButton').unbind('click');
-	$('#eventDetail').find('.backButton').click(function() {
-		ViewController.getInstance().showDashboard();
-	});
 }
 
 EventDetail.prototype.getSingleEvent = function() {
@@ -61,6 +57,7 @@ EventDetail.prototype.setUpUI = function() {
 	}
 	this.enableLocationButtons();
 	this.enableVoteButtons();
+	ViewController.getInstance().resetScroll();
 }
 
 EventDetail.prototype.enableLocationButtons = function() {
@@ -109,4 +106,5 @@ EventDetail.prototype.toggleShowLocations = function() {
 		$("#eventDetail").find('UL.locationList').addClass('hideLocations');
 		$("#eventDetail").find('LI.showLocations').css('display', 'list-item');
 	}
+	ViewController.getInstance().resetScroll();
 }

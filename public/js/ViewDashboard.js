@@ -33,26 +33,25 @@ Dashboard.prototype.handleGetDashboardEvents = function(data) {
 
 Dashboard.prototype.setUpUI = function() {
 	var dashboard = $('#dashboard');
-	dashboard.html('');
+	dashboard.find('.content').html('');
 	if (this.daysEvents.length > 0) {
-		dashboard.append('<h1>Days Events</h1>');
-		dashboard.append('<ul class="daysEventsList">');
+		dashboard.find('.content').append('<ul class="daysEventsList">');
 		for (var i=0; i<this.daysEvents.length; i++) {
 			var ev = this.daysEvents[i];
-			dashboard.find('.daysEventsList').append(ev.displayForDashboard());
+			dashboard.find('.daysEventsList').append(ev.displayForDashboardFull());
 		}
 	}
 	if (this.futureEvents.length > 0) {
-		dashboard.append('<h1>Future Events</h1>');
-		dashboard.append('<ul class="futureEventsList">');
+		dashboard.find('.content').append('<ul class="collapseableList futureEventsList">');
+		dashboard.find('.futureEventsList').append('<li class="callToAction">Future Events</li>');
 		for (var i=0; i<this.futureEvents.length; i++) {
 			var ev = this.futureEvents[i];
 			dashboard.find('.futureEventsList').append(ev.displayForDashboard());
 		}
 	}
 	if (this.pastEvents.length > 0) {
-		dashboard.append('<h1>Past Events</h1>');
-		dashboard.append('<ul class="pastEventsList">');
+		dashboard.find('.content').append('<ul class="collapseableList pastEventsList">');
+		dashboard.find('.pastEventsList').append('<li class="callToAction">Past Events</li>');
 		for (var i=0; i<this.pastEvents.length; i++) {
 			var ev = this.pastEvents[i];
 			dashboard.find('.pastEventsList').append(ev.displayForDashboard());
@@ -65,6 +64,13 @@ Dashboard.prototype.setUpUI = function() {
 			callback.handleEventCellClick($(this).attr("eventId"));
 		});
 	});
+	$('.daysEventsList').find('LI').each(function() {
+		var id = $(this).attr("eventId");
+		var ev = callback.getEventById(id);
+		$(this).find(".voteButton").removeClass("iVotedFor");
+		if (ev.didVoteForWinningLocation()) $(this).find(".voteButton").addClass("iVotedFor");
+	});
+	ViewController.getInstance().resetScroll();
 }
 
 Dashboard.prototype.handleEventCellClick = function(eventId) {
@@ -83,11 +89,12 @@ Dashboard.prototype.sortEvents = function() {
 	todayMidnight.setMilliseconds(0);
 	
 	for (var i=0; i<sortedEvents.length; i++) {
-	var ev = sortedEvents[i];
-		var dayDiff = (ev.eventDate - todayMidnight) / (1000*60*60*24);
+		var ev = sortedEvents[i];
+		var adjustedDate = new Date(ev.eventDate - (ev.eventDate.getTimezoneOffset() * 60 * 1000));
+		var dayDiff = (adjustedDate - todayMidnight) / (1000*60*60*24);
 		if (dayDiff >= 0 && dayDiff <= 1) {
 			var now = new Date();
-			if (ev.eventDate - now < -1000*60*60*3) {
+			if (adjustedDate - now < -1000*60*60*3) {
                 this.pastEvents.push(ev);
             } else this.daysEvents.push(ev);
 		} else if (dayDiff > 1) {
@@ -106,4 +113,12 @@ Dashboard.prototype.compareDates = function(a,b) {
 	var dateA = a.eventDate;
 	var dateB = b.eventDate;
 	return dateA - dateB;
+}
+
+Dashboard.prototype.getEventById = function(id) {
+	for (var i=0; i<this.allEvents.length; i++) {
+		var ev = this.allEvents[i];
+		if (ev.eventId == id) return ev;
+	}
+	return null;
 }

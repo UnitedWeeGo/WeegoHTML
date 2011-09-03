@@ -66,7 +66,10 @@ Location.prototype.displayForEventDetail = function() {
 }
 
 Location.prototype.displayForLocationDetail = function() {
-	var output = 	'<h3>'+ this.name +'</h3>'+
-					'<p>'+ this.formatted_address +'</p>';
+	var output = 	'<div class="voteButton"></div>'+
+					'<div class="locationInfo">'+
+						'<h3>'+ this.name +'</h3>'+
+						'<p>'+ this.formatted_address +'</p>'+
+					'</div>';
 	return output;
 }

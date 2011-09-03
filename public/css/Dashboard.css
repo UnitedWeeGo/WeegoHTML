@@ -1,0 +1,49 @@
+#dashboard {
+	display: none;
+	width: 100%;
+	margin-top: 45px;
+	overflow-y: auto;
+}
+
+#dashboard .content {
+	display: block;
+	height: 100%;
+}
+
+#dashboard UL.collapseableList {
+	border-color: #FFF;
+}
+
+#dashboard UL.collapseableList LI {
+	border-top-color: #DCDCDC;
+}
+
+UL.daysEventsList {
+	display: block;
+	list-style: none;
+	margin: 8px;
+	padding: 0;
+}
+
+UL.daysEventsList LI.dashboardEvent {
+	display: block;
+	margin: 0 0 8px 0;
+	padding: 0;
+	background-color: #F9F9F9;
+	border: 1px solid #FFF;
+	-webkit-border-radius: 5px; -moz-border-radius: 5px;
+}
+
+UL.daysEventsList LI.dashboardEvent .eventInfo {
+	display: block;
+	margin: 0;
+	padding: 12px;
+	background-color: #F3F3F3;
+	-webkit-border-radius: 5px; -moz-border-radius: 5px;
+}
+
+UL.daysEventsList LI.dashboardEvent .winningLocation {
+	display: block;
+	margin: 0;
+	padding: 12px;
+}

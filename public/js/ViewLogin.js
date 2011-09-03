@@ -1,7 +1,7 @@
-var domain = 'http://beta.weegoapp.com/public';
 var fb_token = '';
 var ruid = '';
 
+/*
 try {
     var jqueryLoaded=jQuery;
     jqueryLoaded=true;
@@ -15,6 +15,7 @@ if (!jqueryLoaded) {
     script.src = 'http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js';
     head.appendChild(script);
 }
+*/
 
 window.onload = function () {
     jQuery(document).ready( function($) {
@@ -24,12 +25,6 @@ window.onload = function () {
   		fb_js.type = 'text/javascript';
   		fb_js.src = document.location.protocol + '//connect.facebook.net/en_US/all.js';
 		head.appendChild(fb_js);
-		
-// 		var sg_js = document.createElement('script');
-//     	sg_js.async = true;
-//   		sg_js.type = 'text/javascript';
-//   		sg_js.src = document.location.protocol + '//connect.facebook.net/en_US/all.js';
-// 		head.appendChild(sg_js);
     });
     
     window.fbAsyncInit = function() {
@@ -41,12 +36,6 @@ window.onload = function () {
 		FB.getLoginStatus(updateButton);
 		FB.Event.subscribe('auth.statusChange', updateButton);	
 	};
-// 	(function() {
-//   		var fb_js = document.createElement('script'); fb_js.async = true;
-//   		fb_js.type = 'text/javascript';
-//   		fb_js.src = document.location.protocol + '//connect.facebook.net/en_US/all.js';
-// 		document.getElementById('head').appendChild(fb_js);
-// 	}());
 }
 
 function updateButton(response) {

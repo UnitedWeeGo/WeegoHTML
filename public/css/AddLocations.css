@@ -1,10 +1,15 @@
 #addLocations {
 	display: none;
 	width: 100%;
+	margin-top: 45px;
+}
+
+#addLocations .content {
+	display: block;
 	height: 100%;
 }
 
-#locationDetail {
+#addLocations #locationDetail {
 	position: absolute;
 	display: block;
 	width: 100%;
@@ -22,7 +27,7 @@
   	color: #FFF;
 }
 
-#locationDetail .voteButton {
+#addLocations #locationDetail .voteButton {
 	display: block;
 	float: left;
 	width: 52px;
@@ -30,26 +35,26 @@
 	background-image: url('/assets/images/button_add_annotation_default.png');
 }
 
-#locationDetail .iVotedFor {
+#addLocations #locationDetail .iVotedFor {
 	background-image: url('/assets/images/button_unlike_annonation_default.png') !important;
 }
 
-#locationDetail .notVotedFor {
+#addLocations #locationDetail .notVotedFor {
 	background-image: url('/assets/images/button_like_annonation_default.png') !important;
 }
 
-#locationDetail .locationInfo {
+#addLocations #locationDetail .locationInfo {
 	float: left;
 	padding: 2px 10px 0 10px;
 }
 
-#locationDetail .locationInfo P {
+#addLocations #locationDetail .locationInfo P {
 	font-size: 1.2em;
 	margin: 0;
 	padding: 0;
 }
 
-#locationDetail .locationInfo H3 {
+#addLocations #locationDetail .locationInfo H3 {
 	font-size: 1.6em;
 	margin: 0;
 	padding: 0;

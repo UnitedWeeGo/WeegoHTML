@@ -90,10 +90,6 @@ AddLocations.prototype.placeMarkers = function() {
 	
 }
 
-// AddLocations.prototype.markerStateResults = {default:100, selected:101, hasDeal:102};
-// AddLocations.prototype.markerStateAdded = {default:200, selected:201, disabled:202};
-// AddLocations.prototype.markerStateLiked = {default:300, selected:301, disabled:302};
-
 AddLocations.prototype.getMarker = function(loc, zIndex, animated, disabled) {
 	var selected = false;
 	var notAnimated = false;
@@ -188,10 +184,6 @@ AddLocations.prototype.getMarkerImage = function(state) {
 
 AddLocations.prototype.setEvents = function() {
 	var callback = this;
-	$('#addLocations').find('.backButton').unbind('click');
-	$('#addLocations').find('.backButton').click(function() {
-		ViewController.getInstance().showEventDetail(callback.event.eventId);
-	});
 	$('#locationSearch').find('#submit').unbind('click');
 	$('#locationSearch').find('#submit').click(function() {
 		callback.searchSimpleGeo();

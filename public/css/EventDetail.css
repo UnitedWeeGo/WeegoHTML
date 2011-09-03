@@ -1,97 +1,13 @@
 #eventDetail {
 	display: none;
 	width: 100%;
+	margin-top: 45px;
+	overflow-y: auto;
+}
+
+#eventDetail .content {
+	display: block;
 	height: 100%;
-}
-
-#eventDetail .eventInfo {
-	margin: 8px;
-	padding: 12px;
-	min-height: 50px;
-	background-color: #FFF;
-	border: 1px solid #CCC;
-	-webkit-border-radius: 5px; -moz-border-radius: 5px;
-}
-
-#eventDetail .eventInfo IMG.userAvatar {
-	float: left;
-	width: 48px;
-	height: 48px;
-	border: 1px solid #333;
-}
-
-#eventDetail .eventInfo .content {
-	float: left;
-	padding: 2px 10px 0 10px;
-}
-
-#eventDetail .eventInfo P {
-	font-size: 1.2em;
-	margin: 0;
-	padding: 0;
-}
-
-#eventDetail .eventInfo H2 {
-	font-size: 1.6em;
-	margin: 0;
-	padding: 0;
-}
-
-#eventDetail UL.locationList {
-	display: block;
-	list-style: none;
-	background-color: #FFF;
-	border: 1px solid #CCC;
-	margin: 8px;
-	padding: 0;
-	-webkit-border-radius: 5px; -moz-border-radius: 5px;
-}
-
-#eventDetail UL.locationList LI {
-	display: block;
-	margin: 0;
-	padding: 12px;
-	min-height: 52px;
-	border-top: 1px solid #CCC;
-}
-
-#eventDetail UL.locationList LI:FIRST-CHILD {
-	border-top: none;
-}
-
-#eventDetail UL.locationList LI.hideLocations, #eventDetail UL.locationList LI.showLocations {
-	font-size: 1.6em;
-	font-weight: bold;
-	min-height: 10px !important;
-}
-
-#eventDetail .voteButton {
-	display: block;
-	float: left;
-	width: 50px;
-	height: 50px;
-	background-image: url('/assets/images/button_like_default.png');
-}
-
-#eventDetail .locationInfo {
-	float: left;
-	padding: 2px 10px 0 10px;
-}
-
-#eventDetail .locationInfo P {
-	font-size: 1.2em;
-	margin: 0;
-	padding: 0;
-}
-
-#eventDetail .locationInfo H3 {
-	font-size: 1.6em;
-	margin: 0;
-	padding: 0;
-}
-
-#eventDetail .iVotedFor {
-	background-image: url('/assets/images/button_unlike_default.png') !important;
 }
 
 #eventDetail UL.hideLocations LI {
@@ -106,37 +22,15 @@
 	display: list-item;
 }
 
-#eventDetail UL.participantList {
-	display: block;
-	list-style: none;
-	background-color: #FFF;
-	border: 1px solid #CCC;
-	margin: 8px;
-	padding: 0;
-	-webkit-border-radius: 5px; -moz-border-radius: 5px;
-}
-
-#eventDetail UL.participantList LI {
-	display: block;
-	margin: 0;
-	padding: 12px;
-	min-height: 32px;
-	border-top: 1px solid #CCC;
-}
-
-#eventDetail UL.participantList LI:FIRST-CHILD {
-	border-top: none;
-}
-
 #eventDetail UL.participantList LI IMG {
 	float: left;
 	width: 32px;
 	height: 32px;
 	border: 1px solid #333;
+	margin-right: 8px;
 }
 
 #eventDetail UL.participantList LI H3 {
-	float: left;
 	font-size: 1.6em;
 	margin: 0;
 	padding: 9px 10px 0 10px;
