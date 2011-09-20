@@ -19,12 +19,21 @@ if (!jqueryLoaded) {
 
 window.onload = function () {
     jQuery(document).ready( function($) {
-    	var head = document.getElementsByTagName('head')[0];
-    	var fb_js = document.createElement('script');
-    	fb_js.async = true;
-  		fb_js.type = 'text/javascript';
-  		fb_js.src = document.location.protocol + '//connect.facebook.net/en_US/all.js';
-		head.appendChild(fb_js);
+    	//$.cookie('test',null);
+    	if ($.cookie('ruid').length) {
+    		ruid = $.cookie('ruid');
+    		var state = ($.cookie('state').length) ? $.cookie('state') : null;
+    		var eventId = ($.cookie('eventId').length) ? $.cookie('eventId') : null;
+    		Model.getInstance().createLoginParticipantFromCookie();
+    		ViewController.getInstance().showView(state, eventId);
+    	} else {
+    		var head = document.getElementsByTagName('head')[0];
+    		var fb_js = document.createElement('script');
+    		fb_js.async = true;
+  			fb_js.type = 'text/javascript';
+  			fb_js.src = document.location.protocol + '//connect.facebook.net/en_US/all.js';
+			head.appendChild(fb_js);
+		}
     });
     
     window.fbAsyncInit = function() {
@@ -100,6 +109,8 @@ function handleLoginResponse(data) {
 	if ($(data).find('response').attr('code') == "201") {
 		document.getElementById('working').style.display = "none";
 		ruid = $(data).find('ruid').text();
+		$.cookie('ruid',ruid);
+		Model.getInstance().createLoginParticipant($(data).find('participant'));
 		ViewController.getInstance().showDashboard();
 	}
 }

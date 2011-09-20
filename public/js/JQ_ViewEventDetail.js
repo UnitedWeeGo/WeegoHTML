@@ -5,7 +5,10 @@
 		event: null,
 		lastUpdatedTimestamp: null,
 		otherLocationsShowing: false, // Doesn't come into play until event decided
-		reset: false
+		reset: false,
+		map: null,
+		myLocation: null,
+		mapBounds: null
 	};
 	
 	var methods = {
@@ -75,6 +78,7 @@
 						o.event.lastUpdatedTimestamp = $(data).find('response').attr('timestamp');
 						o.event.populateWithXML(evXML);
 					}
+					Model.getInstance().currentEvent = o.event;
 					setUpUI();
 				}
 
@@ -83,14 +87,32 @@
 					eventDetail.find('.content').html("");
 					eventDetail.find('.content').append(o.event.displayForEventDetail());
 					if (o.event.getEventState() >= Event.state.decided) {
-						o.otherLocationsShowing = !o.otherLocationsShowing;
+						o.otherLocationsShowing = true; //!o.otherLocationsShowing;
 						toggleShowLocations();
+/*
 						eventDetail.find('LI.hideLocations').click(function() {
 							toggleShowLocations();
 						});
 						eventDetail.find('LI.showLocations').click(function() {
 							toggleShowLocations();
 						});
+*/
+						setupMap();
+						
+						var latlng = new google.maps.LatLng(o.event.getWinningLocation().latitude, o.event.getWinningLocation().longitude);
+						var marker1 = new google.maps.Marker({
+							position: latlng,
+							map:o.map,
+							animation: null
+						});
+						
+						var LatLngList = new Array(latlng);
+						o.mapBounds = new google.maps.LatLngBounds();
+						for (var i = 0, LtLgLen = LatLngList.length; i < LtLgLen; i++) {
+						  	o.mapBounds.extend (LatLngList[i]);
+						}
+						o.map.fitBounds (o.mapBounds);
+						
 					}
 					enableLocationButtons();
 					enableVoteButtons();
@@ -103,7 +125,7 @@
 						var id = $(this).attr("id");
 						$(this).find(".locationInfo").unbind('click');
 						$(this).find(".locationInfo").click(function() {
-							ViewController.getInstance().showAddLocations(o.event, id);
+							ViewController.getInstance().showAddLocations(id);
 						});
 					});
 				}
@@ -114,9 +136,11 @@
 						$(this).find(".voteButton").removeClass("iVotedFor");
 						if (id && o.event.iVotedFor(id)) $(this).find(".voteButton").addClass("iVotedFor");
 						$(this).find(".voteButton").unbind('click');
-						$(this).find(".voteButton").click(function() {
-							toggleVoteForLocationWithId(id);
-						});
+						if (o.event.getEventState() < Event.state.decided) {
+							$(this).find(".voteButton").click(function() {
+								toggleVoteForLocationWithId(id);
+							});
+						}
 					});
 				}
 
@@ -132,16 +156,83 @@
 
 				function toggleShowLocations() {
 					o.otherLocationsShowing = !o.otherLocationsShowing;
-					$("#eventDetail").find('LI.showLocations').css('display', 'none');
-					$("#eventDetail").find('LI.hideLocations').css('display', 'none');
+					$this.find('LI.showLocations').css('display', 'none');
+					$this.find('LI.hideLocations').css('display', 'none');
 					if (o.otherLocationsShowing) {
-						$("#eventDetail").find('UL.locationList').removeClass('hideLocations');
-						$("#eventDetail").find('LI.hideLocations').css('display', 'list-item');
+						$this.find('UL.locationList').removeClass('hideLocations');
+						$this.find('LI.hideLocations').css('display', 'list-item');
 					} else {
-						$("#eventDetail").find('UL.locationList').addClass('hideLocations');
-						$("#eventDetail").find('LI.showLocations').css('display', 'list-item');
+						$this.find('UL.locationList').addClass('hideLocations');
+						$this.find('LI.showLocations').css('display', 'list-item');
 					}
 					setScroll();
+				}
+				
+				function setupMap() {
+					var myOptions = {
+						zoom: 12,
+						disableDefaultUI: true,
+						draggable: false,
+						disableDoubleClickZoom: true,
+						scrollwheel: false,
+						mapTypeId: google.maps.MapTypeId.ROADMAP
+					};
+					o.map = new google.maps.Map(document.getElementById('map_canvas_details'), myOptions);
+					setInitialLocation();
+				}
+				
+				function setInitialLocation() {
+					var browserSupportFlag = new Boolean();
+					
+					// Try W3C Geolocation (Preferred)
+					if (navigator.geolocation) {
+						browserSupportFlag = true;
+						navigator.geolocation.getCurrentPosition(function(position) {
+							o.myLocation = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
+							var marker0 = new google.maps.Marker({
+								position: o.myLocation,
+								map:o.map,
+								animation: null
+							});
+							o.mapBounds.extend(o.myLocation);
+							o.map.fitBounds(o.mapBounds);
+//							o.map.setCenter(o.myLocation);
+						}, function() {
+							handleNoGeolocation(browserSupportFlag);
+						});
+					// Try Google Gears Geolocation
+					} else if (google.gears) {
+						browserSupportFlag = true;
+						var geo = google.gears.factory.create('beta.geolocation');
+						geo.getCurrentPosition(function(position) {
+							o.myLocation = new google.maps.LatLng(position.latitude,position.longitude);
+							var marker0 = new google.maps.Marker({
+								position: o.myLocation,
+								map:o.map,
+								animation: null
+							});
+							o.mapBounds.extend(o.myLocation);
+							o.map.fitBounds(o.mapBounds);
+//							o.map.setCenter(o.myLocation);
+						}, function() {
+							handleNoGeoLocation(browserSupportFlag);
+						});
+					// Browser doesn't support Geolocation
+					} else {
+						browserSupportFlag = false;
+						handleNoGeolocation(browserSupportFlag);
+					}
+				}
+
+				function handleNoGeolocation(errorFlag) {
+					if (errorFlag == true) {
+						alert("Geolocation service failed.");
+				//      	callback.initialLocation = newyork;
+					} else {
+						alert("Your browser doesn't support geolocation. We've placed you in Siberia.");
+				//      	callback.initialLocation = siberia;
+					}
+				//    callback.map.setCenter(initialLocation);
 				}
 				
 			});

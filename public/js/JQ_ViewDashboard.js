@@ -143,7 +143,13 @@
 						var id = $(this).attr("eventId");
 						var ev = getEventById(id);
 						$(this).find(".voteButton").removeClass("iVotedFor");
-						if (ev.didVoteForWinningLocation()) $(this).find(".voteButton").addClass("iVotedFor");
+						if (ev.getEventState() < Event.state.decided) {
+							if (ev.didVoteForWinningLocation()) $(this).find(".voteButton").addClass("iVotedFor");
+						} else {
+							$(this).find(".voteButton").addClass("decidedVoteButton");
+							$(this).find(".voteButton").css('backgroundImage', 'url('+ ev.getWinningLocationStaticMapUrl() +')');
+							$(this).find(".voteButton").append('<div class="decidedIndicator">');
+						}
 					});
 					setViewSize();
 					setScroll();

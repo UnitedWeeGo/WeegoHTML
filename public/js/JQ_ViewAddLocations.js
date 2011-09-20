@@ -241,13 +241,13 @@
 				}
 
 				function searchSimpleGeo() {
-					this.originalLocations = o.event.allLocations.slice();
-					this.newLocations = new Array();
+					o.originalLocations = o.event.allLocations.slice();
+					o.newLocations = new Array();
 					var searchText = $this.find('#locationSearchField').val();
 					var latlng = o.map.getCenter();
 					var lat = latlng.lat();
 					var lng = latlng.lng();
-					this.client.search(lat, lng, {q:searchText}, function(err, data) {
+					o.client.search(lat, lng, {q:searchText}, function(err, data) {
 						if (err) {
 							alert(err);
 						} else {
@@ -268,25 +268,21 @@
 				function addLocation(loc) {
 					o.selectedLocation = loc;
 					loc.tempId = guidGenerator();
-					var xmlStr =	'<event id="'+ o.event.eventId +'">'+
-										'<locations>'+
-											'<location tempId="'+ loc.tempId +'" latitude="'+ loc.latitude +'" longitude="'+ loc.longitude +'">'+
-												'<name>'+ loc.name +'</name>'+
-												'<vicinity>'+ loc.vicinity +'</vicinity>'+
-												'<g_id>'+ loc.g_id +'</g_id>'+
-												'<g_reference></g_reference>'+
-												'<location_type>'+ loc.locationType +'</location_type>'+
-												'<formatted_address>'+ loc.formatted_address +'</formatted_address>'+
-												'<formatted_phone_number>'+ loc.formatted_phone_number +'</formatted_phone_number>'+
-											'</location>'+
-										'</locations>'+
-									'</event>';
-					var url = domain + "/xml.location.php";
-					var params = {registeredId:ruid, xml:xmlStr};
-					if (o.event.lastUpdatedTimestamp) params.timestamp = o.event.lastUpdatedTimestamp;
-					$.post(url, params, function(data) {
-						handleGetSingleEvent(data);
-					});
+					if (Model.getInstance().currentAppState == Model.appState.eventDetail) {
+						var xmlStr =	'<event id="'+ o.event.eventId +'">';
+							xmlStr +=		'<locations>';
+							xmlStr +=			loc.xmlForUpload(loc.tempId);
+							xmlStr +=		'</locations>';
+							xmlStr +=	'</event>';
+						var url = domain + "/xml.location.php";
+						var params = {registeredId:ruid, xml:xmlStr};
+						if (o.event.lastUpdatedTimestamp) params.timestamp = o.event.lastUpdatedTimestamp;
+						$.post(url, params, function(data) {
+							handleGetSingleEvent(data);
+						});
+					} else {
+						
+					}
 				}
 
 				function toggleVoteForLocation(loc) {
@@ -342,7 +338,7 @@
 						browserSupportFlag = true;
 						navigator.geolocation.getCurrentPosition(function(position) {
 							o.initialLocation = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
-							o.map.setCenter(callback.initialLocation);
+							o.map.setCenter(o.initialLocation);
 						}, function() {
 							handleNoGeolocation(browserSupportFlag);
 						});

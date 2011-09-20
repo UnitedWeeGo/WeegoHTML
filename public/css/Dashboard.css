@@ -8,6 +8,7 @@
 #dashboard .content {
 	display: block;
 	height: 100%;
+	border-top: 1px solid #2881BB;
 }
 
 #dashboard UL.collapseableList {

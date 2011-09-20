@@ -1,5 +1,5 @@
 var domain = 'http://beta.weegoapp.com/public';
-var resizeOffset = 53;
+var resizeOffset = 44;
 
 window.onresize = function() {
 //	ViewController.getInstance().resizeViews();

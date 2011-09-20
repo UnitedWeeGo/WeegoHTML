@@ -23,6 +23,8 @@ function Event() {
 	this.creatorParticipant = null;
 	
 	this.lastUpdatedTimestamp = null;
+	
+	this.isTemporary = false;
 }
 
 Event.prototype.populateWithXML = function(xml) {
@@ -41,6 +43,10 @@ Event.prototype.populateWithXML = function(xml) {
 	if ($(xml).find('eventInfo').attr('hasCheckedIn')) this.hasBeenCheckedIn = ($(xml).find('eventInfo').attr('hasCheckedIn') == "true");
 	if ($(xml).find('locationOrder').attr('order')) this.currentLocationOrder = $(xml).find('locationOrder').attr('order').split(",");
 	if ($(xml).find('iVotedFor').attr('locations') || $(xml).find('iVotedFor').attr('locations') == "") this.locationsVotedFor = $(xml).find('iVotedFor').attr('locations').split(",");
+	
+	if (!this.topLocationId) {
+		this.topLocationId = this.currentLocationOrder[0];
+	}
 	
 	var callback = this;
 	$(xml).find('location').each(function() {
@@ -102,7 +108,7 @@ Event.prototype.getEventInfoView = function() {
 		output +=			'<p>'+ this.creatorParticipant.getFullName() +'</p>';
 		output +=			'<h2>'+ this.eventTitle +'</h2>';
 		output +=			'<p>'+ this.getFormattedDate() +'</p>';
-		if (this.getEventState() < Event.state.decided) {
+		if (this.getEventState() < Event.state.decided && this.getEventState() > Event.state.newEvent) {
 			if (this.getEventState() == Event.state.votingWarning) {
 				output +=	'<p>Voting ends in '+ this.minutesToGoUntilVotingEnds() +' minutes</p>';
 			} else {
@@ -122,10 +128,11 @@ Event.prototype.locationList = function() {
 			if (loc.locationId == this.currentLocationOrder[i]) output += loc.displayForEventDetail();
 		}
 	}
-	if (this.getEventState() < Event.state.decided) output += '<li class="locationCell callToAction"><div class="locationInfo">Add Locations</div></li>';
+	if (this.getEventState() < Event.state.decided) output += '<li class="locationCell callToAction"><div class="locationInfo">Add Location(s)</div></li>';
 	else {
-		output += '<li class="locationCell callToAction showLocations">Show other locations</li>';
-		output += '<li class="locationCell callToAction hideLocations">Hide other locations</li>';
+		output += '<li class="locationCell decidedMapCell"><div id="map_canvas_details" style="width: 100%; height: 100%;"></div></li>';
+//		output += '<li class="locationCell callToAction showLocations">Show other locations</li>';
+//		output += '<li class="locationCell callToAction hideLocations">Hide other locations</li>';
 	}
 	output += '</ul>';
 	return output;
@@ -144,7 +151,9 @@ Event.prototype.getLocationById = function(id) {
 Event.prototype.getOfficialLocationByTempId = function(id) {
 	for (var i=0; i<this.allLocations.length; i++) {
 		var loc = this.allLocations[i];
-		if (loc.tempId == id && loc.locationId) return loc;
+		if (loc.tempId == id && loc.locationId) {
+			return loc;
+		}
 	}
 	return null;
 }
@@ -176,8 +185,18 @@ Event.prototype.iVotedFor = function(id) {
 	return false;
 }
 
+Event.prototype.getWinningLocation = function() {
+	return this.getLocationById(this.topLocationId);
+}
+
 Event.prototype.didVoteForWinningLocation = function() {
-	return this.iVotedFor(this.topLocationId);
+	var winningLocation = this.getLocationById(this.topLocationId);
+	return (winningLocation) ? winningLocation.iVotedFor : false;
+}
+
+Event.prototype.getWinningLocationStaticMapUrl = function() {
+	var winningLocation = this.getLocationById(this.topLocationId);
+	return (winningLocation) ? winningLocation.getStaticMapUrl() : null;
 }
 
 Event.prototype.getFormattedDate = function() {
@@ -225,13 +244,15 @@ Event.state = {newEvent:0, voting:1, votingWarning:2, decided:3, started:4, ende
 
 Event.prototype.getEventState = function() {
 	var state = 0;
+	
+	if (this.isTemporary) return Event.state.newEvent;
     
     if (this.minutesToGoUntilVotingEnds() > 90) state = Event.state.voting;
     if (this.minutesToGoUntilVotingEnds() <= 90) state = Event.state.votingWarning;
     if (this.minutesToGoUntilVotingEnds() <= 0) state = Event.state.decided;
     if (this.minutesToGoUntilEventStarts() <= 0) state = Event.state.started;
     if (this.minutesToGoUntilEventStarts() < -120) state = Event.state.ended;
-//    if (self.isTemporary) state = EventStateNew;
+//    
     if (this.hasBeenCancelled) state = Event.state.cancelled;
 
     return state;

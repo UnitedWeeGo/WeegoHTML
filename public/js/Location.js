@@ -14,6 +14,7 @@ function Location() {
     this.hasDeal = '';
     this.locationType = '';
     this.tempId = '';
+    this.iVotedFor = false;
 }
 
 Location.prototype.populateWithXML = function(xml) {
@@ -36,6 +37,7 @@ Location.prototype.populateWithXML = function(xml) {
     this.locationType = $(xml).find("location_type").text();
     
     this.hasBeenRemoved = $(xml).attr("hasBeenRemoved");
+    this.iVotedFor = ($(xml).attr("iVotedFor") == "true");
 }
 
 Location.prototype.populateWithSGFeature = function(obj) {
@@ -65,11 +67,30 @@ Location.prototype.displayForEventDetail = function() {
 	return output;
 }
 
-Location.prototype.displayForLocationDetail = function() {
-	var output = 	'<div class="voteButton"></div>'+
+Location.prototype.displayForLocationDetail = function(showVotedFor) {
+	var votedForClass = (showVotedFor) ? " iVotedFor" : "";
+	var output = 	'<div class="voteButton'+ votedForClass +'"></div>'+
 					'<div class="locationInfo">'+
 						'<h3>'+ this.name +'</h3>'+
 						'<p>'+ this.formatted_address +'</p>'+
 					'</div>';
 	return output;
+}
+
+Location.prototype.xmlForUpload = function(tempId) {
+	var tempIdStr = (tempId) ? ' tempId="'+ tempId +'"' : '';
+	var xmlStr =	'<location'+ tempIdStr +' latitude="'+ this.latitude +'" longitude="'+ this.longitude +'">'+
+						'<name>'+ escape(this.name) +'</name>'+
+						'<vicinity>'+ this.vicinity +'</vicinity>'+
+						'<g_id>'+ this.g_id +'</g_id>'+
+						'<g_reference></g_reference>'+
+						'<location_type>'+ this.locationType +'</location_type>'+
+						'<formatted_address>'+ this.formatted_address +'</formatted_address>'+
+						'<formatted_phone_number>'+ this.formatted_phone_number +'</formatted_phone_number>'+
+					'</location>';
+	return xmlStr;
+}
+
+Location.prototype.getStaticMapUrl = function() {
+	return 'http://maps.googleapis.com/maps/api/staticmap?center='+ this.latitude +','+ this.longitude +'&zoom=15&size=48x48&sensor=false';
 }

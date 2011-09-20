@@ -8,6 +8,7 @@
 #eventDetail .content {
 	display: block;
 	height: 100%;
+	border-top: 1px solid #FFF;
 }
 
 #eventDetail UL.hideLocations LI {
@@ -22,16 +23,4 @@
 	display: list-item;
 }
 
-#eventDetail UL.participantList LI IMG {
-	float: left;
-	width: 32px;
-	height: 32px;
-	border: 1px solid #333;
-	margin-right: 8px;
-}
 
-#eventDetail UL.participantList LI H3 {
-	font-size: 1.6em;
-	margin: 0;
-	padding: 9px 10px 0 10px;
-}
