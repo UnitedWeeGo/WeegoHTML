@@ -89,29 +89,37 @@
 					if (o.event.getEventState() >= Event.state.decided) {
 						o.otherLocationsShowing = true; //!o.otherLocationsShowing;
 						toggleShowLocations();
-/*
+						
+						/*
 						eventDetail.find('LI.hideLocations').click(function() {
 							toggleShowLocations();
 						});
 						eventDetail.find('LI.showLocations').click(function() {
 							toggleShowLocations();
 						});
-*/
-						setupMap();
+						*/
 						
-						var latlng = new google.maps.LatLng(o.event.getWinningLocation().latitude, o.event.getWinningLocation().longitude);
-						var marker1 = new google.maps.Marker({
-							position: latlng,
-							map:o.map,
-							animation: null
-						});
-						
-						var LatLngList = new Array(latlng);
-						o.mapBounds = new google.maps.LatLngBounds();
-						for (var i = 0, LtLgLen = LatLngList.length; i < LtLgLen; i++) {
-						  	o.mapBounds.extend (LatLngList[i]);
+						if (o.event.allLocations.length > 0) {
+							setupMap();
+							
+							var latlng = new google.maps.LatLng(o.event.getWinningLocation().latitude, o.event.getWinningLocation().longitude);
+							var marker1 = new google.maps.Marker({
+								position: latlng,
+								map:o.map,
+								icon: new google.maps.MarkerImage('/assets/images/POIs_decided_default_sm.png',
+																new google.maps.Size(29, 33),
+																new google.maps.Point(0,0), //origin
+																new google.maps.Point(15, 33)), //anchor
+								animation: null
+							});
+							
+							var LatLngList = new Array(latlng);
+							o.mapBounds = new google.maps.LatLngBounds();
+							for (var i = 0, LtLgLen = LatLngList.length; i < LtLgLen; i++) {
+								o.mapBounds.extend(LatLngList[i]);
+							}
+							o.map.fitBounds(o.mapBounds);
 						}
-						o.map.fitBounds (o.mapBounds);
 						
 					}
 					enableLocationButtons();
@@ -140,6 +148,9 @@
 							$(this).find(".voteButton").click(function() {
 								toggleVoteForLocationWithId(id);
 							});
+						} else {
+							$(this).find(".voteButton").removeClass("iVotedFor");
+							$(this).find(".voteButton").addClass("decidedVoteButton");
 						}
 					});
 				}
@@ -192,6 +203,10 @@
 							var marker0 = new google.maps.Marker({
 								position: o.myLocation,
 								map:o.map,
+								icon: new google.maps.MarkerImage('/assets/images/POIs_me_default.png',
+															new google.maps.Size(20, 20),
+															new google.maps.Point(0,0), //origin
+															new google.maps.Point(12, 10)), //anchor
 								animation: null
 							});
 							o.mapBounds.extend(o.myLocation);
@@ -209,6 +224,10 @@
 							var marker0 = new google.maps.Marker({
 								position: o.myLocation,
 								map:o.map,
+								icon: new google.maps.MarkerImage('/assets/images/POIs_me_default.png',
+															new google.maps.Size(20, 20),
+															new google.maps.Point(0,0), //origin
+															new google.maps.Point(12, 10)), //anchor
 								animation: null
 							});
 							o.mapBounds.extend(o.myLocation);

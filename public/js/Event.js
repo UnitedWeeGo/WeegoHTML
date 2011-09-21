@@ -130,7 +130,11 @@ Event.prototype.locationList = function() {
 	}
 	if (this.getEventState() < Event.state.decided) output += '<li class="locationCell callToAction"><div class="locationInfo">Add Location(s)</div></li>';
 	else {
-		output += '<li class="locationCell decidedMapCell"><div id="map_canvas_details" style="width: 100%; height: 100%;"></div></li>';
+		if (this.allLocations.length > 0) {
+			output += '<li class="locationCell decidedMapCell"><div id="map_canvas_details" style="width: 100%; height: 100%;"></div></li>';
+		} else {
+			output += '<li class="locationCell callToAction">No locations added</li>';
+		}
 //		output += '<li class="locationCell callToAction showLocations">Show other locations</li>';
 //		output += '<li class="locationCell callToAction hideLocations">Hide other locations</li>';
 	}

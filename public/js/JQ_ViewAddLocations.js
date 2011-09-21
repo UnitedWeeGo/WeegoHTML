@@ -19,9 +19,13 @@
 			markerStateResults: {def:100, selected:101, hasDeal:102},
 			markerStateAdded: {def:200, selected:201, disabled:202},
 			markerStateLiked: {def:300, selected:301, disabled:302},
+			markerStateDecided: {def:400, selected:401},
+			markerStateMyLocation: {def:500},
 			
 			initialLocation: null,
-			locationId: null
+			locationId: null,
+			
+			mapBounds: null
 	};
 	
 	var methods = {
@@ -60,6 +64,7 @@
 					var myOptions = {
 						zoom: zoomLevel,
 						center: myLatlng,
+						disableDefaultUI: true,
 						mapTypeId: google.maps.MapTypeId.ROADMAP
 					};
 					
@@ -72,13 +77,21 @@
 					
 					if (o.locationId) {
 						showLocationDetail(o.startingLocation);
-					} else {
-						setInitialLocation();
-					}
-					
+					} 
+										
 					o.originalLocations = o.event.allLocations.slice();
 					
-					placeMarkers();
+					o.mapBounds = new google.maps.LatLngBounds();
+					
+					if (o.event.getEventState() < Event.state.decided) {
+						placeMarkers();
+						setMapBounds(o.originalLocations);
+						setInitialLocation();
+					} else {
+						placeMarkersDecided();
+						setMapBounds(new Array(o.event.getWinningLocation()));
+						setInitialLocation(true);
+					}
 					
 					o.initialDisplayFinished = true;
 					
@@ -89,6 +102,15 @@
 				
 				function setViewSize() {
 					$this.find('.content').css('height',document.documentElement.clientHeight - resizeOffset);
+				}
+				
+				function setMapBounds(arr, clear) {
+					if (clear) o.mapBounds = new google.maps.LatLngBounds();
+					for (var i=0; i<arr.length; i++) {
+						var latlng = new google.maps.LatLng(arr[i].latitude, arr[i].longitude);
+						o.mapBounds.extend(latlng);
+					}
+					o.map.fitBounds(o.mapBounds);
 				}
 				
 				function placeMarkers() {
@@ -117,6 +139,13 @@
 					}
 					
 				}
+				
+				function placeMarkersDecided() {
+					removeMarkers();
+					var zIndex = 0;
+					var loc = o.event.getWinningLocation();
+					o.markers[loc.g_id] = getMarker(loc, zIndex, !o.initialDisplayFinished, false);
+				}
 
 				function getMarker(loc, zIndex, animated, disabled) {
 					var selected = false;
@@ -126,12 +155,14 @@
 					if (loc.hasDeal) state = o.markerStateResults.hasDeal;
 					if (selected) state = o.markerStateResults.selected;
 					if (loc.locationId) {
-						if (o.event.iVotedFor(loc.locationId)) {
+						if (o.event.getEventState() >= Event.state.decided) {
+							state = o.markerStateDecided.def;
+							if (selected) state = o.markerStateDecided.selected;
+						} else if (o.event.iVotedFor(loc.locationId)) {
 							state = o.markerStateLiked.def;
 							if (selected) state = o.markerStateLiked.selected;
 							if (disabled) state = o.markerStateLiked.disabled;
-						}
-						else {
+						} else {
 							state = o.markerStateAdded.def;
 							if (selected) state = o.markerStateAdded.selected;
 							if (disabled) state = o.markerStateAdded.disabled;
@@ -150,7 +181,11 @@
 						google.maps.event.addListener(marker, 'click', function() {
 							showLocationDetail(this.locObject);
 							o.selectedLocation = this.locObject;
-							placeMarkers();
+							if (o.event.getEventState() < Event.state.decided) {
+								placeMarkers();
+							} else {
+								placeMarkersDecided();
+							}
 						});
 					}
 					return marker;
@@ -195,6 +230,15 @@
 						case 	o.markerStateResults.hasDeal :
 								url += 'POIs_deal_default.png';
 								break;
+						case	o.markerStateDecided.def :
+								url += 'POIs_decided_default_sm.png';
+								break;
+						case	o.markerStateDecided.selected :
+								url += 'POIs_decided_selected_sm.png';
+								break;
+						case	o.markerStateMyLocation.def :
+								url += 'POIs_me_default.png';
+								break;
 						default :
 								return null;
 					}
@@ -206,6 +250,10 @@
 															new google.maps.Size(30, 39),
 															new google.maps.Point(0,0), //origin
 															new google.maps.Point(9, 37)); //anchor
+					if (state == o.markerStateMyLocation.def) image = new google.maps.MarkerImage(url,
+															new google.maps.Size(20, 20),
+															new google.maps.Point(0,0), //origin
+															new google.maps.Point(12, 10)); //anchor
 					return image;									
 				}
 
@@ -230,9 +278,15 @@
 					} else { 
 						if (iVotedFor) $this.find('#locationDetail').find(".voteButton").addClass("iVotedFor");
 						else $this.find('#locationDetail').find(".voteButton").addClass("notVotedFor");
-						$this.find('#locationDetail').find(".voteButton").click(function() {
-							toggleVoteForLocation(loc);
-						});
+						if (o.event.getEventState() < Event.state.decided) {
+							$this.find('#locationDetail').find(".voteButton").click(function() {
+								toggleVoteForLocation(loc);
+							});
+						} else {
+							$this.find('#locationDetail').find(".voteButton").removeClass("iVotedFor");
+							$this.find('#locationDetail').find(".voteButton").removeClass("notVotedFor");
+							$this.find('#locationDetail').find(".voteButton").addClass("decidedVoteButton");
+						}
 					}
 				}
 
@@ -329,27 +383,49 @@
 					placeMarkers();
 				}
 
-				function setInitialLocation() {
+				function setInitialLocation(resetBounds) {
 					var browserSupportFlag = new Boolean();
 					
 					// Try W3C Geolocation (Preferred)
 					if (navigator.geolocation) {
-						alert("w3c");
 						browserSupportFlag = true;
 						navigator.geolocation.getCurrentPosition(function(position) {
-							o.initialLocation = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
-							o.map.setCenter(o.initialLocation);
+							o.myLocation = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
+							var marker0 = new google.maps.Marker({
+								position: o.myLocation,
+								map:o.map,
+								icon: new google.maps.MarkerImage('/assets/images/POIs_me_default.png',
+															new google.maps.Size(20, 20),
+															new google.maps.Point(0,0), //origin
+															new google.maps.Point(12, 10)), //anchor
+								animation: null
+							});
+							if (resetBounds) {
+								o.mapBounds.extend(o.myLocation);
+								o.map.fitBounds(o.mapBounds);
+							}
 						}, function() {
 							handleNoGeolocation(browserSupportFlag);
 						});
 					// Try Google Gears Geolocation
 					} else if (google.gears) {
-						alert("google");
 						browserSupportFlag = true;
 						var geo = google.gears.factory.create('beta.geolocation');
 						geo.getCurrentPosition(function(position) {
-							o.initialLocation = new google.maps.LatLng(position.latitude,position.longitude);
-							o.map.setCenter(callback.initialLocation);
+							o.myLocation = new google.maps.LatLng(position.latitude,position.longitude);
+							var marker0 = new google.maps.Marker({
+								position: o.myLocation,
+								map:o.map,
+								icon: new google.maps.MarkerImage('/assets/images/POIs_me_default.png',
+															new google.maps.Size(20, 20),
+															new google.maps.Point(0,0), //origin
+															new google.maps.Point(12, 10)), //anchor
+								animation: null
+							});
+							if (resetBounds) {
+								o.mapBounds.extend(o.myLocation);
+								o.map.fitBounds(o.mapBounds);
+							}
 						}, function() {
 							handleNoGeoLocation(browserSupportFlag);
 						});

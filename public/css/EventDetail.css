@@ -23,4 +23,9 @@
 	display: list-item;
 }
 
-
+#eventDetail .decidedVoteButton {
+	width: 50px;
+	height: 50px;
+	border: none;
+	background-image: url('/assets/images/button_decided_default.png');
+}
