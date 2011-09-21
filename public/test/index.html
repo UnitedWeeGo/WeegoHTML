@@ -5,13 +5,15 @@
 	
 	<script type="text/javascript">
 		function showAndroidToast(toast) {
+			console.log("attempting connection to host application.");
 			Android.showToast(toast);
 		}
 	</script>
-	
+	 
 </head>
-
 	<body>
 		<input type="button" value="Say hello" onClick="showAndroidToast('Hello Android!')" />
+		<br />
+		<a href="http://m.unitedweego.com">Go home.</a>
 	</body>
 </html>
