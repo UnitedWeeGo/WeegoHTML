@@ -34,8 +34,8 @@ Event.prototype.populateWithXML = function(xml) {
 	if ($(xml).find('eventInfo').attr('eventDate')) this.eventDate = this.getDateFromString($(xml).find('eventInfo').attr('eventDate'));
 	if ($(xml).find('eventInfo').attr('eventExpireDate')) this.eventExpireDate = this.getDateFromString($(xml).find('eventInfo').attr('eventExpireDate'));
 	if ($(xml).find('creatorId').text().length) this.creatorId = $(xml).find('creatorId').text();
-	if ($(xml).find('acceptedParticipantList').text().length) this.acceptedParticipantList = $(xml).find('acceptedParticipantList').text();
-	if ($(xml).find('declinedParticipantList').text().length) this.declinedParticipantList = $(xml).find('declinedParticipantList').text();
+	if ($(xml).find('acceptedParticipantList')) this.acceptedParticipantList = $(xml).find('acceptedParticipantList').text();
+	if ($(xml).find('declinedParticipantList')) this.declinedParticipantList = $(xml).find('declinedParticipantList').text();
 	if ($(xml).find('eventInfo').attr('topLocationId')) this.topLocationId = $(xml).find('eventInfo').attr('topLocationId');
 	if ($(xml).find('eventInfo').attr('count')) this.participantCount = $(xml).find('eventInfo').attr('count');
 	if ($(xml).find('feedMessages').attr('unreadMessageCount').length) this.unreadMessageCount = $(xml).find('feedMessages').attr('unreadMessageCount');
@@ -276,4 +276,32 @@ Event.prototype.minutesToGoUntilEventStarts = function() {
 	now.setMilliseconds(0);
 	var adjustedEventDate = new Date(this.eventDate - (this.eventDate.getTimezoneOffset() * 60 * 1000));
 	return Math.floor((adjustedEventDate - now) / (1000 * 60));
+}
+
+Event.prototype.didAcceptEvent = function() {
+	var arr = this.acceptedParticipantList.split(",");
+	for (var i=0; i<arr.length; i++) {
+		if (Model.getInstance().loginParticipant.email == arr[i]) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Event.prototype.didDeclineEvent = function() {
+	var arr = this.declinedParticipantList.split(",");
+	for (var i=0; i<arr.length; i++) {
+		if (Model.getInstance().loginParticipant.email == arr[i]) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Event.prototype.didViewEvent = function() {
+	return this.eventRead;
+}
+
+Event.prototype.showCountMeIn = function() {
+	return (!this.didAcceptEvent() || this.didDeclineEvent());
 }

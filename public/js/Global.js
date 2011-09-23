@@ -5,3 +5,16 @@ window.onresize = function() {
 //	ViewController.getInstance().resizeViews();
 //	ViewController.getInstance().resetScroll();
 }
+
+function appState(state) {
+//	if (Android) Android.something();
+}
+
+function fetchData() {
+	
+}
+
+function getModel() {
+	
+}
+

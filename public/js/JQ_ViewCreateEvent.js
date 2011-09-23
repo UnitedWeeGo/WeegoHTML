@@ -171,7 +171,7 @@
 		} else if (typeof method === 'object' || !method) {
 			return methods.init.apply(this, arguments);
 		} else {
-			$.error('Method ' +  method + ' does not exist on jQuery.touchScroll');
+			$.error('Method ' +  method + ' does not exist on jQuery.createEvent');
 		}
 	};
 

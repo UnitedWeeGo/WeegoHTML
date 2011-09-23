@@ -156,7 +156,9 @@
 				}
 				
 				function handleEventCellClick(eventId) {
-					ViewController.getInstance().showEventDetail(eventId, true);
+					var ev = getEventById(eventId);
+//					var showCountMeInButton = (!ev.didViewEvent() || !ev.didAcceptEvent() || ev.didDeclineEvent());
+					ViewController.getInstance().showEventDetail(eventId, true, ev.showCountMeIn());
 				}
 				
 			});
@@ -169,7 +171,7 @@
 		} else if (typeof method === 'object' || !method) {
 			return methods.init.apply(this, arguments);
 		} else {
-			$.error('Method ' +  method + ' does not exist on jQuery.touchScroll');
+			$.error('Method ' +  method + ' does not exist on jQuery.dashboard');
 		}
 	};
 

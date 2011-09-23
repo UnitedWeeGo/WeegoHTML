@@ -43,6 +43,7 @@
 				};
 				
 				update();
+				setBindings();
 				
 				function setViewSize() {
 					$this.find('.content').css('height',document.documentElement.clientHeight - resizeOffset);
@@ -66,6 +67,7 @@
 					if (o.event && o.event.lastUpdatedTimestamp) params.timestamp = o.event.lastUpdatedTimestamp;
 					$.get(url, params, function(data) {
 						handleGetSingleEvent(data);
+						setUpUI();
 					});
 				}
 
@@ -79,7 +81,6 @@
 						o.event.populateWithXML(evXML);
 					}
 					Model.getInstance().currentEvent = o.event;
-					setUpUI();
 				}
 
 				function setUpUI() {
@@ -246,12 +247,35 @@
 				function handleNoGeolocation(errorFlag) {
 					if (errorFlag == true) {
 						alert("Geolocation service failed.");
-				//      	callback.initialLocation = newyork;
 					} else {
-						alert("Your browser doesn't support geolocation. We've placed you in Siberia.");
-				//      	callback.initialLocation = siberia;
+						alert("Your browser doesn't support geolocation.");
 					}
-				//    callback.map.setCenter(initialLocation);
+				}
+				
+				function setBindings() {
+					$(window).bind('countMeInClick', handleCountMeInClick);
+					$(window).bind('moreButtonClick', handleMoreButtonClick);
+				}
+				
+				function handleMoreButtonClick() {
+					var url = domain + "/mod.acceptevent.php";
+					var params = {registeredId:ruid, eventId:o.event.eventId, didAccept:"false"};
+					$.post(url, params, function(data) {
+						handleCountMeInResponse(data);
+					});
+				}
+				
+				function handleCountMeInClick() {
+					var url = domain + "/mod.acceptevent.php";
+					var params = {registeredId:ruid, eventId:o.event.eventId, didAccept:"true"};
+					$.post(url, params, function(data) {
+						handleCountMeInResponse(data);
+					});
+				}
+				
+				function handleCountMeInResponse(data) {
+					handleGetSingleEvent(data);
+					ViewController.getInstance().showEventDetail(o.event.eventId, false, o.event.showCountMeIn(), true);
 				}
 				
 			});
@@ -264,7 +288,7 @@
 		} else if (typeof method === 'object' || !method) {
 			return methods.init.apply(this, arguments);
 		} else {
-			$.error('Method ' +  method + ' does not exist on jQuery.touchScroll');
+			$.error('Method ' +  method + ' does not exist on jQuery.eventDetail');
 		}
 	};
 

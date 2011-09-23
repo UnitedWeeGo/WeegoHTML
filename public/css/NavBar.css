@@ -35,14 +35,18 @@
 	display: block;
 	float: left;
 	width: 75px;
-	margin: 13px auto 0 auto;
+	margin: 0;
 	text-align: center;
+}
+
+#navBar .titleText {
 	font-size: 1.8em;
 	font-weight: bold;
 	color: #777;
+	margin-top: 13px;
 }
 
-#navBar .addButton {
+#navBar .addButton, #navBar .moreButton {
 	display: block;
 	float: right;
 	width: 50px;
@@ -53,6 +57,10 @@
 
 #navBar .addButton IMG {
 	margin: 9px 0 0 26px;
+}
+
+#navBar .moreButton IMG {
+	margin: 13px 0 0 25px;
 }
 
 #navBar .prefsButton {
@@ -77,4 +85,17 @@
 	margin: 7px 8px 0 0;
 	text-align: center;
 	color: #FFF;
+}
+
+#navBar .countMeInButton {
+	display: inline-block;
+	height: 25px;
+	width: 140px;
+	margin: 6px 0 0 0;
+	padding: 8px 0 0 0;
+	background: url('/assets/images/button_green_lrg_default.png') no-repeat;
+	color: #FFF;
+	font-weight: bold;
+	font-size: 1.4em;
+	text-shadow: 0px 1px 0px #333333;
 }

@@ -1,7 +1,7 @@
 (function($) {
 	
 	var defaults = {
-		state: {home:100, dashboard:200, prefs:300, eventDetail:400, addLocations:500, createEvent:600}
+		state: {home:100, dashboard:200, prefs:300, eventDetail:400, eventDetailCountMeIn:401, addLocations:500, createEvent:600}
 	};
 	
 	var methods = {
@@ -41,7 +41,7 @@
 						case o.state.dashboard :
 							$this.addClass('home');
 							$this.append('<div class="prefsButton"><img src="/assets/images/icon_settings_01.png" /></div>');
-							$this.append('<div class="weegoTitle"><img src="/assets/images/topbar_logotype.png" /></div>');
+							$this.append('<div class="weegoTitle"><div class="titleText"><img src="/assets/images/topbar_logotype.png" /></div></div>');
 							//$this.append('<div class="addButton"><img src="/assets/images/icon_plus_01.png" /></div>');
 							break;
 						case o.state.prefs :
@@ -50,17 +50,43 @@
 						case o.state.eventDetail :
 							$this.addClass('event');
 							$this.append('<div class="backButton"><img src="/assets/images/icon_home_01.png" /></div>');
-							$this.append('<div class="weegoTitle">Event Details</div>');
+							$this.append('<div class="weegoTitle"><div class="titleText">Event Details</div></div>');
+							$this.append('<div class="moreButton"><img src="/assets/images/icon_more_01.png" /></div>');
+							$(this).find(".moreButton").unbind('click');
+							$(this).find(".moreButton").click(function() {
+								moreButtonClick();
+							});
 							break;
-							
+						case o.state.eventDetailCountMeIn :
+							$this.addClass('event');
+							$this.append('<div class="backButton"><img src="/assets/images/icon_home_01.png" /></div>');
+							$this.append('<div class="weegoTitle"><div class="countMeInButton">Count me in!</div></div>');
+							$this.append('<div class="moreButton"><img src="/assets/images/icon_more_01.png" /></div>');
+							$(this).find(".moreButton").unbind('click');
+							$(this).find(".moreButton").click(function() {
+								moreButtonClick();
+							});
+							$(this).find(".countMeInButton").unbind('click');
+							$(this).find(".countMeInButton").click(function() {
+								countMeInClick();
+							});
+							break;
 						case o.state.createEvent :
 							$this.addClass('event');
 							$this.append('<div class="backButton"><img src="/assets/images/icon_home_01.png" /></div>');
-							$this.append('<div class="weegoTitle">Create Event</div>');
+							$this.append('<div class="weegoTitle"><div class="titleText">Create Event</div></div>');
 							$this.append('<div class="doneButton">Done</div>');
 							break;
 					}
 					setTitleCenter();
+				}
+				
+				function countMeInClick() {
+					$(window).trigger('countMeInClick');
+				}
+				
+				function moreButtonClick() {
+					$(window).trigger('moreButtonClick');
 				}
 				
 			});
@@ -84,6 +110,13 @@
 			methods.init.apply(this, arguments);
 			return this.each(function() {
 				this.setNav(defaults.state.eventDetail);
+			});
+		},
+		
+		eventDetailCountMeIn: function() {
+			methods.init.apply(this, arguments);
+			return this.each(function() {
+				this.setNav(defaults.state.eventDetailCountMeIn);
 			});
 		},
 		

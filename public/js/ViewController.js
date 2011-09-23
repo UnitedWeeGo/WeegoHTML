@@ -33,7 +33,7 @@ ViewController.prototype.showDashboard = function() {
 	});
 }
 
-ViewController.prototype.showEventDetail = function(eventId, reset) {
+ViewController.prototype.showEventDetail = function(eventId, reset, showCountMeInButton, skipReload) {
 	Model.getInstance().currentAppState = Model.appState.eventDetail;
 	$.cookie({'state': Model.getInstance().currentAppState, 'eventId': eventId});
 	$('#navBar').css("display", "block");
@@ -41,9 +41,10 @@ ViewController.prototype.showEventDetail = function(eventId, reset) {
 	$('#eventDetail').css("display", "block");
 	$('#addLocations').css("display", "none");
 	$('#createEvent').css("display", "none");
-	$('#eventDetail').eventDetail({eventId:eventId, reset:reset});
+	if (!skipReload) $('#eventDetail').eventDetail({eventId:eventId, reset:reset});
 	$('#homeBackground').css('opacity',0);
-	$('#navBar').navBar('eventDetail');
+	if (showCountMeInButton) $('#navBar').navBar('eventDetailCountMeIn');
+	else $('#navBar').navBar('eventDetail');
 	$('#navBar').find('.backButton').unbind('click');
 	$('#navBar').find('.backButton').click(function() {
 		ViewController.getInstance().showDashboard();
