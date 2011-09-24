@@ -4,6 +4,7 @@ function Model() {
 	this.loginParticipant = null;
 	this.currentEvent = null;
 	this.currentAppState = null;
+	this.allEvents = new Array();
 }
 
 Model.appState = {login:100, dashboard:200, eventDetail:300, createEvent:400};
@@ -37,6 +38,28 @@ Model.prototype.removeLoginParticipant = function(xml) {
 	});
 }
 
+Model.prototype.populateEventsWithXML = function(data) {
+	var allEventsXML = $(data).find('event');
+	for (var i=0; i<allEventsXML.length; i++) {
+		var evXML = allEventsXML[i];
+		var id = $(evXML).attr('id');
+		var ev = this.getEventById(id);
+		if (!ev) {
+			ev = new Event();
+			this.allEvents.push(ev);
+		}
+		ev.populateWithXML(evXML);
+	}
+}
+
+Model.prototype.getEventById = function(id) {
+	for (var i=0; i<this.allEvents.length; i++) {
+		var ev = this.allEvents[i];
+		if (ev.eventId == id) return ev;
+	}
+	return null;
+}
+
 Model.prototype.createNewEvent = function() {
 	this.currentEvent = new Event();
 	this.currentEvent.eventId = guidGenerator();
@@ -45,6 +68,22 @@ Model.prototype.createNewEvent = function() {
 	this.currentEvent.eventDate = new Date();
 	this.currentEvent.isTemporary = true;
 	return this.currentEvent;
+}
+
+Model.prototype.getModelDataAsJSON = function() {
+	var filteredData = '{"ruid":"'+ ruid +'", events:[';
+	for (var i=0; i<this.allEvents.length; i++) {
+		var ev = this.allEvents[i];
+		if (ev.didAcceptEvent()) {
+			filteredData += ev.getJSON() +",";
+		}
+	}
+	filteredData = filteredData.substring(0,filteredData.length-1);
+	filteredData += ']}';
+	var obj = eval('(' + filteredData + ')');
+	console.log(obj);
+//	has accepted (filter by has accepted) (filter out hasBeenCancelled)
+
 }
 
 Model.instance = null;

@@ -49,6 +49,8 @@
 				}
 				
 				function handleGetDashboardEvents(data) {
+					Model.getInstance().populateEventsWithXML(data);
+/*
 					var allEventsXML = $(data).find('event');
 					o.allEvents = new Array();
 					for (var i=0; i<allEventsXML.length; i++) {
@@ -57,6 +59,7 @@
 						ev.populateWithXML(evXML);
 						o.allEvents.push(ev);
 					}
+*/
 					sortEvents();
 					setUpUI();
 				}
@@ -65,7 +68,8 @@
 					o.daysEvents = new Array();
 					o.futureEvents = new Array();
 					o.pastEvents = new Array();
-					var sortedEvents = o.allEvents.sort(compareDates);
+					var allEvents = Model.getInstance().allEvents;
+					var sortedEvents = allEvents.sort(compareDates);
 					var todayMidnight = new Date();
 					todayMidnight.setHours(0);
 					todayMidnight.setMinutes(0);
@@ -141,7 +145,7 @@
 					});
 					$('.daysEventsList').find('LI').each(function() {
 						var id = $(this).attr("eventId");
-						var ev = getEventById(id);
+						var ev = Model.getInstance().getEventById(id);
 						$(this).find(".voteButton").removeClass("iVotedFor");
 						if (ev.getEventState() < Event.state.decided) {
 							if (ev.didVoteForWinningLocation()) $(this).find(".voteButton").addClass("iVotedFor");
@@ -156,7 +160,7 @@
 				}
 				
 				function handleEventCellClick(eventId) {
-					var ev = getEventById(eventId);
+					var ev = Model.getInstance().getEventById(eventId);
 //					var showCountMeInButton = (!ev.didViewEvent() || !ev.didAcceptEvent() || ev.didDeclineEvent());
 					ViewController.getInstance().showEventDetail(eventId, true, ev.showCountMeIn());
 				}

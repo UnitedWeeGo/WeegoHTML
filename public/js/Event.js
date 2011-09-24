@@ -50,15 +50,23 @@ Event.prototype.populateWithXML = function(xml) {
 	
 	var callback = this;
 	$(xml).find('location').each(function() {
-		var loc = new Location();
+		var id = $(this).attr("id");
+		var loc = callback.getLocationById(id);
+		if (!loc) {
+			loc = new Location();
+			callback.allLocations.push(loc);
+		}
 		loc.populateWithXML(this);
-		callback.allLocations.push(loc);
 	});
 	
 	$(xml).find('participant').each(function() {
-		var p = new Participant();
+		var id = $(this).attr("email");
+		var p = callback.getParticipantById(id);
+		if (!p) {
+			p = new Participant();
+			callback.allParticipants.push(p);
+		}
 		p.populateWithXML(this);
-		callback.allParticipants.push(p);
 	});
 	
 	this.creatorParticipant = this.getParticipantById(this.creatorId);
@@ -305,3 +313,27 @@ Event.prototype.didViewEvent = function() {
 Event.prototype.showCountMeIn = function() {
 	return (!this.didAcceptEvent() || this.didDeclineEvent());
 }
+
+Event.prototype.getJSON = function() {
+//	top location (lat lng)
+//	event id
+//	ruid
+//	event start time
+//	event decided time
+// 	hasBeenCheckedIn
+	var loc = this.getWinningLocation();
+	var output = 	'{"type":"Event", "eventId":"'+ this.eventId +'", "eventDate":"'+ this.eventDate +'", "eventExpireDate":"'+ this.eventExpireDate +'", "hasBeenCheckedIn":"'+ this.hasBeenCheckedIn +'"';
+	if (loc) {
+		output +=		', "locations":['+
+							'{"type":"Location", "latitude":"'+ loc.latitude +'", "longitude":"'+ loc.longitude +'"}'+
+						']';
+	}
+	output +=		'}';
+	return output;
+}
+
+
+
+
+
+

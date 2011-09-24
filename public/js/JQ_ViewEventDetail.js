@@ -68,19 +68,23 @@
 					$.get(url, params, function(data) {
 						handleGetSingleEvent(data);
 						setUpUI();
+						ViewController.getInstance().showEventDetail(o.event.eventId, false, o.event.showCountMeIn(), true);
 					});
 				}
 
 				function handleGetSingleEvent(data) {
+					Model.getInstance().populateEventsWithXML(data);
 					o.lastUpdatedTimestamp = $(data).find('response').attr('timestamp');
 					var allEventsXML = $(data).find('event');
 					for (var i=0; i<allEventsXML.length; i++) {
 						var evXML = allEventsXML[i];
-						if (!o.event) o.event = new Event();
+						var id = $(evXML).attr('id');
+						o.event = Model.getInstance().getEventById(id); // new Event();
 						o.event.lastUpdatedTimestamp = $(data).find('response').attr('timestamp');
 						o.event.populateWithXML(evXML);
 					}
 					Model.getInstance().currentEvent = o.event;
+					Model.getInstance().getModelDataAsJSON();
 				}
 
 				function setUpUI() {
@@ -258,22 +262,55 @@
 				}
 				
 				function handleMoreButtonClick() {
-					var url = domain + "/mod.acceptevent.php";
-					var params = {registeredId:ruid, eventId:o.event.eventId, didAccept:"false"};
-					$.post(url, params, function(data) {
-						handleCountMeInResponse(data);
+					if ((!o.event.didAcceptEvent() && !o.event.didDeclineEvent()) || o.event.didDeclineEvent()) {
+						$this.find('.actionSheet').append('<div class="button grey countMeIn">Count me in!</div>');
+					}
+					if ((!o.event.didAcceptEvent() && !o.event.didDeclineEvent()) || o.event.didAcceptEvent()) {
+						$this.find('.actionSheet').append('<div class="button grey countMeOut">I\'m not coming</div>');
+					}
+//					$this.find('.actionSheet').append('<div class="button red removeEvent">Remove event</div>');
+					$this.find('.actionSheet').append('<div class="button black cancelActionSheet">Cancel</div>');
+					$this.find('.actionSheetBlocker').css('display','block');
+					$this.find('.actionSheet').css('display','block');
+					$this.find('.actionSheet').find('.countMeIn').bind('click', function(){
+						handleCountMeInClick();
+						closeActionSheet();
 					});
+					$this.find('.actionSheet').find('.countMeOut').bind('click', function(){
+						handleCountMeOutClick();
+						closeActionSheet();
+					});
+					$this.find('.actionSheet').find('.removeEvent').bind('click', function(){
+						closeActionSheet();
+					});
+					$this.find('.actionSheet').find('.cancelActionSheet').bind('click', function(){
+						closeActionSheet();
+					});
+				}
+				
+				function closeActionSheet() {
+					$this.find('.actionSheetBlocker').css('display','none');
+					$this.find('.actionSheet').css('display','none');
+					$this.find('.actionSheet').html('');
 				}
 				
 				function handleCountMeInClick() {
 					var url = domain + "/mod.acceptevent.php";
 					var params = {registeredId:ruid, eventId:o.event.eventId, didAccept:"true"};
 					$.post(url, params, function(data) {
-						handleCountMeInResponse(data);
+						handleEventAcceptanceResponse(data);
 					});
 				}
 				
-				function handleCountMeInResponse(data) {
+				function handleCountMeOutClick() {
+					var url = domain + "/mod.acceptevent.php";
+					var params = {registeredId:ruid, eventId:o.event.eventId, didAccept:"false"};
+					$.post(url, params, function(data) {
+						handleEventAcceptanceResponse(data);
+					});
+				}
+				
+				function handleEventAcceptanceResponse(data) {
 					handleGetSingleEvent(data);
 					ViewController.getInstance().showEventDetail(o.event.eventId, false, o.event.showCountMeIn(), true);
 				}
