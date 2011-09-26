@@ -75,7 +75,7 @@ Model.prototype.getModelDataAsJSON = function() {
 	var acceptedEvents = 0;
 	for (var i=0; i<this.allEvents.length; i++) {
 		var ev = this.allEvents[i];
-		if (ev.didAcceptEvent()) {
+		if (ev.didAcceptEvent() && ev.allLocations.length > 0) {
 			acceptedEvents++;
 			filteredData += ev.getJSON() +",";
 		}
@@ -85,8 +85,7 @@ Model.prototype.getModelDataAsJSON = function() {
 	console.log(filteredData);
 	var obj = eval('(' + filteredData + ')');
 	console.log(obj);
-//	has accepted (filter by has accepted) (filter out hasBeenCancelled)
-
+	sendModel(filteredData);
 }
 
 Model.prototype.clear = function() {

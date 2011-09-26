@@ -62,6 +62,7 @@
 */
 					sortEvents();
 					setUpUI();
+					Model.getInstance().getModelDataAsJSON();
 				}
 				
 				function sortEvents() {

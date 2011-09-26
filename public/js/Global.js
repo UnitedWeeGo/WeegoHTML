@@ -32,10 +32,18 @@ function appState(state) {
 }
 
 function fetchData() {
-	
+	var url = domain + "/get.event.dashboard.php";
+	$.get(url, {registeredId:ruid}, function(data) {
+		handleFetchDataResponse(data);
+	});
 }
 
-function getModel() {
-	
+function handleFetchDataResponse(data) {
+	Model.getInstance().populateEventsWithXML(data);
+	Model.getInstance().getModelDataAsJSON();
+}
+
+function sendModel(JSON) {
+	if (Android) Android.getModel(JSON);
 }
 
