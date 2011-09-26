@@ -144,6 +144,14 @@ UL.participantList LI H3 {
 	padding: 9px 10px 0 10px;
 }
 
+.status {
+	float: right;
+}
+
+.status.red {
+	color: #F00;
+}
+
 UL.collapseableList {
 	display: block;
 	list-style: none;

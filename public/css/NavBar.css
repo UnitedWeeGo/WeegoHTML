@@ -14,10 +14,6 @@
 	border-bottom: 1px solid #A9A9A9;
 }
 
-#navBar .home .weegoTitle {
-	color: #FFF;
-}
-
 #navBar .backButton {
 	display: block;
 	float: left;
@@ -44,6 +40,10 @@
 	font-weight: bold;
 	color: #777;
 	margin-top: 13px;
+}
+
+#navBar.home .titleText {
+	color: #FFF;
 }
 
 #navBar .addButton, #navBar .moreButton {

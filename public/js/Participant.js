@@ -14,9 +14,10 @@ Participant.prototype.populateWithXML = function(xml) {
 	this.hasBeenRemoved = ($(xml).attr("hasBeenRemoved") == "true");
 }
 
-Participant.prototype.displayForEventDetail = function() {
-	var output =	'<li class="participantCell">'+ 
-						'<img src="'+ this.avatarURL +'" />'+
+Participant.prototype.displayForEventDetail = function(status) {
+	var output =	'<li class="participantCell">';
+	if (status) output += '<div class="status">'+ status +'</div>';
+	output +=			'<img src="'+ this.avatarURL +'" />'+
 						'<h3>'+ this.getFullName() +'</h3>'+
 					'</li>';
 	return output;

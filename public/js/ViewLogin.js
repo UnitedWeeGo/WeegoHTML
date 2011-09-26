@@ -19,7 +19,6 @@ if (!jqueryLoaded) {
 
 window.onload = function () {
     jQuery(document).ready( function($) {
-    	//$.cookie('test',null);
     	if ($.cookie('ruid').length) {
     		ruid = $.cookie('ruid');
     		var state = ($.cookie('state').length) ? $.cookie('state') : null;

@@ -46,6 +46,8 @@
 							break;
 						case o.state.prefs :
 							$this.addClass('home');
+							$this.append('<div class="backButton"><img src="/assets/images/icon_home_white.png" /></div>');
+							$this.append('<div class="weegoTitle"><div class="titleText">Settings</div></div>');
 							break;
 						case o.state.eventDetail :
 							$this.addClass('event');
@@ -124,6 +126,13 @@
 			methods.init.apply(this, arguments);
 			return this.each(function() {
 				this.setNav(defaults.state.createEvent);
+			});
+		},
+		
+		prefs: function() {
+			methods.init.apply(this, arguments);
+			return this.each(function() {
+				this.setNav(defaults.state.prefs);
 			});
 		},
 		

@@ -7,7 +7,7 @@ function Model() {
 	this.allEvents = new Array();
 }
 
-Model.appState = {login:100, dashboard:200, eventDetail:300, createEvent:400};
+Model.appState = {login:100, dashboard:200, eventDetail:300, createEvent:400, prefs:500};
 
 Model.prototype.createLoginParticipant = function(xml) {
 	this.loginParticipant = new Participant();
@@ -72,18 +72,25 @@ Model.prototype.createNewEvent = function() {
 
 Model.prototype.getModelDataAsJSON = function() {
 	var filteredData = '{"ruid":"'+ ruid +'", events:[';
+	var acceptedEvents = 0;
 	for (var i=0; i<this.allEvents.length; i++) {
 		var ev = this.allEvents[i];
 		if (ev.didAcceptEvent()) {
+			acceptedEvents++;
 			filteredData += ev.getJSON() +",";
 		}
 	}
-	filteredData = filteredData.substring(0,filteredData.length-1);
+	if (acceptedEvents > 0) filteredData = filteredData.substring(0,filteredData.length-1);
 	filteredData += ']}';
+	console.log(filteredData);
 	var obj = eval('(' + filteredData + ')');
 	console.log(obj);
 //	has accepted (filter by has accepted) (filter out hasBeenCancelled)
 
+}
+
+Model.prototype.clear = function() {
+	delete Model.instance;
 }
 
 Model.instance = null;

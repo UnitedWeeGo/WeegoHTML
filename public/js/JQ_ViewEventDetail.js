@@ -313,6 +313,7 @@
 				function handleEventAcceptanceResponse(data) {
 					handleGetSingleEvent(data);
 					ViewController.getInstance().showEventDetail(o.event.eventId, false, o.event.showCountMeIn(), true);
+					$this.find('.participantList').html(o.event.participantListItems());
 				}
 				
 			});

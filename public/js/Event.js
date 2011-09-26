@@ -12,6 +12,7 @@ function Event() {
 	this.participantCount = '';
 	this.unreadMessageCount = '';
 	this.eventRead = false;
+	this.hasBeenCancelled = false;
 	this.hasBeenCheckedIn = false;
 	
 	this.allLocations = [];
@@ -40,6 +41,7 @@ Event.prototype.populateWithXML = function(xml) {
 	if ($(xml).find('eventInfo').attr('count')) this.participantCount = $(xml).find('eventInfo').attr('count');
 	if ($(xml).find('feedMessages').attr('unreadMessageCount').length) this.unreadMessageCount = $(xml).find('feedMessages').attr('unreadMessageCount');
 	if ($(xml).find('eventInfo').attr('hasBeenRead')) this.eventRead = ($(xml).find('eventInfo').attr('hasBeenRead') == "true");
+	if ($(xml).find('eventInfo').attr('hasBeenCancelled')) this.hasBeenCancelled = ($(xml).find('eventInfo').attr('hasBeenCancelled') == "true");
 	if ($(xml).find('eventInfo').attr('hasCheckedIn')) this.hasBeenCheckedIn = ($(xml).find('eventInfo').attr('hasCheckedIn') == "true");
 	if ($(xml).find('locationOrder').attr('order')) this.currentLocationOrder = $(xml).find('locationOrder').attr('order').split(",");
 	if ($(xml).find('iVotedFor').attr('locations') || $(xml).find('iVotedFor').attr('locations') == "") this.locationsVotedFor = $(xml).find('iVotedFor').attr('locations').split(",");
@@ -85,9 +87,11 @@ Event.prototype.getDateFromString = function(dateStr) {
 }
 
 Event.prototype.displayForDashboardFull = function() {
+	var status = this.getStatusHTML();
 	var winningLocation = this.getLocationById(this.topLocationId);
 	var locHtml = (winningLocation) ? winningLocation.displayForLocationDetail() : '<p class="noLocation callToAction"><i>No locations added</i></p>'
 	var output = 	'<li class="dashboardEvent" eventId="'+ this.eventId +'">';
+ 	if (status) output += status;
  	output +=			this.getEventInfoView();
 	output +=			'<div class="winningLocation">'+ locHtml +'</div>';
 	output +=		'</li>';
@@ -95,11 +99,22 @@ Event.prototype.displayForDashboardFull = function() {
 }
 
 Event.prototype.displayForDashboard = function() {
+	var status = this.getStatusHTML();
 	var winningLocation = this.getLocationById(this.topLocationId);
 	var output = 	'<li class="dashboardEvent" eventId="'+ this.eventId +'">';
+	if (status) output += status;
  	output +=			this.getEventInfoView();
 	output +=		'</li>';
 	return output;
+}
+
+Event.prototype.getStatusHTML = function(eventDetailsView) {
+	var status = null;
+	if (!this.eventRead) status = '<div class="status">NEW</div>';
+	if (!this.didAcceptEvent() && !this.didDeclineEvent()) status = '<div class="status">PENDING</div>';
+	if (this.didDeclineEvent()) status = '<div class="status red">DECLINED</div>';
+	if (this.hasBeenCancelled) status = null; //'<div class="status red">CANCELLED</div>';
+	return status;
 }
 
 Event.prototype.displayForEventDetail = function() {
@@ -110,7 +125,10 @@ Event.prototype.displayForEventDetail = function() {
 }
 
 Event.prototype.getEventInfoView = function() {
+	var status = null;
+	if (this.hasBeenCancelled) status = '<div class="status red">CANCELLED</div>';
 	var output =	'<div class="eventInfo">';
+		if (status) output += status;
 		output +=		'<img class="userAvatar" src="'+ this.creatorParticipant.avatarURL +'" />';
 		output +=		'<div class="textContent">';
 		output +=			'<p>'+ this.creatorParticipant.getFullName() +'</p>';
@@ -172,11 +190,20 @@ Event.prototype.getOfficialLocationByTempId = function(id) {
 
 Event.prototype.participantList = function() {
 	var output = '<ul class="collapseableList participantList">';
+	output += this.participantListItems();
+	output += '</ul>';
+	return output;
+}
+
+Event.prototype.participantListItems = function() {
+	var output = '';
 	for (var i=0; i<this.allParticipants.length; i++) {
 		var p = this.allParticipants[i];
-		output += p.displayForEventDetail();
+		var status = null;
+		if (this.didDeclineEvent(p.email)) status = "COUNT ME OUT";
+		if (!this.didAcceptEvent(p.email) && !this.didDeclineEvent(p.email)) status = "PENDING";
+		output += p.displayForEventDetail(status);
 	}
-	output += '</ul>';
 	return output;
 }
 
@@ -286,20 +313,22 @@ Event.prototype.minutesToGoUntilEventStarts = function() {
 	return Math.floor((adjustedEventDate - now) / (1000 * 60));
 }
 
-Event.prototype.didAcceptEvent = function() {
+Event.prototype.didAcceptEvent = function(id) {
 	var arr = this.acceptedParticipantList.split(",");
+	var e = (id) ? id : Model.getInstance().loginParticipant.email;
 	for (var i=0; i<arr.length; i++) {
-		if (Model.getInstance().loginParticipant.email == arr[i]) {
+		if (e == arr[i]) {
 			return true;
 		}
 	}
 	return false;
 }
 
-Event.prototype.didDeclineEvent = function() {
+Event.prototype.didDeclineEvent = function(id) {
 	var arr = this.declinedParticipantList.split(",");
+	var e = (id) ? id : Model.getInstance().loginParticipant.email;
 	for (var i=0; i<arr.length; i++) {
-		if (Model.getInstance().loginParticipant.email == arr[i]) {
+		if (e == arr[i]) {
 			return true;
 		}
 	}

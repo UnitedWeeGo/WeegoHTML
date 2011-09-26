@@ -23,23 +23,27 @@
 	<script src="/js/Event.js" type="text/javascript" charset="utf-8"></script>
 	<script src="/js/Location.js" type="text/javascript" charset="utf-8"></script>
 	<script src="/js/Participant.js" type="text/javascript" charset="utf-8"></script>
-	<script src="/js/ViewLogin.js" type="text/javascript" charset="utf-8"></script>
+<!--	<script src="/js/ViewLogin.js" type="text/javascript" charset="utf-8"></script> -->
 	
+	<script src="/js/JQ_ViewLogin.js" type="text/javascript" charset="utf-8"></script>
 	<script src="/js/JQ_NavBar.js" type="text/javascript" charset="utf-8"></script>
 	<script src="/js/JQ_ViewDashboard.js" type="text/javascript" charset="utf-8"></script>
 	<script src="/js/JQ_ViewEventDetail.js" type="text/javascript" charset="utf-8"></script>
 	<script src="/js/JQ_ViewAddLocations.js" type="text/javascript" charset="utf-8"></script>
 	<script src="/js/JQ_ViewCreateEvent.js" type="text/javascript" charset="utf-8"></script>
+	<script src="/js/JQ_ViewPrefs.js" type="text/javascript" charset="utf-8"></script>
 	
 	<!--<link rel="stylesheet"  href="http://code.jquery.com/mobile/1.0b2/jquery.mobile-1.0b2.min.css" />-->
 	<link href="/css/mobiscroll-1.5.css" rel="stylesheet" type="text/css" />
 	
 	<link rel="stylesheet" href="/css/Global.css" type="text/css" media="screen" title="no title" charset="utf-8">
+	<link rel="stylesheet" href="/css/Login.css" type="text/css" media="screen" title="no title" charset="utf-8">
 	<link rel="stylesheet" href="/css/NavBar.css" type="text/css" media="screen" title="no title" charset="utf-8">
 	<link rel="stylesheet" href="/css/Dashboard.css" type="text/css" media="screen" title="no title" charset="utf-8">
 	<link rel="stylesheet" href="/css/EventDetail.css" type="text/css" media="screen" title="no title" charset="utf-8">
 	<link rel="stylesheet" href="/css/AddLocations.css" type="text/css" media="screen" title="no title" charset="utf-8">
 	<link rel="stylesheet" href="/css/CreateEvent.css" type="text/css" media="screen" title="no title" charset="utf-8">
+	<link rel="stylesheet" href="/css/Prefs.css" type="text/css" media="screen" title="no title" charset="utf-8">
 
 	
 
@@ -47,10 +51,9 @@
 <body>
 	<div id="homeBackground"></div>
 	
-	<div id="fbSignup">
-		<div id="user-info"></div>
-		<div id="fbButtons"><span id="weego-auth"></span><span id="fb-auth"></span></div>
-		<div id="working"></div>
+	<div id="login">
+		<div id="logo"><img src="/assets/images/logo_lrg_01.png" /></div>
+		<div id="fbSignup"></div>
 	</div>
 	
 	<div id="navBar"></div>
@@ -78,6 +81,10 @@
 	</div>
 	
 	<div id="createEvent">
+		<div class="content"></div>
+	</div>
+	
+	<div id="prefs">
 		<div class="content"></div>
 	</div>
 	
