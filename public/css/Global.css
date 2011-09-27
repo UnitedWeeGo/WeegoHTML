@@ -177,3 +177,7 @@ UL.collapseableList LI:FIRST-CHILD {
 	font-size: 1.6em;
 	font-weight: bold;
 }
+
+#fb-root {
+	display: none;
+}
