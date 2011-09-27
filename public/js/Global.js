@@ -44,6 +44,6 @@ function handleFetchDataResponse(data) {
 }
 
 function sendModel(JSON) {
-	if (Android) Android.refreshModel(JSON);
+	if (window.Android) Android.refreshModel(JSON);
 }
 
