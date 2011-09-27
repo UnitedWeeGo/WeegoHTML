@@ -4,7 +4,7 @@
 	var defaults = {
 		y: 0,
 		scrollHeight: 0,
-		elastic: !navigator.userAgent.match(/android/i),
+		elastic: true, //!navigator.userAgent.match(/android/i),
 		momentum: true,
 		elasticDamp: 0.6,
 		elasticTime: 50,

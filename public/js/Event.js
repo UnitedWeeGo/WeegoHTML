@@ -110,8 +110,8 @@ Event.prototype.displayForDashboard = function() {
 
 Event.prototype.getStatusHTML = function(eventDetailsView) {
 	var status = null;
-	if (!this.eventRead) status = '<div class="status">NEW</div>';
 	if (!this.didAcceptEvent() && !this.didDeclineEvent()) status = '<div class="status">PENDING</div>';
+	if (!this.eventRead) status = '<div class="status">NEW</div>';
 	if (this.didDeclineEvent()) status = '<div class="status red">DECLINED</div>';
 	if (this.hasBeenCancelled) status = null; //'<div class="status red">CANCELLED</div>';
 	return status;
