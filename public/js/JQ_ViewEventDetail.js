@@ -167,6 +167,7 @@
 					if (o.event.lastUpdatedTimestamp) params.timestamp = o.event.lastUpdatedTimestamp;
 					$.post(url, params, function(data) {
 						handleGetSingleEvent(data);
+						setUpUI();
 					});
 				}
 
