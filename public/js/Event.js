@@ -92,7 +92,7 @@ Event.prototype.displayForDashboardFull = function() {
 	var locHtml = (winningLocation) ? winningLocation.displayForLocationDetail() : '<p class="noLocation callToAction"><i>No locations added</i></p>'
 	var output = 	'<li class="dashboardEvent" eventId="'+ this.eventId +'">';
  	if (status) output += status;
- 	output +=			this.getEventInfoView();
+ 	output +=			this.getEventInfoView(true);
 	output +=			'<div class="winningLocation">'+ locHtml +'</div>';
 	output +=		'</li>';
 	return output;
@@ -118,13 +118,13 @@ Event.prototype.getStatusHTML = function(eventDetailsView) {
 }
 
 Event.prototype.displayForEventDetail = function() {
-	var output =	this.getEventInfoView();
+	var output =	this.getEventInfoView(true);
 		output +=	this.locationList();
 		output +=	this.participantList();
 	return output;
 }
 
-Event.prototype.getEventInfoView = function() {
+Event.prototype.getEventInfoView = function(displayFull) {
 	var status = null;
 	if (this.hasBeenCancelled) status = '<div class="status red">CANCELLED</div>';
 	var output =	'<div class="eventInfo">';
@@ -134,7 +134,7 @@ Event.prototype.getEventInfoView = function() {
 		output +=			'<p>'+ this.creatorParticipant.getFullName() +'</p>';
 		output +=			'<h2>'+ this.eventTitle +'</h2>';
 		output +=			'<p>'+ this.getFormattedDate() +'</p>';
-		if (this.getEventState() < Event.state.decided && this.getEventState() > Event.state.newEvent) {
+		if (displayFull && this.getEventState() < Event.state.decided && this.getEventState() > Event.state.newEvent) {
 			if (this.getEventState() == Event.state.votingWarning) {
 				output +=	'<p>Voting ends in '+ this.minutesToGoUntilVotingEnds() +' minutes</p>';
 			} else {
@@ -154,7 +154,9 @@ Event.prototype.locationList = function() {
 			if (loc.locationId == this.currentLocationOrder[i]) output += loc.displayForEventDetail();
 		}
 	}
-	if (this.getEventState() < Event.state.decided) output += '<li class="locationCell callToAction"><div class="locationInfo">Add Location(s)</div></li>';
+	if (this.getEventState() < Event.state.decided) {
+		//output += '<li class="locationCell callToAction"><div class="locationInfo">Add Location(s)</div></li>';
+	}
 	else {
 		if (this.allLocations.length > 0) {
 			output += '<li class="locationCell decidedMapCell"><div id="map_canvas_details" style="width: 100%; height: 100%;"></div></li>';
