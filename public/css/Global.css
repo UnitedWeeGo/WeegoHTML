@@ -178,6 +178,47 @@ UL.collapseableList LI:FIRST-CHILD {
 	font-weight: bold;
 }
 
+.refreshHeader {
+	display: block;
+	width: 100%;
+	height: 40px;
+	padding-top: 560px;
+	background-color: rgba(0,0,0,0.1);
+	margin-top: -601px;
+}
+
+.refreshHeader .refreshContent {
+	display: inline-block;
+	height: 26px;
+	width: 150px;
+	text-align: center;
+	color: #FFF;
+	font-size: 1.5em;
+	font-weight: bold;
+	margin-top: 10px;
+}
+
+.refreshHeader .refreshArrow {
+	display: inline-block;
+	float: left;
+	width: 26px;
+	height: 26px;
+	margin: 0 0 0 11px;
+	background: url('/assets/images/whiteArrow.png') no-repeat 4px 0px;
+	-webkit-background-size: 70% 100%;
+	-moz-background-size: 70% 100%;
+	-o-background-size: 70% 100%;
+	background-size: 70% 100%;
+}
+
+.refreshHeader.dark .refreshContent {
+	color: #333;
+}
+
+.refreshHeader.dark .refreshArrow {
+	background: url('/assets/images/grayArrow.png') no-repeat 4px 0px;
+}
+
 #fb-root {
 	display: none;
 }

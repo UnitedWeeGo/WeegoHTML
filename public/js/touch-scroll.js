@@ -13,7 +13,8 @@
 		momentumTime: 300,
 		iPadMomentumDamp: 0.95,
 		iPadMomentumTime: 1200,
-		touchTags: ['select', 'input', 'textarea']
+		touchTags: ['select', 'input', 'textarea'],
+		scrollRestPosition: 0
 	};
 	
 	// Define methods
@@ -119,8 +120,8 @@
 
 				// Bounce back to the bounds after momentum scrolling
 				function reboundScroll() {
-					if (scrollY > 0) {
-						scrollTo(0, o.reboundTime);
+					if (scrollY > o.scrollRestPosition) {
+						scrollTo(o.scrollRestPosition, o.reboundTime);
 					} else if (scrollY < maxHeight) {
 						scrollTo(maxHeight, o.reboundTime);
 					}
@@ -311,6 +312,7 @@
 					movedY = dy - scrollY;
 					moved = true;
 					setPosition(dy);
+					$this.trigger('touchScroll');
 				}
 				
 				// Perform a touch end event
@@ -320,6 +322,7 @@
 					}
 					
 					scrolling = false;
+					$this.trigger('touchEnd');
 					
 					if (moved) {
 						// Ease back to within boundaries
@@ -328,7 +331,7 @@
 						} else if (o.momentum) {
 							// Free scroll with momentum
 							momentumScroll(movedY, isiPad ? o.iPadMomentumDamp : o.momentumDamp, 40, 2000, isiPad ? o.iPadMomentumTime : o.momentumTime);
-						}			
+						}
 					} else {
 						var touch = getTouches(e)[0],
 							target = getRootNode(touch.target);
@@ -338,6 +341,11 @@
 						dispatchMouseEvent('click', touch, target);
 					}
 				}
+				
+				this.setRestPosition = function(pos) {
+					o.scrollRestPosition = pos;
+					reboundScroll();
+				};
 			
 			});
 		},
@@ -359,6 +367,12 @@
 		setPosition: function(y) {
 			return this.each(function() {
 				this.setPosition(-y);
+			});
+		},
+		
+		setRestPosition: function(pos) {
+			return this.each(function() {
+				this.setRestPosition(pos);
 			});
 		}
 		

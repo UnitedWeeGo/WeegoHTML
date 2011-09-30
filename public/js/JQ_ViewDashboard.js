@@ -4,7 +4,8 @@
 		allEvents: new Array(),
 		daysEvents: new Array(),
 		futureEvents: new Array(),
-		pastEvents: new Array()
+		pastEvents: new Array(),
+		reloading: false
 	};
 	
 	var methods = {
@@ -25,6 +26,7 @@
 					$(window).resize(function() {
 						setViewSize();
 					});
+					setViewSize();
 					setScroll();
 					getDashboardEvents();
 				};
@@ -33,11 +35,61 @@
 				
 				function setViewSize() {
 					$this.find('.content').css('height',document.documentElement.clientHeight - resizeOffset);
+					$this.find('.refreshHeader').find('.refreshContent').css('width', document.documentElement.clientWidth - 74);
 				}
 				
 				function setScroll(reset) {
 					if (!!('ontouchstart' in window)) {
-						$this.find('.content').touchScroll();
+						$this.find('.content:first-child').touchScroll();
+						$this.find('.content').unbind('touchScroll');
+						$this.find('.content:first-child').bind('touchScroll', function(){
+							determineRefresh();
+						});
+						$this.find('.content').unbind('touchEnd');
+						$this.find('.content:first-child').bind('touchEnd', function(){
+							doRefresh();
+						});
+					}
+				}
+				
+				function determineRefresh() {
+					var position = $this.find('.content:first-child').touchScroll('getPosition');
+					if (position < -60) {
+						$this.find('.refreshHeader').find('.refreshContent').html('Release to refresh...');
+						rotateArrow(true);
+					} else {
+						$this.find('.refreshHeader').find('.refreshContent').html('Pull down to refresh...');
+						rotateArrow();
+					}
+				}
+				
+				var degree = 0;
+				
+				function rotateArrow(up) {
+					$this.find('.refreshHeader').find('.refreshArrow').css({ WebkitTransform: 'rotate(' + degree + 'deg)'});
+			        $this.find('.refreshHeader').find('.refreshArrow').css({ '-moz-transform': 'rotate(' + degree + 'deg)'});
+			        if (up) {
+			        	if (degree < 180) {
+			        		degree += 5;
+			        		setTimeout(function() { rotateArrow(true); },5);
+			        	}
+			        } else {
+			        	if (degree > 0) {
+			        		degree -= 5;
+			        		setTimeout(function() { rotateArrow(); },5);
+			        	}
+			        }
+				}
+				
+				function doRefresh() {
+					var position = $this.find('.content:first-child').touchScroll('getPosition');
+					if (!o.reloading) {
+						if (position < -60) {
+							o.reloading = true;
+							$this.find('.refreshHeader').find('.refreshContent').html('Loading...');
+							$this.find('.content').touchScroll('setRestPosition', 50);
+							getDashboardEvents();
+						}
 					}
 				}
 				
@@ -60,6 +112,11 @@
 						o.allEvents.push(ev);
 					}
 */
+					o.reloading = false;
+					degree = 0;
+					if (!!('ontouchstart' in window)) {
+						$this.find('.content').touchScroll('setRestPosition', 0);
+					}
 					sortEvents();
 					setUpUI();
 					Model.getInstance().getModelDataAsJSON();
@@ -115,6 +172,7 @@
 				function setUpUI() {
 					var dashboard = $this;
 					dashboard.find('.content').html('');
+					dashboard.find('.content').append('<div class="refreshHeader"><div class="refreshArrow"></div><div class="refreshContent">Pull down to refresh...</div></div>');
 					if (o.daysEvents.length > 0) {
 						dashboard.find('.content').append('<ul class="daysEventsList">');
 						for (var i=0; i<o.daysEvents.length; i++) {
