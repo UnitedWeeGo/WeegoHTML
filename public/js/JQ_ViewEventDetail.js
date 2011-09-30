@@ -83,13 +83,13 @@
 			        $this.find('.refreshHeader').find('.refreshArrow').css({ '-moz-transform': 'rotate(' + degree + 'deg)'});
 			        if (up) {
 			        	if (degree < 180) {
-			        		degree += 5;
-			        		setTimeout(function() { rotateArrow(true); },5);
+			        		degree += 20;
+			        		setTimeout(function() { rotateArrow(true); },100);
 			        	}
 			        } else {
 			        	if (degree > 0) {
-			        		degree -= 5;
-			        		setTimeout(function() { rotateArrow(); },5);
+			        		degree -= 20;
+			        		setTimeout(function() { rotateArrow(); },100);
 			        	}
 			        }
 				}
