@@ -27,6 +27,7 @@ ViewController.prototype.showLogin = function() {
 	$('#dashboard').css("display", "none");
 	$('#eventDetail').css("display", "none");
 	$('#addLocations').css("display", "none");
+	$('#messages').css("display", "none");
 	$('#createEvent').css("display", "none");
 	$('#prefs').css("display", "none");
 	$('#login').login();
@@ -42,6 +43,7 @@ ViewController.prototype.showDashboard = function() {
 	$('#dashboard').css("display", "block");
 	$('#eventDetail').css("display", "none");
 	$('#addLocations').css("display", "none");
+	$('#messages').css("display", "none");
 	$('#createEvent').css("display", "none");
 	$('#prefs').css("display", "none");
 	$('#dashboard').dashboard();
@@ -65,6 +67,7 @@ ViewController.prototype.showEventDetail = function(eventId, reset, showCountMeI
 	$('#dashboard').css("display", "none");
 	$('#eventDetail').css("display", "block");
 	$('#addLocations').css("display", "none");
+	$('#messages').css("display", "none");
 	$('#createEvent').css("display", "none");
 	$('#prefs').css("display", "none");
 	if (!skipReload) $('#eventDetail').eventDetail({eventId:eventId, reset:reset});
@@ -83,6 +86,7 @@ ViewController.prototype.showAddLocations = function(locationId) {
 	$('#dashboard').css("display", "none");
 	$('#eventDetail').css("display", "none");
 	$('#addLocations').css("display", "block");
+	$('#messages').css("display", "none");
 	$('#createEvent').css("display", "none");
 	$('#prefs').css("display", "none");
 	$('#addLocations').addLocations({event:Model.getInstance().currentEvent, locationId:locationId});
@@ -97,6 +101,11 @@ ViewController.prototype.showAddLocations = function(locationId) {
 	});
 }
 
+ViewController.prototype.showMessages = function(eventId) {
+	$('#messages').css("display", "block");
+	$('#messages').messages({event:Model.getInstance().currentEvent});
+}
+
 ViewController.prototype.showCreateEvent = function() {
 	Model.getInstance().currentAppState = Model.appState.createEvent;
 	$.cookie({'state': null, 'eventId': null});
@@ -105,6 +114,7 @@ ViewController.prototype.showCreateEvent = function() {
 	$('#dashboard').css("display", "none");
 	$('#eventDetail').css("display", "none");
 	$('#addLocations').css("display", "none");
+	$('#messages').css("display", "none");
 	$('#createEvent').css("display", "block");
 	$('#prefs').css("display", "none");
 	$('#createEvent').createEvent();
@@ -124,6 +134,7 @@ ViewController.prototype.showPrefs = function() {
 	$('#dashboard').css("display", "none");
 	$('#eventDetail').css("display", "none");
 	$('#addLocations').css("display", "none");
+	$('#messages').css("display", "none");
 	$('#createEvent').css("display", "none");
 	$('#prefs').css("display", "block");
 	$('#prefs').prefs();

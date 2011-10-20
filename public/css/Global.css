@@ -144,12 +144,30 @@ UL.participantList LI H3 {
 	padding: 9px 10px 0 10px;
 }
 
+.statusBlock {
+	float: right;
+	text-align: right;
+}
+
 .status {
 	float: right;
+	clear: both;
 }
 
 .status.red {
 	color: #F00;
+}
+
+.messageIndicator {
+	display: block;
+	float: right;
+	clear: both;
+	width: 19px;
+	height: 19px;
+	background: url('/assets/images/icon_feed_green.png') no-repeat;
+	text-align: center;
+	color: #FFF;
+	padding: 1px 0 0 0;
 }
 
 UL.collapseableList {

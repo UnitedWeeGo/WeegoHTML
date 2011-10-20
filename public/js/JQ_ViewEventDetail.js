@@ -47,7 +47,7 @@
 				setBindings();
 				
 				function setViewSize() {
-					$this.find('.content').css('height',document.documentElement.clientHeight - resizeOffset);
+					$this.find('.content').css('height',document.documentElement.clientHeight - resizeOffset - 43);
 					$this.find('.refreshHeader').find('.refreshContent').css('width', document.documentElement.clientWidth - 74);
 				}
 				
@@ -184,10 +184,25 @@
 						}
 						
 					}
+					if (parseInt(o.event.unreadMessageCount) > 0) {
+						eventDetail.find('.feedButton').addClass('new');
+						eventDetail.find('.feedButton').find('.feedBubble').html(o.event.unreadMessageCount);
+					} else {
+						eventDetail.find('.feedButton').removeClass('new');
+						eventDetail.find('.feedButton').find('.feedBubble').html('');
+					}
 					enableLocationButtons();
 					enableVoteButtons();
+					enableFeedButton();
 					setViewSize();
 					setScroll();
+				}
+				
+				function enableFeedButton() {
+					$this.find(".feedButton").unbind('click');
+					$this.find(".feedButton").click(function() {
+						ViewController.getInstance().showMessages(o.event.eventId);
+					});
 				}
 
 				function enableLocationButtons() {

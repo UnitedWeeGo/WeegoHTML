@@ -30,6 +30,45 @@
 	background-image: url('/assets/images/button_decided_default.png');
 }
 
+#eventDetail .feedButton {
+	position: absolute;
+	bottom: 0px;
+	width: 100%;
+	height: 43px;
+	background: url('/assets/images/bg_tile_feed_button.png') repeat-x;
+	text-align: center;
+	color: #FFF;
+	font-size: 1.6em;
+	font-weight: bold;
+}
+
+#eventDetail .feedButton .feedTitle {
+	display: inline-block;
+	margin: 13px 0 0 0;
+}
+
+#eventDetail .feedButton .feedTitle .feedBubble {
+	display: inline-block;
+	float: left;
+	width: 21px;
+	height: 22px;
+	background: url('/assets/images/icon_feed.png') no-repeat 0 0;
+	margin: 0 4px 0 0;
+	color: #333;
+	font-size: 0.7em;
+	padding: 2px 0 0 0;
+}
+
+#eventDetail .feedButton .feedTitle .title {
+	display: inline-block;
+	margin: 0;
+	text-shadow: 0px 1px 0px #000;
+}
+
+#eventDetail .feedButton.new {
+	background: url('/assets/images/bg_tile_feed_button_new.png') repeat-x;
+}
+
 #eventDetail .actionSheetBlocker {
 	position: absolute;
 	display: none;

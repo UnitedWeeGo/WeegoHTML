@@ -35,7 +35,7 @@ UL.daysEventsList LI.dashboardEvent {
 	-webkit-border-radius: 5px; -moz-border-radius: 5px;
 }
 
-UL.daysEventsList LI.dashboardEvent .status {
+UL.daysEventsList LI.dashboardEvent .statusBlock {
 	margin: 10px 12px 0 0;
 }
 

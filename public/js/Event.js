@@ -88,10 +88,16 @@ Event.prototype.getDateFromString = function(dateStr) {
 
 Event.prototype.displayForDashboardFull = function() {
 	var status = this.getStatusHTML();
+	var messageIndicator = this.getMessageIndicatorHTML();
 	var winningLocation = this.getLocationById(this.topLocationId);
 	var locHtml = (winningLocation) ? winningLocation.displayForLocationDetail() : '<p class="noLocation callToAction"><i>No locations added</i></p>'
 	var output = 	'<li class="dashboardEvent" eventId="'+ this.eventId +'">';
- 	if (status) output += status;
+	if (status || messageIndicator) {
+		output += '<div class="statusBlock">';
+ 		if (status) output += status;
+ 		if (messageIndicator) output+= messageIndicator;
+ 		output += '</div>';
+ 	}
  	output +=			this.getEventInfoView(true);
 	output +=			'<div class="winningLocation">'+ locHtml +'</div>';
 	output +=		'</li>';
@@ -100,9 +106,15 @@ Event.prototype.displayForDashboardFull = function() {
 
 Event.prototype.displayForDashboard = function() {
 	var status = this.getStatusHTML();
+	var messageIndicator = this.getMessageIndicatorHTML();
 	var winningLocation = this.getLocationById(this.topLocationId);
 	var output = 	'<li class="dashboardEvent" eventId="'+ this.eventId +'">';
-	if (status) output += status;
+	if (status || messageIndicator) {
+		output += '<div class="statusBlock">';
+ 		if (status) output += status;
+ 		if (messageIndicator) output+= messageIndicator;
+ 		output += '</div>';
+ 	}
  	output +=			this.getEventInfoView();
 	output +=		'</li>';
 	return output;
@@ -115,6 +127,14 @@ Event.prototype.getStatusHTML = function(eventDetailsView) {
 	if (this.didDeclineEvent()) status = '<div class="status red">DECLINED</div>';
 	if (this.hasBeenCancelled) status = null; //'<div class="status red">CANCELLED</div>';
 	return status;
+}
+
+Event.prototype.getMessageIndicatorHTML = function() {
+	var html = null;
+	if (parseInt(this.unreadMessageCount) > 0) {
+		html = '<div class="messageIndicator">'+ this.unreadMessageCount +'</div>';
+	}
+	return html;
 }
 
 Event.prototype.displayForEventDetail = function() {
