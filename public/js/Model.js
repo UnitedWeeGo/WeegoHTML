@@ -71,7 +71,7 @@ Model.prototype.createNewEvent = function() {
 }
 
 Model.prototype.getModelDataAsJSON = function() {
-	var filteredData = '{"ruid":"'+ ruid +'", events:[';
+	var filteredData = '{"ruid":"'+ ruid +'", "events":[';
 	var acceptedEvents = 0;
 	for (var i=0; i<this.allEvents.length; i++) {
 		var ev = this.allEvents[i];

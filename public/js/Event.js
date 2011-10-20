@@ -17,6 +17,7 @@ function Event() {
 	
 	this.allLocations = [];
 	this.allParticipants = [];
+	this.allMessages = [];
 	
 	this.currentLocationOrder = [];
 	this.locationsVotedFor = [];
@@ -71,6 +72,16 @@ Event.prototype.populateWithXML = function(xml) {
 		p.populateWithXML(this);
 	});
 	
+	$(xml).find('feedMessage').each(function() {
+		var id = $(this).attr("id");
+		var m = callback.getMessageById(id);
+		if (!m) {
+			m = new FeedMessage();
+			callback.allMessages.push(m);
+		}
+		m.populateWithXML(this);
+	});
+	
 	this.creatorParticipant = this.getParticipantById(this.creatorId);
 }
 
@@ -120,12 +131,12 @@ Event.prototype.displayForDashboard = function() {
 	return output;
 }
 
-Event.prototype.getStatusHTML = function(eventDetailsView) {
+Event.prototype.getStatusHTML = function() {
 	var status = null;
 	if (!this.didAcceptEvent() && !this.didDeclineEvent()) status = '<div class="status">PENDING</div>';
 	if (!this.eventRead) status = '<div class="status">NEW</div>';
 	if (this.didDeclineEvent()) status = '<div class="status red">DECLINED</div>';
-	if (this.hasBeenCancelled) status = null; //'<div class="status red">CANCELLED</div>';
+	if (this.hasBeenCancelled) status ='<div class="status red">CANCELLED</div>';
 	return status;
 }
 
@@ -138,15 +149,15 @@ Event.prototype.getMessageIndicatorHTML = function() {
 }
 
 Event.prototype.displayForEventDetail = function() {
-	var output =	this.getEventInfoView(true);
+	var output =	this.getEventInfoView(true, true);
 		output +=	this.locationList();
 		output +=	this.participantList();
 	return output;
 }
 
-Event.prototype.getEventInfoView = function(displayFull) {
+Event.prototype.getEventInfoView = function(displayFull, eventDetailsView) {
 	var status = null;
-	if (this.hasBeenCancelled) status = '<div class="status red">CANCELLED</div>';
+	if (this.hasBeenCancelled && eventDetailsView) status = '<div class="status red">CANCELLED</div>';
 	var output =	'<div class="eventInfo">';
 		if (status) output += status;
 		output +=		'<img class="userAvatar" src="'+ this.creatorParticipant.avatarURL +'" />';
@@ -233,6 +244,14 @@ Event.prototype.getParticipantById = function(id) {
 	for (var i=0; i<this.allParticipants.length; i++) {
 		var p = this.allParticipants[i];
 		if (p.email == id) return p;
+	}
+	return null;
+}
+
+Event.prototype.getMessageById = function(id) {
+	for (var i=0; i<this.allMessages.length; i++) {
+		var m = this.allMessages[i];
+		if (m.messageId == id) return m;
 	}
 	return null;
 }
