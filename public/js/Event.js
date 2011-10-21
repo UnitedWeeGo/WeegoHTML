@@ -392,7 +392,7 @@ Event.prototype.getJSON = function() {
 //	event decided time
 // 	hasBeenCheckedIn
 	var loc = this.getWinningLocation();
-	var output = 	'{"type":"Event", "eventId":"'+ this.eventId +'", "eventDate":"'+ this.eventDate +'", "eventExpireDate":"'+ this.eventExpireDate +'", "hasBeenCheckedIn":"'+ this.hasBeenCheckedIn +'"';
+	var output = 	'{"type":"Event", "eventId":"'+ this.eventId +'", "eventDate":"'+ this.eventDate.format("ddd, dd mmm yyyy HH:MM:ss o") +'", "eventExpireDate":"'+ this.eventExpireDate.format("ddd, dd mmm yyyy HH:MM:ss o") +'", "hasBeenCheckedIn":"'+ this.hasBeenCheckedIn +'"';
 	if (loc) {
 		output +=		', "locations":['+
 							'{"type":"Location", "latitude":"'+ loc.latitude +'", "longitude":"'+ loc.longitude +'"}'+

@@ -91,7 +91,7 @@
 							o.reloading = true;
 							$this.find('.refreshHeader').find('.refreshContent').html('Loading...');
 							$this.find('.content').touchScroll('setRestPosition', 50);
-							getSingleEvent();
+							//getSingleEvent();
 						}
 					}
 				}
@@ -113,9 +113,27 @@
 					$this.find('.content').html('');
 					//$this.find('.content').append('<div class="refreshHeader dark"><div class="refreshArrow"></div><div class="refreshContent">Pull down to refresh...</div></div>');
 					$this.find('.content').append('<ul class="messageList">');
-					for (var i=0; i<o.event.allMessages.length; i++) {
+					for (var i=o.event.allMessages.length-1; i>=0; i--) {
 						var m = o.event.allMessages[i];
-						$this.find('.content').find('.messageList').append('<li>'+ m.message +'</li>');
+						var sender;
+						var imageTag;
+						var message;
+						if (m.type == "decided") {
+							imageTag = '<img class="decided" src="/assets/images/POIs_decided_default_sm.png" />';
+							sender = '<span class="sender">Weego</span><br />';
+							message = '<span class="message">"'+ o.event.getWinningLocation().name +'" is where we are going!</span>';
+						} else {
+							var p = o.event.getParticipantById(m.senderId);
+							imageTag = '<img src="'+ p.avatarURL +'" />';
+							sender = '<span class="sender">'+ p.getFullName() +'</span><br />';
+							message = '<span class="message">'+ m.message +'</span>';
+						}
+						var html = 	'<li>';
+						html +=			imageTag;
+						html +=			sender;
+						html +=			message;
+						html +=		'</li>';
+						$this.find('.content').find('.messageList').append(html);
 					}
 				}
 			});
