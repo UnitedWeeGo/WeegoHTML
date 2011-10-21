@@ -106,6 +106,10 @@ ViewController.prototype.showMessages = function(eventId) {
 	$('#messages').messages({event:Model.getInstance().currentEvent});
 }
 
+ViewController.prototype.hideMessages = function() {
+	$('#messages').css("display", "none");
+}
+
 ViewController.prototype.showCreateEvent = function() {
 	Model.getInstance().currentAppState = Model.appState.createEvent;
 	$.cookie({'state': null, 'eventId': null});

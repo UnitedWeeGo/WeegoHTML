@@ -36,6 +36,9 @@
 				
 				function setViewSize() {
 					$this.find('.content').css('height',document.documentElement.clientHeight - resizeOffset);
+					var titleWidth = $this.find('.feedTitle').width();
+					var left = (document.documentElement.clientWidth - titleWidth) / 2;
+					$this.find('.feedTitle').css('margin-left', left+'px');
 				}
 				
 				function setScroll() {
@@ -100,9 +103,9 @@
 				}
 				
 				function setEvents() {
-					$this.find('#locationSearch').find('#submit').unbind('click');
-					$this.find('#locationSearch').find('#submit').click(function() {
-						searchSimpleGeo();
+					$this.find('.closeButton').unbind('click');
+					$this.find('.closeButton').click(function() {
+						ViewController.getInstance().hideMessages();
 					});
 				}
 				
