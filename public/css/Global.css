@@ -240,3 +240,11 @@ UL.collapseableList LI:FIRST-CHILD {
 #fb-root {
 	display: none;
 }
+
+.ui-page {
+	min-height: 200px !important;
+}
+
+.ui-loader {
+	display: none;
+}
