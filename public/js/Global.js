@@ -47,3 +47,35 @@ function sendModel(JSON) {
 	if (window.Android) Android.refreshModel(JSON);
 }
 
+function checkIn(eventId) {
+	var ev = Model.getInstance().getEventById(eventId);
+	var loc = ev.getWinningLocation();
+	var url = domain + "/checkin.php";
+	$.get(url, {registeredId:ruid, eventId:eventId, locationId:loc.locationId}, function(data) {
+		handleCheckInResponse(data);
+	});
+}
+
+function handleCheckInResponse(data) {
+	if ($(data).find('success')) {
+		var eventId = $(data).find('success').attr('id');
+		var ev = Model.getInstance().getEventById(eventId);
+		ev.hasBeenCheckedIn = true;
+		Model.getInstance().getModelDataAsJSON();
+		if (window.Android) Android.handleCheckInResponse();
+	}
+}
+
+function reportLocation(lat,lng) {
+	var url = domain + "/report.location.php";
+	$.get(url, {registeredId:ruid, latitude:lat, longitude:lng, disableLocationReporting:"false"}, function(data) {
+		handleReportLocationResponse(data);
+	});
+}
+
+function handleReportLocationResponse(data) {
+	if ($(data).find('success')) {
+		if (window.Android) Android.handleReportLocationResponse();
+	}
+}
+

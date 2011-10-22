@@ -342,6 +342,10 @@
 						$this.find('.actionSheet').append('<div class="button grey countMeOut">I\'m not coming</div>');
 					}
 //					$this.find('.actionSheet').append('<div class="button red removeEvent">Remove event</div>');
+					
+					$this.find('.actionSheet').append('<div class="button black checkIn">Check me in</div>');
+					$this.find('.actionSheet').append('<div class="button black reportLocation">Report Location</div>');
+					
 					$this.find('.actionSheet').append('<div class="button black cancelActionSheet">Cancel</div>');
 					$this.find('.actionSheetBlocker').css('display','block');
 					$this.find('.actionSheet').css('display','block');
@@ -358,6 +362,14 @@
 					});
 					$this.find('.actionSheet').find('.cancelActionSheet').bind('click', function(){
 						closeActionSheet();
+					});
+					
+					$this.find('.actionSheet').find('.checkIn').bind('click', function(){
+						checkIn(o.event.eventId);
+					});
+					$this.find('.actionSheet').find('.reportLocation').bind('click', function(){
+						setInitialLocation();
+						reportLocation(o.myLocation.lat(), o.myLocation.lng());
 					});
 				}
 				
