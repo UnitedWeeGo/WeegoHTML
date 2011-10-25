@@ -1,7 +1,8 @@
 (function($) {
 	
 	var defaults = {
-			event: null
+			event: null,
+			reloading: false
 	};
 	
 	var methods = {
@@ -22,6 +23,8 @@
 					$(window).resize(function() {
 						setViewSize();
 					});
+					
+					markRead();
 					
 					setEvents();
 					
@@ -44,12 +47,17 @@
 				
 				update();
 				
+				function markRead() {
+					var url = domain + "/readall.feedmessages.php";
+					$.get(url, {registeredId:ruid, eventId:o.event.eventId}, function(data) {
+					
+					});
+				}
+				
 				function setViewSize() {
-					var messageInputHeight = ($this.find('.messageInput')) ? $this.find('.messageInput').height() : 0;
-					$this.find('.contentContainer').css('height',document.documentElement.clientHeight - resizeOffset - messageInputHeight - 10);
-					//$this.find('.contentContainer').find('.content').css('height',document.documentElement.clientHeight - resizeOffset - messageInputHeight + 600);
-					$this.find('.content').css('height', 802); //(document.documentElement.clientHeight - resizeOffset - messageInputHeight) + 588);
-					//$this.find('.content').find('.messageList').css('min-height', $this.find('.contentContainer').height());
+					var messageInputHeight = ($this.find('.messageInput')) ? $this.find('.messageInput').outerHeight() : 0;
+					$this.find('.contentContainer').css('height',document.documentElement.clientHeight - resizeOffset - messageInputHeight + 1); // one pixel adjustment for bottom of scrolling list
+					$this.find('.content').css('height', (document.documentElement.clientHeight - resizeOffset - messageInputHeight) + 600 + 9);
 					$this.find('.messageInput').find('TEXTAREA').css('width',document.documentElement.clientWidth - 18);
 					var titleWidth = $this.find('.feedTitle').width();
 					var left = (document.documentElement.clientWidth - titleWidth) / 2;
@@ -112,9 +120,40 @@
 							o.reloading = true;
 							$this.find('.refreshHeader').find('.refreshContent').html('Loading...');
 							$this.find('.content').touchScroll('setRestPosition', 50);
-							//getSingleEvent();
+							getSingleEvent();
 						}
 					}
+				}
+				
+				function getSingleEvent() {
+					var url = domain + "/get.event.php";
+					var params = {registeredId:ruid, eventId:o.eventId};
+					if (o.event && o.event.lastUpdatedTimestamp) params.timestamp = o.event.lastUpdatedTimestamp;
+					$.get(url, params, function(data) {
+						handleGetSingleEvent(data);
+						setUpUI();
+						//ViewController.getInstance().showEventDetail(o.event.eventId, false, o.event.showCountMeIn(), true);
+					});
+				}
+
+				function handleGetSingleEvent(data) {
+					Model.getInstance().populateEventsWithXML(data);
+					o.lastUpdatedTimestamp = $(data).find('response').attr('timestamp');
+					var allEventsXML = $(data).find('event');
+					for (var i=0; i<allEventsXML.length; i++) {
+						var evXML = allEventsXML[i];
+						var id = $(evXML).attr('id');
+						o.event = Model.getInstance().getEventById(id); // new Event();
+						o.event.lastUpdatedTimestamp = $(data).find('response').attr('timestamp');
+						o.event.populateWithXML(evXML);
+					}
+					o.reloading = false;
+					degree = 0;
+					if (!!('ontouchstart' in window)) {
+						$this.find('.content').touchScroll('setRestPosition', 0);
+					}
+					Model.getInstance().currentEvent = o.event;
+					Model.getInstance().getModelDataAsJSON();
 				}
 				
 				function resetScroll() {
@@ -132,10 +171,29 @@
 					$this.find('.sendButton').click(function() {
 						sendMessage();
 					});
+					
+					$this.find('.cta').find('TEXTAREA').focusin(function(){
+						showActiveInput();
+					});
+				}
+				
+				function showActiveInput() {
+					$this.find('.messageInput').find('.cta').css('display', 'none');
+					$this.find('.messageInput').find('.activeInput').css('display', 'block');
+					$this.find('.messageInput').find('.activeInput').find('TEXTAREA').focus();
+					setViewSize();
+					setScroll();
+				}
+				
+				function hideActiveInput() {
+					$this.find('.messageInput').find('.cta').css('display', 'block');
+					$this.find('.messageInput').find('.activeInput').css('display', 'none');
+					setViewSize();
+					setScroll();
 				}
 				
 				function sendMessage() {
-					var text = $this.find('.messageInput').find('TEXTAREA').val();
+					var text = $this.find('.messageInput').find('.activeInput').find('TEXTAREA').val();
 					var woWhiteSpace = text.replace(/ /g,'');
 					if (woWhiteSpace.length > 0) {
 						var now = new Date();
@@ -148,10 +206,10 @@
 				
 				function handleSendMessageResponse(data) {
 					Model.getInstance().populateEventsWithXML(data);
-					$this.find('.messageInput').find('TEXTAREA').val('');
+					$this.find('.messageInput').find('.activeInput').find('TEXTAREA').val('');
 					updateChars();
 					setUpUI();
-					setViewSize();
+					hideActiveInput();
 				}
 				
 				function setUpUI() {
@@ -215,15 +273,15 @@
 				}
 				
 				function setUpMessageInput() {
-					$this.find('.messageInput').find('TEXTAREA').val('');
+					$this.find('.messageInput').find('.activeInput').find('TEXTAREA').val('');
 					updateChars();
-					$this.find('.messageInput').find('TEXTAREA').keyup(function(){
+					$this.find('.messageInput').find('.activeInput').find('TEXTAREA').keyup(function(){
 						updateChars();
 					});
 				}
 				
 				function updateChars() {
-					var text = $this.find('.messageInput').find('TEXTAREA').val();
+					var text = $this.find('.messageInput').find('.activeInput').find('TEXTAREA').val();
 					var charsAmt = 140;
 					//if (text) {
 						charsAmt -= text.length;

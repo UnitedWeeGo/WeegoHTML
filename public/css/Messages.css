@@ -53,20 +53,41 @@
 
 #messages .messageInput {
 	display: block;
-	height: 98px;
 	padding: 6px;
 	background-color: #E4E4E4;
 	border-bottom: 1px solid #CCC;
 }
 
-#messages .messageInput TEXTAREA {
+#messages .messageInput .cta {
+	display: block;
+	height: 21px;
+}
+
+#messages .messageInput .cta TEXTAREA {
+	width: 100%;
+	height: 16px;
+	font-weight: bold;
+	color: #CCC;
+	font-size: 1.2em;
+	resize: none;
+	margin: 0 0 0 0;
+}
+
+#messages .messageInput .activeInput {
+	display: none;
+	height: 98px;
+}
+
+#messages .messageInput .activeInput TEXTAREA {
 	width: 100%;
 	height: 50px;
+	color: #333;
+	font-size: 1.1em;
 	resize: none;
 	margin: 0 0 4px 0;
 }
 
-#messages .messageInput .chars {
+#messages .messageInput .activeInput .chars {
 	display: block;
 	float: right;
 	color: #A9A9A9;
@@ -76,7 +97,7 @@
 	margin: 3px 10px;
 }
 
-#messages .messageInput .sendButton {
+#messages .messageInput .activeInput .sendButton {
 	display: block;
 	float: right;
 	width: 50px;
@@ -117,11 +138,13 @@
 
 #messages UL.messageList LI .statusBlock {
 	float: right;
+	height: 52px;
 }
 
 #messages UL.messageList LI .statusBlock .status {
 	float: right;
 	clear: none;
+	color: #999;
 }
 
 #messages UL.messageList LI .statusBlock .newIcon {
@@ -141,7 +164,7 @@
 	width: 32px;
 	height: 32px;
 	border: 1px solid #333;
-	margin-right: 8px;
+	margin: 0 8px 18px 0;
 }
 
 #messages UL.messageList LI IMG.decided {
@@ -150,4 +173,16 @@
 	height: 33px;
 	margin-right: 11px;
 	border: none;
+}
+
+#messages UL.messageList LI .sender {
+	font-size: 1.1em;
+	font-weight: bold;
+	color: #999;
+}
+
+#messages UL.messageList LI .message {
+	display: block;
+	font-size: 1.1em;
+	color: #333;
 }

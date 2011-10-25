@@ -107,7 +107,8 @@ ViewController.prototype.showMessages = function(eventId) {
 }
 
 ViewController.prototype.hideMessages = function() {
-	$('#messages').css("display", "none");
+	var ev = Model.getInstance().currentEvent;
+	this.showEventDetail(ev.eventId, true, ev.showCountMeIn());
 }
 
 ViewController.prototype.showCreateEvent = function() {
