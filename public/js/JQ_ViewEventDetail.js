@@ -47,7 +47,7 @@
 				setBindings();
 				
 				function setViewSize() {
-					$this.find('.content').css('height',document.documentElement.clientHeight - resizeOffset - 43);
+					$this.find('.content').css('height',document.documentElement.clientHeight - resizeOffset - 43); // 43 is height of bottom bar (messages button)
 					$this.find('.refreshHeader').find('.refreshContent').css('width', document.documentElement.clientWidth - 74);
 				}
 				

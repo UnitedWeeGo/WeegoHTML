@@ -25,11 +25,17 @@
 					
 					setEvents();
 					
-					setUpUI();
-					
 					setViewSize();
 					
 					setScroll();
+					
+					o.reloading = false;
+					degree = 0;
+					if (!!('ontouchstart' in window)) {
+						$this.find('.content').touchScroll('setRestPosition', 0);
+					}
+					
+					setUpUI();
 					
 					setUpMessageInput();
 					
@@ -40,10 +46,10 @@
 				
 				function setViewSize() {
 					var messageInputHeight = ($this.find('.messageInput')) ? $this.find('.messageInput').height() : 0;
-					$this.find('.contentContainer').css('height',document.documentElement.clientHeight - resizeOffset - messageInputHeight);
-					//$this.find('.content').css('height', $this.find('.content').find('.messageList').height());
+					$this.find('.contentContainer').css('height',document.documentElement.clientHeight - resizeOffset - messageInputHeight - 10);
+					//$this.find('.contentContainer').find('.content').css('height',document.documentElement.clientHeight - resizeOffset - messageInputHeight + 600);
+					$this.find('.content').css('height', 802); //(document.documentElement.clientHeight - resizeOffset - messageInputHeight) + 588);
 					//$this.find('.content').find('.messageList').css('min-height', $this.find('.contentContainer').height());
-					//alert($this.find('.content').find('.messageList').height());
 					$this.find('.messageInput').find('TEXTAREA').css('width',document.documentElement.clientWidth - 18);
 					var titleWidth = $this.find('.feedTitle').width();
 					var left = (document.documentElement.clientWidth - titleWidth) / 2;
@@ -53,11 +59,11 @@
 				function setScroll() {
 					if (!!('ontouchstart' in window)) {
 						$this.find('.content:first-child').touchScroll();
-						$this.find('.content:first-child').unbind('touchScroll');
+						$this.find('.content').unbind('touchScroll');
 						$this.find('.content:first-child').bind('touchScroll', function(){
 							determineRefresh();
 						});
-						$this.find('.content:first-child').unbind('touchEnd');
+						$this.find('.content').unbind('touchEnd');
 						$this.find('.content:first-child').bind('touchEnd', function(){
 							doRefresh();
 						});
@@ -66,12 +72,12 @@
 				
 				function resetScroll() {
 					if (!!('ontouchstart' in window)) {
-						$this.find('.content:first-child').touchScroll('setPosition', 0);
+						$this.find('.contentContainer').find('.content:first-child').touchScroll('setPosition', 0);
 					}
 				}
 				
 				function determineRefresh() {
-					var position = $this.find('.content:first-child').touchScroll('getPosition');
+					var position = $this.find('.contentContainer').find('.content:first-child').touchScroll('getPosition');
 					if (position < -60) {
 						$this.find('.refreshHeader').find('.refreshContent').html('Release to refresh...');
 						rotateArrow(true);
@@ -100,7 +106,7 @@
 				}
 				
 				function doRefresh() {
-					var position = $this.find('.content:first-child').touchScroll('getPosition');
+					var position = $this.find('.contentContainer').find('.content:first-child').touchScroll('getPosition');
 					if (!o.reloading) {
 						if (position < -60) {
 							o.reloading = true;
@@ -113,7 +119,7 @@
 				
 				function resetScroll() {
 					if (!!('ontouchstart' in window)) {
-						$this.find('.content').touchScroll('setPosition', 0);
+						$this.find('.contentContainer').find('.content').touchScroll('setPosition', 0);
 					}
 				}
 				
@@ -204,6 +210,8 @@
 						html +=		'</li>';
 						$this.find('.content').find('.messageList').append(html);
 					}
+					setViewSize();
+					setScroll();
 				}
 				
 				function setUpMessageInput() {
