@@ -80,7 +80,7 @@ Location.prototype.displayForLocationDetail = function(showVotedFor) {
 Location.prototype.xmlForUpload = function(tempId) {
 	var tempIdStr = (tempId) ? ' tempId="'+ tempId +'"' : '';
 	var xmlStr =	'<location'+ tempIdStr +' latitude="'+ this.latitude +'" longitude="'+ this.longitude +'">'+
-						'<name>'+ escape(this.name) +'</name>'+
+						'<name>'+ this.name +'</name>'+
 						'<vicinity>'+ this.vicinity +'</vicinity>'+
 						'<g_id>'+ this.g_id +'</g_id>'+
 						'<g_reference></g_reference>'+

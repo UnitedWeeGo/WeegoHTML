@@ -4,6 +4,7 @@ function Participant() {
 	this.lastName = '';
 	this.avatarURL = '';
 	this.hasBeenRemoved = '';
+	this.type = '';
 }
 
 Participant.prototype.populateWithXML = function(xml) {
@@ -12,6 +13,7 @@ Participant.prototype.populateWithXML = function(xml) {
 	this.lastName = $(xml).find("lastName").text();
 	this.avatarURL = $(xml).find("avatarURL").text();
 	this.hasBeenRemoved = ($(xml).attr("hasBeenRemoved") == "true");
+	this.type = $(xml).attr("type");
 }
 
 Participant.prototype.displayForEventDetail = function(status) {

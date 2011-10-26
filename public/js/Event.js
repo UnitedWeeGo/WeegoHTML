@@ -186,7 +186,7 @@ Event.prototype.locationList = function() {
 		}
 	}
 	if (this.getEventState() < Event.state.decided) {
-		//output += '<li class="locationCell callToAction"><div class="locationInfo">Add Location(s)</div></li>';
+		output += '<li class="locationCell callToAction"><div class="locationInfo">Add location(s)</div></li>';
 	}
 	else {
 		if (this.allLocations.length > 0) {
@@ -224,6 +224,7 @@ Event.prototype.getOfficialLocationByTempId = function(id) {
 Event.prototype.participantList = function() {
 	var output = '<ul class="collapseableList participantList">';
 	output += this.participantListItems();
+	output += '<li class="participantCell callToAction">Add friend(s)</li>';
 	output += '</ul>';
 	return output;
 }

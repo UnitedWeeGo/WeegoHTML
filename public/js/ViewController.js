@@ -27,6 +27,7 @@ ViewController.prototype.showLogin = function() {
 	$('#dashboard').css("display", "none");
 	$('#eventDetail').css("display", "none");
 	$('#addLocations').css("display", "none");
+	$('#addFriends').css("display", "none");
 	$('#messages').css("display", "none");
 	$('#createEvent').css("display", "none");
 	$('#prefs').css("display", "none");
@@ -43,6 +44,7 @@ ViewController.prototype.showDashboard = function() {
 	$('#dashboard').css("display", "block");
 	$('#eventDetail').css("display", "none");
 	$('#addLocations').css("display", "none");
+	$('#addFriends').css("display", "none");
 	$('#messages').css("display", "none");
 	$('#createEvent').css("display", "none");
 	$('#prefs').css("display", "none");
@@ -67,6 +69,7 @@ ViewController.prototype.showEventDetail = function(eventId, reset, showCountMeI
 	$('#dashboard').css("display", "none");
 	$('#eventDetail').css("display", "block");
 	$('#addLocations').css("display", "none");
+	$('#addFriends').css("display", "none");
 	$('#messages').css("display", "none");
 	$('#createEvent').css("display", "none");
 	$('#prefs').css("display", "none");
@@ -86,14 +89,37 @@ ViewController.prototype.showAddLocations = function(locationId) {
 	$('#dashboard').css("display", "none");
 	$('#eventDetail').css("display", "none");
 	$('#addLocations').css("display", "block");
+	$('#addFriends').css("display", "none");
 	$('#messages').css("display", "none");
 	$('#createEvent').css("display", "none");
 	$('#prefs').css("display", "none");
 	$('#addLocations').addLocations({event:Model.getInstance().currentEvent, locationId:locationId});
-	$('#navBar').navBar();
+	$('#navBar').navBar('addLocations');
 	$('#navBar').find('.backButton').unbind('click');
 	$('#navBar').find('.backButton').click(function() {
-		if (Model.getInstance().currentAppState == 'createEvent') {
+		if (Model.getInstance().currentAppState == Model.appState.createEvent) {
+			ViewController.getInstance().showCreateEvent();
+		} else {
+			ViewController.getInstance().showEventDetail(Model.getInstance().currentEvent.eventId);
+		}
+	});
+}
+
+ViewController.prototype.showAddFriends = function() {
+	$('#login').css("display", "none");
+	$('#navBar').css("display", "block");
+	$('#dashboard').css("display", "none");
+	$('#eventDetail').css("display", "none");
+	$('#addLocations').css("display", "none");
+	$('#addFriends').css("display", "block");
+	$('#messages').css("display", "none");
+	$('#createEvent').css("display", "none");
+	$('#prefs').css("display", "none");
+	$('#addFriends').addFriends({event:Model.getInstance().currentEvent});
+	$('#navBar').navBar('addFriends');
+	$('#navBar').find('.backButton').unbind('click');
+	$('#navBar').find('.backButton').click(function() {
+		if (Model.getInstance().currentAppState == Model.appState.createEvent) {
 			ViewController.getInstance().showCreateEvent();
 		} else {
 			ViewController.getInstance().showEventDetail(Model.getInstance().currentEvent.eventId);
@@ -119,6 +145,7 @@ ViewController.prototype.showCreateEvent = function() {
 	$('#dashboard').css("display", "none");
 	$('#eventDetail').css("display", "none");
 	$('#addLocations').css("display", "none");
+	$('#addFriends').css("display", "none");
 	$('#messages').css("display", "none");
 	$('#createEvent').css("display", "block");
 	$('#prefs').css("display", "none");
@@ -139,6 +166,7 @@ ViewController.prototype.showPrefs = function() {
 	$('#dashboard').css("display", "none");
 	$('#eventDetail').css("display", "none");
 	$('#addLocations').css("display", "none");
+	$('#addFriends').css("display", "none");
 	$('#messages').css("display", "none");
 	$('#createEvent').css("display", "none");
 	$('#prefs').css("display", "block");

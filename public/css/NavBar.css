@@ -27,6 +27,10 @@
 	margin: 7px 0 0 18px;
 }
 
+#navBar .backButton.arrow IMG {
+	margin: 7px 0 0 15px;
+}
+
 #navBar .weegoTitle {
 	display: block;
 	float: left;

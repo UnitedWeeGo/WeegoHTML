@@ -9,9 +9,39 @@
 	height: 100%;
 }
 
+#addLocations #locationSearch {
+	display: block;
+	padding: 6px;
+	background-color: #E4E4E4;
+	border-bottom: 1px solid #666;
+}
+
+#addLocations #locationSearch #locationSearchField {
+	height: 16px;
+	font-weight: regular;
+	color: #333;
+	font-size: 1.2em;
+	resize: none;
+	margin: 0 0 0 0;
+}
+
+#addLocations #locationSearch #locationSearchField.default {
+	font-weight: bold;
+	color: #CCC;
+}
+
+#addLocations #locationSearch .buttons {
+	display: inline-block;
+	float: right;
+}
+
+#addLocations #locationSearch .buttons INPUT {
+	font-size: 1.2em;
+}
+
 #addLocations #locationDetail {
 	position: absolute;
-	display: block;
+	display: none;
 	width: 100%;
 	padding: 8px;
 	

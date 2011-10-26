@@ -193,6 +193,7 @@
 					}
 					enableLocationButtons();
 					enableVoteButtons();
+					enableAddFriendsButton();
 					enableFeedButton();
 					setViewSize();
 					setScroll();
@@ -229,6 +230,13 @@
 							$(this).find(".voteButton").removeClass("iVotedFor");
 							$(this).find(".voteButton").addClass("decidedVoteButton");
 						}
+					});
+				}
+				
+				function enableAddFriendsButton() {
+					$this.find('.participantList').find('.callToAction').unbind('click');
+					$this.find('.participantList').find('.callToAction').click(function() {
+						ViewController.getInstance().showAddFriends();
 					});
 				}
 

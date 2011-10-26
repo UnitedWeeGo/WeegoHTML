@@ -49,17 +49,22 @@
 					
 					setViewSize();
 	
+					o.initialDisplayFinished = false;
+					
+					clearSearchResults();
+	
 					var myLatlng = null;
 					var zoomLevel = 4;
 					
-					if (o.locationId) {
-						o.startingLocation = o.event.getLocationById(o.locationId);
+					o.startingLocation = o.event.getLocationById(o.locationId);
+					if (o.locationId && o.startingLocation) {
+						//o.startingLocation = o.event.getLocationById(o.locationId);
 						o.selectedLocation = o.startingLocation;
 						myLatlng = new google.maps.LatLng(o.startingLocation.latitude, o.startingLocation.longitude);
 						zoomLevel = 12;
 					} else {
 						myLatlng = new google.maps.LatLng(37.77493,-122.419416);
-						zoomLevel = 8;
+						zoomLevel = 2;
 					}
 					var myOptions = {
 						zoom: zoomLevel,
@@ -75,9 +80,12 @@
 					
 					$this.find('#locationDetail').find('.locationInfo').html('');
 					
-					if (o.locationId) {
+					if (o.locationId && o.startingLocation) {
 						showLocationDetail(o.startingLocation);
-					} 
+					} else {
+						$this.find('#locationDetail').html("");
+						$this.find('#locationDetail').css('display', 'none');
+					}
 										
 					o.originalLocations = o.event.allLocations.slice();
 					
@@ -85,8 +93,8 @@
 					
 					if (o.event.getEventState() < Event.state.decided) {
 						placeMarkers();
-						setMapBounds(o.originalLocations);
-						setInitialLocation();
+						if (o.originalLocations.length > 0) setMapBounds(o.originalLocations);
+						setInitialLocation(true);
 					} else {
 						placeMarkersDecided();
 						setMapBounds(new Array(o.event.getWinningLocation()));
@@ -102,6 +110,7 @@
 				
 				function setViewSize() {
 					$this.find('.content').css('height',document.documentElement.clientHeight - resizeOffset);
+					$this.find('#locationSearchField').css('width',document.documentElement.clientWidth - $this.find('#locationSearch').find('.buttons').outerWidth() - 28);
 				}
 				
 				function setMapBounds(arr, clear) {
@@ -262,9 +271,30 @@
 					$this.find('#locationSearch').find('#submit').click(function() {
 						searchSimpleGeo();
 					});
+					
+					$this.find('#locationSearchField').keypress(function(e) {
+						if(e.which == 13) {
+							jQuery(this).blur();
+							searchSimpleGeo();
+						}
+					});
+					
+					$this.find('#locationSearch').find('#cancel').unbind('click');
+					$this.find('#locationSearch').find('#cancel').click(function() {
+						clearSearchResults();
+						placeMarkers();
+					});
+					
+					$this.find('#locationSearchField').focusin(function(){
+						if ($(this).hasClass('default')) {
+							$(this).val('');
+							$(this).removeClass('default');
+						}
+					});
 				}
 
 				function showLocationDetail(loc) {
+					$this.find('#locationDetail').css('display', 'block');
 					$this.find('#locationDetail').html("");
 				//	$this.find('#locationDetail').find(".voteButton").removeClass("iVotedFor");
 				//	$this.find('#locationDetail').find(".voteButton").removeClass("notVotedFor");
@@ -291,13 +321,18 @@
 				}
 
 				function clearSearchResults() {
-					
+					o.searchResults = new Array();
+					o.newLocations = new Array();
+					$this.find('#locationSearchField').addClass('default');
+					$this.find('#locationSearchField').val('Search for a location');
 				}
 
 				function searchSimpleGeo() {
 					o.originalLocations = o.event.allLocations.slice();
 					o.newLocations = new Array();
 					var searchText = $this.find('#locationSearchField').val();
+					var searchTextNoWhite = searchText.replace(/ /g,'');
+					if (searchTextNoWhite.length == 0 || $this.find('#locationSearchField').hasClass('default')) return;
 					var latlng = o.map.getCenter();
 					var lat = latlng.lat();
 					var lng = latlng.lng();
@@ -403,6 +438,7 @@
 							if (resetBounds) {
 								o.mapBounds.extend(o.myLocation);
 								o.map.fitBounds(o.mapBounds);
+								if (o.map.getZoom() > 14) o.map.setZoom(14);
 							}
 						}, function() {
 							handleNoGeolocation(browserSupportFlag);

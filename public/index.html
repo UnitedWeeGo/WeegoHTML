@@ -8,7 +8,7 @@
 	
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
 
-	<script src="http://code.jquery.com/mobile/1.0b2/jquery.mobile-1.0b2.min.js"></script>
+<!--	<script src="http://code.jquery.com/mobile/1.0b2/jquery.mobile-1.0b2.min.js"></script> -->
 	<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=true"></script>
 	<script type="text/javascript" src="http://cdn.simplegeo.com/js/1.3/simplegeo.places.min.js"></script>
 	
@@ -76,11 +76,14 @@
 	
 	<div id="addLocations">
 		<div class="content">
-<!--			<div id="locationSearch">
-				<input type="text" id="locationSearchField" />
-				<input type="submit" id="submit" />
+			<div id="locationSearch">
+				<input type="text" id="locationSearchField" class="default" />
+				<div class="buttons">
+					<input type="button" id="cancel" value="Cancel" />
+					<input type="button" id="submit" value="Search" />
+				</div>
 			</div>
--->
+
 			<div id="locationDetail"></div>
 			<div id="map_canvas" style="width: 100%; height: 100%;"></div>
 		</div>
@@ -91,6 +94,10 @@
 	</div>
 	
 	<div id="prefs">
+		<div class="content"></div>
+	</div>
+	
+	<div id="addFriends">
 		<div class="content"></div>
 	</div>
 	

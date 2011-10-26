@@ -1,0 +1,41 @@
+#addFriends {
+	display: none;
+	width: 100%;
+	margin-top: 45px;
+	overflow-y: auto;
+}
+
+#addFriends .content {
+	display: block;
+	height: 100%;
+}
+
+#addFriends .participantList {
+	display: block;
+	width: 100%;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+#addFriends .participantList LI {
+	display: block;
+	margin: 0;
+	padding: 12px;
+	border-bottom: 1px solid #E2E2E2;
+}
+
+#addFriends .participantList LI.header {
+	height: 16px;
+	background: url('/assets/images/plainTableHeaderBg.png') repeat-x;
+	padding: 0 12px 0 12px;
+}
+
+#addFriends .participantList LI.header .headerText {
+	float: left;
+	color: #FFF;
+	font-size: 1.4em;
+	font-weight: bold;
+	text-shadow: 0px 1px 0px #000;
+	margin-top: -2px;
+}

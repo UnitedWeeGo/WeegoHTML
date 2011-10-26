@@ -120,3 +120,11 @@
 	background-color: #000;
 	color: #FFF;
 }
+
+#eventDetail UL.locationList LI.callToAction {
+	padding-left: 2px;
+}
+
+#eventDetail UL.participantList LI.callToAction {
+	padding: 14px 10px 12px 10px !important;
+}
