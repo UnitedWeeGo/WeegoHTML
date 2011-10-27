@@ -88,6 +88,7 @@
 							$this.addClass('event');
 							$this.append('<div class="backButton arrow"><img src="/assets/images/icon_backArrow_dark_01.png" /></div>');
 							$this.append('<div class="weegoTitle"><div class="titleText">Add Friends</div></div>');
+							$this.append('<div class="doneButton">Done</div>');
 							break;
 					}
 					setTitleCenter();

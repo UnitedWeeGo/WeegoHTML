@@ -19,8 +19,19 @@ Participant.prototype.populateWithXML = function(xml) {
 Participant.prototype.displayForEventDetail = function(status) {
 	var output =	'<li class="participantCell">';
 	if (status) output += '<div class="status">'+ status +'</div>';
-	output +=			'<img src="'+ this.avatarURL +'" />'+
-						'<h3>'+ this.getFullName() +'</h3>'+
+	if (this.avatarURL.length > 0) output += '<img src="'+ this.avatarURL +'" />';
+	output +=			'<h3>'+ this.getFullName() +'</h3>'+
+					'</li>';
+	return output;
+}
+
+Participant.prototype.displayForAddFriends = function(classString, email) {
+	var cls = (classString && classString.length > 0) ? " "+ classString : "";
+	var es = (email && email.length > 0) ? " email="+ email : "";
+	var output =	'<li class="participantCell'+ cls +'"'+ es +'>';
+	if (status) output += '<div class="status">'+ status +'</div>';
+	if (this.avatarURL.length > 0) output += '<img src="'+ this.avatarURL +'" />';
+	output += 			'<h3>'+ this.getFullName() +'</h3>'+
 					'</li>';
 	return output;
 }

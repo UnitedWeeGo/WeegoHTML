@@ -2,12 +2,51 @@
 	display: none;
 	width: 100%;
 	margin-top: 45px;
+}
+
+#addFriends .contentContainer {
+	display:block;
+	width: 100%;
 	overflow-y: auto;
 }
 
 #addFriends .content {
 	display: block;
 	height: 100%;
+}
+
+#addFriends .participantSearch {
+	display: block;
+	padding: 6px;
+	background-color: #E4E4E4;
+	border-bottom: 1px solid #CCC;
+}
+
+#addFriends .participantSearch #participantSearchField {
+	height: 16px;
+	font-weight: regular;
+	color: #333;
+	font-size: 1.2em;
+	resize: none;
+	margin: 0 0 0 0;
+}
+
+#addFriends .participantSearch #participantSearchField.default {
+	font-weight: bold;
+	color: #CCC;
+}
+
+#addFriends .participantSearch #participantSearchField.error {
+	color: #F00;
+}
+
+#addFriends .participantSearch .buttons {
+	display: inline-block;
+	float: right;
+}
+
+#addFriends .participantSearch .buttons INPUT {
+	font-size: 1.2em;
 }
 
 #addFriends .participantList {
@@ -25,7 +64,12 @@
 	border-bottom: 1px solid #E2E2E2;
 }
 
+#addFriends .participantList LI.disabled {
+	opacity: 0.5;
+}
+
 #addFriends .participantList LI.header {
+	display: none;
 	height: 16px;
 	background: url('/assets/images/plainTableHeaderBg.png') repeat-x;
 	padding: 0 12px 0 12px;

@@ -224,7 +224,9 @@ Event.prototype.getOfficialLocationByTempId = function(id) {
 Event.prototype.participantList = function() {
 	var output = '<ul class="collapseableList participantList">';
 	output += this.participantListItems();
-	output += '<li class="participantCell callToAction">Add friend(s)</li>';
+	if (this.getEventState() < Event.state.ended) {
+		output += '<li class="participantCell callToAction">Add friend(s)</li>';
+	}
 	output += '</ul>';
 	return output;
 }

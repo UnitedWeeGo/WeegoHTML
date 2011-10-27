@@ -125,6 +125,10 @@ ViewController.prototype.showAddFriends = function() {
 			ViewController.getInstance().showEventDetail(Model.getInstance().currentEvent.eventId);
 		}
 	});
+	
+	$('#navBar').find('.doneButton').click(function() {
+		$('#addFriends').addFriends('done');
+	});
 }
 
 ViewController.prototype.showMessages = function(eventId) {

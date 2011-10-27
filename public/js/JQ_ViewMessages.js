@@ -131,8 +131,8 @@
 					if (o.event && o.event.lastUpdatedTimestamp) params.timestamp = o.event.lastUpdatedTimestamp;
 					$.get(url, params, function(data) {
 						handleGetSingleEvent(data);
+						markRead();
 						setUpUI();
-						//ViewController.getInstance().showEventDetail(o.event.eventId, false, o.event.showCountMeIn(), true);
 					});
 				}
 

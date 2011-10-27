@@ -141,7 +141,7 @@ UL.participantList LI IMG {
 UL.participantList LI H3 {
 	font-size: 1.6em;
 	margin: 0;
-	padding: 9px 10px 0 10px;
+	padding: 9px 10px 0 0;
 }
 
 .statusBlock {
