@@ -5,7 +5,8 @@
 		event: null,
 		lastUpdatedTimestamp: null,
 		otherLocationsShowing: false, // Doesn't come into play until event decided
-		reset: false
+		reset: false,
+		waitingForResponse: false
 	};
 	
 	var methods = {
@@ -86,6 +87,7 @@
 					displayEvent();
 					enableLocationButtons();
 					enableVoteButtons();
+					enableAddFriendsButton();
 					setViewSize();
 					setScroll();
 				}
@@ -94,7 +96,7 @@
 					var content = $this.find('.content');
 					content.html('');
 					content.append('<ul class="collapseableList eventInfoForm">');
-					var infoForm = 	'<li class="formInput"><h2>What</h2><input type="text" /></li>'+
+					var infoForm = 	'<li class="formInput"><h2>What</h2><input class="eventTitle" type="text" /></li>'+
 									'<li class="formInput"><h2>When</h2><input class="dateTime" type="text" /></li>';
 					content.find('.eventInfoForm').html(infoForm);
 					content.append(o.event.locationList());
@@ -106,13 +108,44 @@
 					dateTimeField.scroller('setDate', adjustedEventDate);
 					var fv = dateTimeField.scroller('getFormattedValue');
 					dateTimeField.val(fv);
+					content.find('.eventTitle').change(function(){
+						saveTitle();
+					});
+					content.find('.eventTitle').focusin(function(){
+						if ($(this).hasClass('default')) {
+							$(this).val('');
+							$(this).removeClass('default');
+						}
+					});
+					content.find('.eventTitle').focusout(function(){
+						var titleNoWhitespace = o.event.eventTitle.replace(/ /g,'');
+						if (titleNoWhitespace.length == 0) {
+							var name = o.event.getCreatorNamePossessive();
+							$(this).val(name +' event');
+							$(this).addClass('default');
+							saveTitle();
+						}
+					});
+					var titleNoWhitespace = o.event.eventTitle.replace(/ /g,'');
+					if (titleNoWhitespace.length > 0) {
+						content.find('.eventTitle').val(o.event.eventTitle);
+					} else {
+						content.find('.eventTitle').addClass('default');
+						var name = o.event.getCreatorNamePossessive();
+						content.find('.eventTitle').val(name +' event');
+						saveTitle();
+					}
+				}
+				
+				function saveTitle() {
+					o.event.eventTitle = $this.find('.content').find('.eventTitle').val();
 				}
 				
 				function checkTime() {
 					var content = $this.find('.content');
 					var dateTimeField = content.find('.dateTime');
 					//alert(o.event.eventDate);
-					//alert(dateTimeField.scroller('getDate'));
+					o.event.eventDate = dateTimeField.scroller('getDate');
 				}
 
 				function enableLocationButtons() {
@@ -133,18 +166,44 @@
 						$(this).find(".voteButton").unbind('click');
 						$(this).find(".voteButton").click(function() {
 							toggleVoteForLocationWithId(id);
+							setUpUI();
 						});
+					});
+				}
+				
+				function enableAddFriendsButton() {
+					$this.find('.participantList').find('.callToAction').unbind('click');
+					$this.find('.participantList').find('.callToAction').click(function() {
+						ViewController.getInstance().showAddFriends();
 					});
 				}
 
 				function toggleVoteForLocationWithId(locationId) {
-					var xmlStr = '<event id="'+ o.event.eventId +'"><votes><vote locationId="'+ locationId +'" /></votes></event>';
+					var index = -1;
+					for (var i=0; i<o.event.currentLocationOrder.length; i++) {
+						if (o.event.currentLocationOrder[i] == locationId) index = i;
+					}
+					o.event.currentLocationOrder.splice(index,1);
+					if (o.event.iVotedFor(locationId)) {
+						var index = -1;
+						for (var i=0; i<o.event.locationsVotedFor.length; i++) {
+							if (o.event.locationsVotedFor[i] == locationId) index = i;
+						}
+						o.event.locationsVotedFor.splice(index,1);
+						o.event.currentLocationOrder.push(locationId);
+					} else {
+						o.event.locationsVotedFor.push(locationId);
+						o.event.currentLocationOrder.unshift(locationId);
+					}
+				
+/*					var xmlStr = '<event id="'+ o.event.eventId +'"><votes><vote locationId="'+ locationId +'" /></votes></event>';
 					var url = domain + "/xml.vote.php";
 					var params = {registeredId:ruid, xml:xmlStr};
 					if (o.event.lastUpdatedTimestamp) params.timestamp = o.event.lastUpdatedTimestamp;
 					$.post(url, params, function(data) {
 						handleGetSingleEvent(data);
 					});
+*/
 				}
 
 				function toggleShowLocations() {
@@ -161,8 +220,39 @@
 					setScroll();
 				}
 				
+				function submitEvent() {
+					if (o.waitingForResponse == false) {
+						o.waitingForResponse = true;
+						var url = domain + "/xml.post.php";
+						var params = {registeredId:ruid, xml:o.event.xmlForUpload()};
+						$.post(url, params, function(data) {
+							handleSubmitEventResponse(data);
+						});
+					}
+				}
+				
+				function handleSubmitEventResponse(data) {
+					o.waitingForResponse = false;
+					if ($(data).find('response').attr('code') == '250') {
+						ViewController.getInstance().showDashboard();
+					} else {
+						// Error
+					}
+				}
+				
+				this.submitEvent = function() {
+					return submitEvent();
+				};
+				
 			});
-		},		
+		},
+		
+		done: function () {
+			return this.each(function() {
+				this.submitEvent();
+			});
+		}
+		
 	};
 	
 	$.fn.createEvent = function(method) {

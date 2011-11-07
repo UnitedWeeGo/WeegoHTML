@@ -160,6 +160,9 @@ ViewController.prototype.showCreateEvent = function() {
 	$('#navBar').find('.backButton').click(function() {
 		ViewController.getInstance().showDashboard();
 	});
+	$('#navBar').find('.doneButton').click(function() {
+		$('#createEvent').createEvent('done');
+	});
 }
 
 ViewController.prototype.showPrefs = function() {

@@ -42,7 +42,7 @@
 							$this.addClass('home');
 							$this.append('<div class="prefsButton"><img src="/assets/images/icon_settings_01.png" /></div>');
 							$this.append('<div class="weegoTitle"><div class="titleText"><img src="/assets/images/topbar_logotype.png" /></div></div>');
-							//$this.append('<div class="addButton"><img src="/assets/images/icon_plus_01.png" /></div>');
+							$this.append('<div class="addButton"><img src="/assets/images/icon_plus_01.png" /></div>');
 							break;
 						case o.state.prefs :
 							$this.addClass('home');

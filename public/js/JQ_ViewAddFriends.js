@@ -262,17 +262,25 @@
 						}
 					}
 					if (needsValidate && !validateAndAdd()) return;
-					var xmlStr = '<event id="'+ o.event.eventId +'"><participants>';
-					for (var i=0; i<o.invitees.length; i++) {
-						var p = o.invitees[i];
-						xmlStr += '<participant email="'+ p.email +'" />';
+					if (Model.getInstance().currentAppState == Model.appState.eventDetail) {
+						var xmlStr = '<event id="'+ o.event.eventId +'"><participants>';
+						for (var i=0; i<o.invitees.length; i++) {
+							var p = o.invitees[i];
+							xmlStr += '<participant email="'+ p.email +'" />';
+						}
+						xmlStr += '</participants></event>';
+						var url = domain + "/xml.invite.php";
+						var params = {registeredId:ruid, xml:xmlStr};
+						$.post(url, params, function(data) {
+							handleSubmitInviteesResponse(data);
+						});
+					} else if (Model.getInstance().currentAppState == Model.appState.createEvent) {
+						for (var i=0; i<o.invitees.length; i++) {
+							var p = o.invitees[i];
+							o.event.allParticipants.push(p);
+						}
+						ViewController.getInstance().showCreateEvent();
 					}
-					xmlStr += '</participants></event>';
-					var url = domain + "/xml.invite.php";
-					var params = {registeredId:ruid, xml:xmlStr};
-					$.post(url, params, function(data) {
-						handleSubmitInviteesResponse(data);
-					});
 				}
 				
 				function handleSubmitInviteesResponse(data) {

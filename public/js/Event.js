@@ -85,6 +85,12 @@ Event.prototype.populateWithXML = function(xml) {
 	this.creatorParticipant = this.getParticipantById(this.creatorId);
 }
 
+Event.prototype.getCreatorNamePossessive = function() {
+	var name = this.creatorParticipant.firstName;
+	var lastChar = name.substr(name.length-1,name.length);
+	return (lastChar == 's') ? name +"'" : name +"'s";
+}
+
 Event.prototype.getDateFromString = function(dateStr) {
 	var testDate = new Date(2000,12,1);
 	var monthCorrection = 0;
@@ -379,12 +385,101 @@ Event.prototype.didDeclineEvent = function(id) {
 	return false;
 }
 
+Event.prototype.setDefaultTime = function() {
+	var now = new Date();
+	now.setMilliseconds(0);
+	now.setSeconds(0);
+	var midnight = new Date();
+	midnight.setMilliseconds(0);
+	midnight.setSeconds(0);
+	midnight.setMinutes(0);
+	midnight.setHours(0);
+	var earlyCutoff = new Date();
+	earlyCutoff.setMilliseconds(0);
+	earlyCutoff.setSeconds(0);
+	earlyCutoff.setMinutes(0);
+	earlyCutoff.setHours(9);
+	var earlyDefault = new Date();
+	earlyDefault.setMilliseconds(0);
+	earlyDefault.setSeconds(0);
+	earlyDefault.setMinutes(30);
+	earlyDefault.setHours(12);
+	var lateCutoff = new Date();
+	lateCutoff.setMilliseconds(0);
+	lateCutoff.setSeconds(0);
+	lateCutoff.setMinutes(0);
+	lateCutoff.setHours(14);
+	var lateDefault = new Date();
+	lateDefault.setMilliseconds(0);
+	lateDefault.setSeconds(0);
+	lateDefault.setMinutes(0);
+	lateDefault.setHours(18);
+	
+	var hourAhead = new Date();
+	hourAhead.setMilliseconds(0);
+	hourAhead.setSeconds(0);
+	hourAhead.setMinutes(Math.ceil(now.getMinutes() / 5)*5);
+	hourAhead.setHours(now.getHours()+1);
+	
+	var defaultTime;
+	if (now > earlyCutoff && hourAhead < earlyDefault) {
+		defaultTime = earlyDefault;
+	} else if (now > lateCutoff && now < lateDefault) {
+		defaultTime = lateDefault;
+	} else {
+		defaultTime = hourAhead;
+	}
+	this.eventDate = defaultTime;
+}
+
 Event.prototype.didViewEvent = function() {
 	return this.eventRead;
 }
 
 Event.prototype.showCountMeIn = function() {
 	return (!this.didAcceptEvent() || this.didDeclineEvent());
+}
+
+Event.prototype.xmlForUpload = function() {
+	var eventDateGMT = new Date(this.eventDate);
+	eventDateGMT.setMinutes(eventDateGMT.getMinutes() + eventDateGMT.getTimezoneOffset());
+	var xmlStr = 	'<request>';
+	xmlStr +=			'<event requestId="'+ this.eventId +'">';
+	xmlStr +=				'<eventInfo eventDate="'+ eventDateGMT.format("yyyy-mm-dd HH:MM:ss") +'" eventTimeZone="'+ eventDateGMT.format('Z') +'">';
+	xmlStr +=					'<eventTitle>'+ this.eventTitle +'</eventTitle>';
+	xmlStr +=					'<eventDescription></eventDescription>';
+	xmlStr +=				'</eventInfo>';
+	if (this.allLocations.length > 0) {
+		xmlStr +=			'<locations>';
+		for (var i=0; i<this.currentLocationOrder.length; i++) {
+			for (var j=0; j<this.allLocations.length; j++) {
+				var loc = this.allLocations[j];
+				if (loc.locationId == this.currentLocationOrder[i]) xmlStr += loc.xmlForUpload();
+			}
+		}
+		xmlStr +=			'</locations>';
+	}
+	if (this.allParticipants.length > 1) {
+		xmlStr +=			'<participants>';
+		for (var i=0; i<this.allParticipants.length; i++) {
+			var p = this.allParticipants[i];
+			if (p.email != this.creatorParticipant.email) {
+				xmlStr += 		'<participant email="'+ p.email +'" />';
+			}
+		}
+		xmlStr +=			'</participants>';
+	}
+	if (this.locationsVotedFor.length > 0) {
+		xmlStr +=			'<votes>';
+		for (var i=0; i<this.currentLocationOrder.length; i++) {
+			if (this.iVotedFor(this.currentLocationOrder[i])) xmlStr += '<vote selectedLocationIndex="'+ i +'"/>';
+		}
+		xmlStr +=			'</votes>';
+	}
+	
+	xmlStr +=			'</event>';
+	xmlStr +=		'</request>';
+	return xmlStr;
 }
 
 Event.prototype.getJSON = function() {

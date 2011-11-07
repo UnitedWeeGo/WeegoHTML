@@ -26,8 +26,21 @@
 	width: 200px;
 }
 
+#createEvent LI.formInput INPUT.default {
+	font-weight: bold;
+	color: #CCC;
+}
+
 .ui-timepicker-div .ui-widget-header{ margin-bottom: 8px; }
 .ui-timepicker-div dl{ text-align: left; }
 .ui-timepicker-div dl dt{ height: 25px; }
 .ui-timepicker-div dl dd{ margin: -25px 0 10px 65px; }
 .ui-timepicker-div td { font-size: 90%; }
+
+#createEvent UL.locationList LI.callToAction {
+	padding-left: 2px;
+}
+
+#createEvent UL.participantList LI.callToAction {
+	padding: 14px 10px 12px 10px !important;
+}

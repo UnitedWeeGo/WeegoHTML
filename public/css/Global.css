@@ -111,6 +111,7 @@ LI .eventInfo {
 }
 
 .locationInfo {
+	min-height: 50px;
 	padding: 2px 10px 0 10px;
 }
 
@@ -194,6 +195,10 @@ UL.collapseableList LI:FIRST-CHILD {
 .callToAction {
 	font-size: 1.6em;
 	font-weight: bold;
+}
+
+.callToAction .locationInfo {
+	min-height: 0;
 }
 
 .refreshHeader {

@@ -65,8 +65,8 @@ Model.prototype.createNewEvent = function() {
 	this.currentEvent.eventId = guidGenerator();
 	this.currentEvent.creatorParticipant = this.loginParticipant;
 	this.currentEvent.allParticipants.push(this.loginParticipant);
-	this.currentEvent.eventDate = new Date();
 	this.currentEvent.isTemporary = true;
+	this.currentEvent.setDefaultTime();
 	return this.currentEvent;
 }
 

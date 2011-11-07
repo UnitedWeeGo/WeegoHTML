@@ -369,20 +369,47 @@
 						$.post(url, params, function(data) {
 							handleGetSingleEvent(data);
 						});
-					} else {
-						
+					} else if (Model.getInstance().currentAppState == Model.appState.createEvent) {
+						loc.locationId = loc.tempId;
+						o.event.allLocations.push(loc);
+						o.event.locationsVotedFor.push(loc.locationId);
+						o.event.currentLocationOrder.unshift(loc.locationId);
+						showLocationDetail(o.selectedLocation);
+						placeMarkers();
 					}
 				}
 
 				function toggleVoteForLocation(loc) {
 					o.selectedLocation = loc;
-					var xmlStr = '<event id="'+ o.event.eventId +'"><votes><vote locationId="'+ loc.locationId +'" /></votes></event>';
-					var url = domain + "/xml.vote.php";
-					var params = {registeredId:ruid, xml:xmlStr};
-					if (o.lastUpdatedTimestamp) params.timestamp = o.lastUpdatedTimestamp;
-					$.post(url, params, function(data) {
-						handleGetSingleEvent(data);
-					});
+					if (Model.getInstance().currentAppState == Model.appState.eventDetail) {
+						var xmlStr = '<event id="'+ o.event.eventId +'"><votes><vote locationId="'+ loc.locationId +'" /></votes></event>';
+						var url = domain + "/xml.vote.php";
+						var params = {registeredId:ruid, xml:xmlStr};
+						if (o.lastUpdatedTimestamp) params.timestamp = o.lastUpdatedTimestamp;
+						$.post(url, params, function(data) {
+							handleGetSingleEvent(data);
+						});
+					} else if (Model.getInstance().currentAppState == Model.appState.createEvent) {
+						var locationId = loc.locationId;
+						var index = -1;
+						for (var i=0; i<o.event.currentLocationOrder.length; i++) {
+							if (o.event.currentLocationOrder[i] == locationId) index = i;
+						}
+						o.event.currentLocationOrder.splice(index,1);
+						if (o.event.iVotedFor(locationId)) {
+							var index = -1;
+							for (var i=0; i<o.event.locationsVotedFor.length; i++) {
+								if (o.event.locationsVotedFor[i] == locationId) index = i;
+							}
+							o.event.locationsVotedFor.splice(index,1);
+							o.event.currentLocationOrder.push(locationId);
+						} else {
+							o.event.locationsVotedFor.push(locationId);
+							o.event.currentLocationOrder.unshift(locationId);
+						}
+						showLocationDetail(o.selectedLocation);
+						placeMarkers();
+					}
 				}
 
 				function guidGenerator() {
