@@ -443,9 +443,24 @@ Event.prototype.showCountMeIn = function() {
 Event.prototype.xmlForUpload = function() {
 	var eventDateGMT = new Date(this.eventDate);
 	eventDateGMT.setMinutes(eventDateGMT.getMinutes() + eventDateGMT.getTimezoneOffset());
+	var isPlus = false;
+	if (eventDateGMT.getTimezoneOffset() < 0) {
+		isPlus = true;
+	}
+	var hoursOffset = parseInt(Math.floor(eventDateGMT.getTimezoneOffset() / 60));
+	if (isPlus) hoursOffset *= -1;
+	var minutesOffset = parseInt(eventDateGMT.getTimezoneOffset() % 60);
+	if (isPlus) minutesOffset *= -1;
+	var tzStr = '';
+	if (hoursOffset < 10) tzStr += '0'+ hoursOffset.toString();
+	else tzStr += hoursOffset.toString();
+	if (minutesOffset < 10) tzStr += '0'+ minutesOffset.toString();
+	else tzStr += minutesOffset.toString();
+	if (isPlus) tzStr = '+'+ tzStr;
+	else tzStr = '-'+ tzStr;
 	var xmlStr = 	'<request>';
 	xmlStr +=			'<event requestId="'+ this.eventId +'">';
-	xmlStr +=				'<eventInfo eventDate="'+ eventDateGMT.format("yyyy-mm-dd HH:MM:ss") +'" eventTimeZone="'+ eventDateGMT.format('Z') +'">';
+	xmlStr +=				'<eventInfo eventDate="'+ eventDateGMT.format("yyyy-mm-dd HH:MM:ss") +'" eventTimeZone="'+ tzStr +'">';
 	xmlStr +=					'<eventTitle>'+ this.eventTitle +'</eventTitle>';
 	xmlStr +=					'<eventDescription></eventDescription>';
 	xmlStr +=				'</eventInfo>';
