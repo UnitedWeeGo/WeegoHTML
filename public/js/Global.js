@@ -1,4 +1,4 @@
-var domain = 'http://beta.weegoapp.com/public'; //'https://api.unitedweego.com/';
+var domain = 'https://api.unitedweego.com/'; //'http://beta.weegoapp.com/public';
 var resizeOffset = 44;
 var ruid = '';
 

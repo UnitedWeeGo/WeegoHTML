@@ -9,7 +9,8 @@
 		map: null,
 		myLocation: null,
 		mapBounds: null,
-		reloading: false
+		reloading: false,
+		participantLocs: null
 	};
 	
 	var methods = {
@@ -118,8 +119,12 @@
 					if (o.event && o.event.lastUpdatedTimestamp) params.timestamp = o.event.lastUpdatedTimestamp;
 					$.get(url, params, function(data) {
 						handleGetSingleEvent(data);
-						setUpUI();
-						ViewController.getInstance().showEventDetail(o.event.eventId, false, o.event.showCountMeIn(), true);
+						if (o.event.getEventState() >= Event.state.decided && o.event.getEventState() <= Event.state.ended) {
+							getRecentLocations();
+						} else {
+							setUpUI();
+							ViewController.getInstance().showEventDetail(o.event.eventId, false, o.event.showCountMeIn(), true);
+						}
 					});
 				}
 
@@ -141,6 +146,33 @@
 					}
 					Model.getInstance().currentEvent = o.event;
 					Model.getInstance().getModelDataAsJSON();
+				}
+				
+				function getRecentLocations() {
+					var url = domain + "/get.report.location.php";
+					var params = {registeredId:ruid, eventId:o.eventId};
+					//if (o.event && o.event.lastUpdatedTimestamp) params.timestamp = o.event.lastUpdatedTimestamp;
+					$.get(url, params, function(data) {
+						handleGetRecentLocationsResponse(data);
+					});
+				}
+				
+				function handleGetRecentLocationsResponse(data) {
+					o.participantLocs = new Array();
+					if ($(data).find('response').attr('code') == '291') {
+						$(data).find('reportLocation').each(function() {
+							var rl = new ReportedLocation();
+							var id = $(this).attr('email');
+							if (id != Model.getInstance().loginParticipant.email) {
+								rl.participant = o.event.getParticipantById($(this).attr('email'));
+								rl.latitude = $(this).attr('latitude');
+								rl.longitude = $(this).attr('longitude');
+								o.participantLocs.push(rl);
+							}
+						});
+					}
+					setUpUI();
+					ViewController.getInstance().showEventDetail(o.event.eventId, false, o.event.showCountMeIn(), true);
 				}
 
 				function setUpUI() {
@@ -179,6 +211,25 @@
 							o.mapBounds = new google.maps.LatLngBounds();
 							for (var i = 0, LtLgLen = LatLngList.length; i < LtLgLen; i++) {
 								o.mapBounds.extend(LatLngList[i]);
+							}
+							o.map.fitBounds(o.mapBounds);
+						}
+						
+						if (o.participantLocs.length > 0) {
+							for (var i=0; i<o.participantLocs.length; i++) {
+								var rl = o.participantLocs[i];
+								var latlng = new google.maps.LatLng(rl.latitude, rl.longitude);
+								var marker1 = new google.maps.Marker({
+									position: latlng,
+									map:o.map,
+									icon: new google.maps.MarkerImage(rl.participant.avatarURL,
+																	new google.maps.Size(33, 33),
+																	new google.maps.Point(0,0), //origin
+																	new google.maps.Point(16, 16),
+																	new google.maps.Size(33,33)), //anchor
+									animation: null
+								});
+								o.mapBounds.extend(latlng);
 							}
 							o.map.fitBounds(o.mapBounds);
 						}

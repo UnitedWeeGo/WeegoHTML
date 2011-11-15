@@ -97,8 +97,11 @@
 						setInitialLocation(true);
 					} else {
 						placeMarkersDecided();
-						setMapBounds(new Array(o.event.getWinningLocation()));
 						setInitialLocation(true);
+						setMapBounds(new Array(o.event.getWinningLocation()));
+						if (o.event.getEventState() <= Event.state.ended) {
+							getRecentLocations();
+						}
 					}
 					
 					o.initialDisplayFinished = true;
@@ -120,6 +123,49 @@
 						o.mapBounds.extend(latlng);
 					}
 					o.map.fitBounds(o.mapBounds);
+				}
+				
+				function getRecentLocations() {
+					var url = domain + "/get.report.location.php";
+					var params = {registeredId:ruid, eventId:o.event.eventId};
+					//if (o.event && o.event.lastUpdatedTimestamp) params.timestamp = o.event.lastUpdatedTimestamp;
+					$.get(url, params, function(data) {
+						handleGetRecentLocationsResponse(data);
+					});
+				}
+				
+				function handleGetRecentLocationsResponse(data) {
+					var participantLocs = new Array();
+					if ($(data).find('response').attr('code') == '291') {
+						$(data).find('reportLocation').each(function() {
+							var rl = new ReportedLocation();
+							var id = $(this).attr('email');
+							if (id != Model.getInstance().loginParticipant.email) {
+								rl.participant = o.event.getParticipantById($(this).attr('email'));
+								rl.latitude = $(this).attr('latitude');
+								rl.longitude = $(this).attr('longitude');
+								participantLocs.push(rl);
+							}
+						});
+					}
+					if (participantLocs.length > 0) {
+						for (var i=0; i<participantLocs.length; i++) {
+							var rl = participantLocs[i];
+							var latlng = new google.maps.LatLng(rl.latitude, rl.longitude);
+							var marker1 = new google.maps.Marker({
+								position: latlng,
+								map:o.map,
+								icon: new google.maps.MarkerImage(rl.participant.avatarURL,
+																new google.maps.Size(33, 33),
+																new google.maps.Point(0,0), //origin
+																new google.maps.Point(16, 16),
+																new google.maps.Size(33,33)), //anchor
+								animation: null
+							});
+							o.mapBounds.extend(latlng);
+						}
+						o.map.fitBounds(o.mapBounds);
+					}
 				}
 				
 				function placeMarkers() {
@@ -465,7 +511,8 @@
 							if (resetBounds) {
 								o.mapBounds.extend(o.myLocation);
 								o.map.fitBounds(o.mapBounds);
-								if (o.map.getZoom() > 14) o.map.setZoom(14);
+								//if (o.map.getZoom() > 14) o.map.setZoom(14);
+								if (!o.originalLocations || o.originalLocations.length == 0) o.map.setZoom(14);
 							}
 						}, function() {
 							handleNoGeolocation(browserSupportFlag);

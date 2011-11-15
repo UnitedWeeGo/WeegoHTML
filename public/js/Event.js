@@ -27,6 +27,7 @@ function Event() {
 	this.lastUpdatedTimestamp = null;
 	
 	this.isTemporary = false;
+	this.forcedDecided = false;
 }
 
 Event.prototype.populateWithXML = function(xml) {
@@ -46,6 +47,7 @@ Event.prototype.populateWithXML = function(xml) {
 	if ($(xml).find('eventInfo').attr('hasCheckedIn')) this.hasBeenCheckedIn = ($(xml).find('eventInfo').attr('hasCheckedIn') == "true");
 	if ($(xml).find('locationOrder').attr('order')) this.currentLocationOrder = $(xml).find('locationOrder').attr('order').split(",");
 	if ($(xml).find('iVotedFor').attr('locations') || $(xml).find('iVotedFor').attr('locations') == "") this.locationsVotedFor = $(xml).find('iVotedFor').attr('locations').split(",");
+	if ($(xml).find('forcedDecided').text().length) this.forcedDecided = ($(xml).find('forcedDecided').text() == "true");
 	
 	if (!this.topLocationId) {
 		this.topLocationId = this.currentLocationOrder[0];
@@ -335,13 +337,17 @@ Event.prototype.getEventState = function() {
 	var state = 0;
 	
 	if (this.isTemporary) return Event.state.newEvent;
-    
-    if (this.minutesToGoUntilVotingEnds() > 90) state = Event.state.voting;
-    if (this.minutesToGoUntilVotingEnds() <= 90) state = Event.state.votingWarning;
-    if (this.minutesToGoUntilVotingEnds() <= 0) state = Event.state.decided;
+    if (this.forcedDecided)
+    {
+        state = Event.state.decided;
+    } else {
+    	if (this.minutesToGoUntilVotingEnds() > 90) state = Event.state.voting;
+    	if (this.minutesToGoUntilVotingEnds() <= 90) state = Event.state.votingWarning;
+    	if (this.minutesToGoUntilVotingEnds() <= 0) state = Event.state.decided;
+    }
     if (this.minutesToGoUntilEventStarts() <= 0) state = Event.state.started;
     if (this.minutesToGoUntilEventStarts() < -120) state = Event.state.ended;
-//    
+    
     if (this.hasBeenCancelled) state = Event.state.cancelled;
 
     return state;
