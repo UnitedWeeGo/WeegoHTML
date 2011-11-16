@@ -10,7 +10,8 @@
 		myLocation: null,
 		mapBounds: null,
 		reloading: false,
-		participantLocs: null
+		participantLocs: null,
+		distanceToLoc: null
 	};
 	
 	var methods = {
@@ -184,56 +185,13 @@
 						o.otherLocationsShowing = true; //!o.otherLocationsShowing;
 						toggleShowLocations();
 						
-						/*
-						eventDetail.find('LI.hideLocations').click(function() {
-							toggleShowLocations();
-						});
-						eventDetail.find('LI.showLocations').click(function() {
-							toggleShowLocations();
-						});
-						*/
-						
 						if (o.event.allLocations.length > 0) {
 							setupMap();
-							
-							var latlng = new google.maps.LatLng(o.event.getWinningLocation().latitude, o.event.getWinningLocation().longitude);
-							var marker1 = new google.maps.Marker({
-								position: latlng,
-								map:o.map,
-								icon: new google.maps.MarkerImage('/assets/images/POIs_decided_default_sm.png',
-																new google.maps.Size(29, 33),
-																new google.maps.Point(0,0), //origin
-																new google.maps.Point(15, 33)), //anchor
-								animation: null
-							});
-							
-							var LatLngList = new Array(latlng);
 							o.mapBounds = new google.maps.LatLngBounds();
-							for (var i = 0, LtLgLen = LatLngList.length; i < LtLgLen; i++) {
-								o.mapBounds.extend(LatLngList[i]);
-							}
-							o.map.fitBounds(o.mapBounds);
+							placeWinner();
+							placeParticipants();
+							setInitialLocation();
 						}
-						
-						if (o.participantLocs.length > 0) {
-							for (var i=0; i<o.participantLocs.length; i++) {
-								var rl = o.participantLocs[i];
-								var latlng = new google.maps.LatLng(rl.latitude, rl.longitude);
-								var marker1 = new google.maps.Marker({
-									position: latlng,
-									map:o.map,
-									icon: new google.maps.MarkerImage(rl.participant.avatarURL,
-																	new google.maps.Size(33, 33),
-																	new google.maps.Point(0,0), //origin
-																	new google.maps.Point(16, 16),
-																	new google.maps.Size(33,33)), //anchor
-									animation: null
-								});
-								o.mapBounds.extend(latlng);
-							}
-							o.map.fitBounds(o.mapBounds);
-						}
-						
 					}
 					if (parseInt(o.event.unreadMessageCount) > 0) {
 						eventDetail.find('.feedButton').addClass('new');
@@ -326,71 +284,81 @@
 						mapTypeId: google.maps.MapTypeId.ROADMAP
 					};
 					o.map = new google.maps.Map(document.getElementById('map_canvas_details'), myOptions);
-					setInitialLocation();
+				}
+				
+				function placeWinner() {
+					var latlng = new google.maps.LatLng(o.event.getWinningLocation().latitude, o.event.getWinningLocation().longitude);
+					var marker1 = new google.maps.Marker({
+						position: latlng,
+						map:o.map,
+						icon: new google.maps.MarkerImage('/assets/images/POIs_decided_default_sm.png',
+														new google.maps.Size(29, 33),
+														new google.maps.Point(0,0), //origin
+														new google.maps.Point(15, 33)), //anchor
+						animation: null
+					});
+					
+					var LatLngList = new Array(latlng);
+					for (var i = 0, LtLgLen = LatLngList.length; i < LtLgLen; i++) {
+						o.mapBounds.extend(LatLngList[i]);
+					}
+					o.map.fitBounds(o.mapBounds);
+				}
+				
+				function placeParticipants() {
+					if (o.participantLocs.length > 0) {
+						for (var i=0; i<o.participantLocs.length; i++) {
+							var rl = o.participantLocs[i];
+							var latlng = new google.maps.LatLng(rl.latitude, rl.longitude);
+							var marker1 = new google.maps.Marker({
+								position: latlng,
+								map:o.map,
+								icon: new google.maps.MarkerImage(rl.participant.avatarURL,
+																new google.maps.Size(33, 33),
+																new google.maps.Point(0,0), //origin
+																new google.maps.Point(16, 16),
+																new google.maps.Size(33,33)), //anchor
+								animation: null
+							});
+							o.mapBounds.extend(latlng);
+						}
+						o.map.fitBounds(o.mapBounds);
+					}
 				}
 				
 				function setInitialLocation() {
-					var browserSupportFlag = new Boolean();
-					
-					// Try W3C Geolocation (Preferred)
-					if (navigator.geolocation) {
-						browserSupportFlag = true;
-						navigator.geolocation.getCurrentPosition(function(position) {
-							o.myLocation = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
-							var marker0 = new google.maps.Marker({
-								position: o.myLocation,
-								map:o.map,
-								icon: new google.maps.MarkerImage('/assets/images/POIs_me_default.png',
-															new google.maps.Size(20, 20),
-															new google.maps.Point(0,0), //origin
-															new google.maps.Point(12, 10)), //anchor
-								animation: null
-							});
-							o.mapBounds.extend(o.myLocation);
-							o.map.fitBounds(o.mapBounds);
-//							o.map.setCenter(o.myLocation);
-						}, function() {
-							handleNoGeolocation(browserSupportFlag);
+					Model.getInstance().updateGeoLocation();			
+				}
+				
+				function handleGeoLocationUpdated() {
+					o.myLocation = Model.getInstance().getGeoLocation();
+					if (o.myLocation) {
+						var latlng = new google.maps.LatLng(o.event.getWinningLocation().latitude, o.event.getWinningLocation().longitude);
+						o.distanceToLoc = google.maps.geometry.spherical.computeDistanceBetween(o.myLocation, latlng);
+						var marker0 = new google.maps.Marker({
+							position: o.myLocation,
+							map:o.map,
+							icon: new google.maps.MarkerImage('/assets/images/POIs_me_default.png',
+														new google.maps.Size(20, 20),
+														new google.maps.Point(0,0), //origin
+														new google.maps.Point(12, 10)), //anchor
+							animation: null
 						});
-					// Try Google Gears Geolocation
-					} else if (google.gears) {
-						browserSupportFlag = true;
-						var geo = google.gears.factory.create('beta.geolocation');
-						geo.getCurrentPosition(function(position) {
-							o.myLocation = new google.maps.LatLng(position.latitude,position.longitude);
-							var marker0 = new google.maps.Marker({
-								position: o.myLocation,
-								map:o.map,
-								icon: new google.maps.MarkerImage('/assets/images/POIs_me_default.png',
-															new google.maps.Size(20, 20),
-															new google.maps.Point(0,0), //origin
-															new google.maps.Point(12, 10)), //anchor
-								animation: null
-							});
-							o.mapBounds.extend(o.myLocation);
-							o.map.fitBounds(o.mapBounds);
-//							o.map.setCenter(o.myLocation);
-						}, function() {
-							handleNoGeoLocation(browserSupportFlag);
-						});
-					// Browser doesn't support Geolocation
-					} else {
-						browserSupportFlag = false;
-						handleNoGeolocation(browserSupportFlag);
+						o.mapBounds.extend(o.myLocation);
+						o.map.fitBounds(o.mapBounds);
 					}
 				}
+				
+				function handleGeoLocationException() {
 
-				function handleNoGeolocation(errorFlag) {
-					if (errorFlag == true) {
-						alert("Geolocation service failed.");
-					} else {
-						alert("Your browser doesn't support geolocation.");
-					}
 				}
 				
 				function setBindings() {
 					$(window).bind('countMeInClick', handleCountMeInClick);
 					$(window).bind('moreButtonClick', handleMoreButtonClick);
+					
+					$(window).bind('geoLocationUpdated', handleGeoLocationUpdated);
+					$(window).bind('geoLocationException', handleGeoLocationException);
 				}
 				
 				function handleMoreButtonClick() {
@@ -401,8 +369,9 @@
 						$this.find('.actionSheet').append('<div class="button grey countMeOut">I\'m not coming</div>');
 					}
 //					$this.find('.actionSheet').append('<div class="button red removeEvent">Remove event</div>');
-					
-					$this.find('.actionSheet').append('<div class="button black checkIn">Check me in</div>');
+					if (o.event.didAcceptEvent() && !o.event.didDeclineEvent() && o.event.getEventState() >= Event.state.decided && o.event.getEventState() < Event.state.ended && o.distanceToLoc < 200) {
+						$this.find('.actionSheet').append('<div class="button black checkIn">Check me in</div>');
+					}
 					$this.find('.actionSheet').append('<div class="button black reportLocation">Report Location</div>');
 					
 					$this.find('.actionSheet').append('<div class="button black cancelActionSheet">Cancel</div>');

@@ -386,13 +386,19 @@
 						if (err) {
 							alert(err);
 						} else {
+							o.mapBounds = new google.maps.LatLngBounds();
 							o.searchResults = new Array();
 							for (var i in data.features) {
 								var feature = data.features[i];
 								var loc = new Location();
 								loc.populateWithSGFeature(feature);
-								if (!o.markers[loc.g_id]) o.searchResults.push(loc);
+								if (!o.markers[loc.g_id]) {
+									o.searchResults.push(loc);
+								}
+								var latlng = new google.maps.LatLng(loc.latitude, loc.longitude);
+								o.mapBounds.extend(latlng);
 							}
+							o.map.fitBounds(o.mapBounds);
 							o.newSearchResultsDisplay = true;
 							placeMarkers();
 							o.newSearchResultsDisplay = false;

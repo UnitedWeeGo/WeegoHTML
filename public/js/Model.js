@@ -5,6 +5,7 @@ function Model() {
 	this.currentEvent = null;
 	this.currentAppState = null;
 	this.allEvents = new Array();
+	this.myLocation = null;
 }
 
 Model.appState = {login:100, dashboard:200, eventDetail:300, createEvent:400, prefs:500};
@@ -68,6 +69,49 @@ Model.prototype.createNewEvent = function() {
 	this.currentEvent.isTemporary = true;
 	this.currentEvent.setDefaultTime();
 	return this.currentEvent;
+}
+
+Model.prototype.getGeoLocation = function() {
+	return this.myLocation;
+}
+
+Model.prototype.updateGeoLocation = function() {
+	var browserSupportFlag = new Boolean();
+	var myLocation = null;
+	var callback = this;
+	// Try W3C Geolocation (Preferred)
+	if (navigator.geolocation) {
+		browserSupportFlag = true;
+		navigator.geolocation.getCurrentPosition(function(position) {
+			callback.myLocation = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
+			$(window).trigger('geoLocationUpdated');
+		}, function() {
+			callback.handleNoGeolocation(browserSupportFlag);
+		});
+	// Try Google Gears Geolocation
+	} else if (google.gears) {
+		browserSupportFlag = true;
+		var geo = google.gears.factory.create('beta.geolocation');
+		geo.getCurrentPosition(function(position) {
+			callback.myLocation = new google.maps.LatLng(position.latitude,position.longitude);
+			$(window).trigger('geoLocationUpdated');
+		}, function() {
+			callback.handleNoGeoLocation(browserSupportFlag);
+		});
+	// Browser doesn't support Geolocation
+	} else {
+		browserSupportFlag = false;
+		this.handleNoGeolocation(browserSupportFlag);
+	}
+}
+
+Model.prototype.handleNoGeolocation = function(errorFlag) {
+	$(window).trigger('geoLocationException');
+	if (errorFlag == true) {
+		alert("Geolocation service failed.");
+	} else {
+		alert("Your browser doesn't support geolocation.");
+	}
 }
 
 Model.prototype.getModelDataAsJSON = function() {
