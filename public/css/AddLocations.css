@@ -94,3 +94,31 @@
 	margin: 0;
 	padding: 0;
 }
+
+#addLocations #categoryListContainer {
+	position: absolute;
+	display: none;
+	width: 100%;
+	overflow-y: auto;
+	z-index: 20;
+	background-color: #FFF;
+}
+
+#addLocations #categoryListContainer .listContent {
+	display: block;
+	height: 100%;
+}
+
+#addLocations #categoryListContainer UL {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+#addLocations #categoryListContainer UL LI {
+	font-size: 1.4em;
+	font-weight: bold;
+	color: #333;
+	padding: 12px 12px 10px 12px;
+	border-bottom: 1px solid #E2E2E2;
+}

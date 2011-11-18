@@ -25,7 +25,9 @@
 			initialLocation: null,
 			locationId: null,
 			
-			mapBounds: null
+			mapBounds: null,
+			
+			sgCategories: null
 	};
 	
 	var methods = {
@@ -107,13 +109,30 @@
 					o.initialDisplayFinished = true;
 					
 					setEvents();
+					
+					o.sgCategories = new Array();
+					
+					o.client.getFeatureCategories(function(err, data){
+						if (err) {
+							console.log(err);
+						} else {
+							for (var i=39; i<data.length; i++) {
+								var sc = new SearchCategory();
+								sc.populateWithObject(data[i]);
+								o.sgCategories.push(sc);
+								//console.log(sc.subcategory);
+							}
+						}
+					});
 				};
 				
 				update();
 				
 				function setViewSize() {
 					$this.find('.content').css('height',document.documentElement.clientHeight - resizeOffset);
-					$this.find('#locationSearchField').css('width',document.documentElement.clientWidth - $this.find('#locationSearch').find('.buttons').outerWidth() - 28);
+					$this.find('#locationSearchField').css('width',document.documentElement.clientWidth - $this.find('#locationSearch').find('.buttons').outerWidth() - 32);
+					$this.find('#map_canvas').css('height', document.documentElement.clientHeight - (resizeOffset + 36));
+					$this.find('#categoryListContainer').css('height', document.documentElement.clientHeight - (resizeOffset + 36));
 				}
 				
 				function setMapBounds(arr, clear) {
@@ -318,10 +337,12 @@
 						searchSimpleGeo();
 					});
 					
-					$this.find('#locationSearchField').keypress(function(e) {
-						if(e.which == 13) {
+					$this.find('#locationSearchField').keyup(function(e) {
+						if (e.which == 13) {
 							jQuery(this).blur();
 							searchSimpleGeo();
+						} else {
+							filterCategories();
 						}
 					});
 					
@@ -337,6 +358,46 @@
 							$(this).removeClass('default');
 						}
 					});
+				}
+				
+				function filterCategories() {
+					var results = new Array();
+					var re = $this.find('#locationSearchField').val().toLowerCase();
+					if (re.length > 1) {
+						for (var i=0; i<o.sgCategories.length; i++) {
+							var sc = o.sgCategories[i];
+							if (sc.getKeyValue().toLowerCase().indexOf(re) > -1) {
+								results.push(sc);
+							}
+						}
+					}
+					for (var i=0; i<results.length; i++) {
+						var sc = results[i];
+						console.log(sc.getKeyValue() +" : "+ sc.category_id);
+					}
+					if (results.length > 0) {
+						$this.find('#categoryListContainer').find('.listContent').html('');
+						$this.find('#categoryListContainer').find('.listContent').append('<ul class="categoryList">');
+						for (var i=0; i<results.length; i++) {
+							var sc = results[i];
+							$this.find('#categoryListContainer').find('.categoryList').append('<li class="categoryItem">'+ sc.getKeyValue() +'</li>');
+						}
+						$this.find('#categoryListContainer').css('display', 'block');
+						$this.find('#categoryListContainer').find('.categoryList').find('.categoryItem').click(function() {
+							$this.find('#locationSearchField').val($(this).text());
+							searchSimpleGeo();
+						});
+						resetScroll();
+					} else {
+						$this.find('#categoryListContainer').find('.listContent').html('');
+						$this.find('#categoryListContainer').css('display', 'none');
+					}
+				}
+				
+				function resetScroll() {
+					if (!!('ontouchstart' in window)) {
+						$this.find('#categoryListContainer').find('.listContent').touchScroll('setPosition', 0);
+					}
 				}
 
 				function showLocationDetail(loc) {
@@ -371,9 +432,14 @@
 					o.newLocations = new Array();
 					$this.find('#locationSearchField').addClass('default');
 					$this.find('#locationSearchField').val('Search for a location');
+					$this.find('#locationDetail').css('display', 'none');
+					$this.find('#categoryListContainer').css('display', 'none');
+					$this.find('#categoryListContainer').find('.listContent').html('');
 				}
 
 				function searchSimpleGeo() {
+					$this.find('#categoryListContainer').css('display', 'none');
+					$this.find('#categoryListContainer').find('.listContent').html('');
 					o.originalLocations = o.event.allLocations.slice();
 					o.newLocations = new Array();
 					var searchText = $this.find('#locationSearchField').val();

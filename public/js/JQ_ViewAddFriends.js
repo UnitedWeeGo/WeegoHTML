@@ -73,7 +73,7 @@
 					var participantSearchHeight = ($this.find('.participantSearch')) ? $this.find('.participantSearch').outerHeight() : 0;
 					$this.find('.contentContainer').css('height',document.documentElement.clientHeight - resizeOffset - participantSearchHeight); // one pixel adjustment for bottom of scrolling list
 					$this.find('.content').css('height', (document.documentElement.clientHeight - (resizeOffset + participantSearchHeight)));
-					$this.find('#participantSearchField').css('width',document.documentElement.clientWidth - $this.find('.participantSearch').find('.buttons').outerWidth() - 28);
+					$this.find('#participantSearchField').css('width',document.documentElement.clientWidth - $this.find('.participantSearch').find('.buttons').outerWidth() - 32);
 				}
 				
 				function setScroll() {
