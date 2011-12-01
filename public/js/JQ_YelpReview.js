@@ -40,7 +40,11 @@
 				
 				function setUpUI() {
 					$this.find('.content').html('');
-					$this.find('.content').append('<iframe src="'+ o.url +'" />');
+					$this.find('.content').append('<iframe src="'+ o.url +'" scrolling="yes" />');
+					$this.find('.content').scrollTop(20);
+					$this.find('.content').find('IFRAME').scroll(function(){
+						console.log($(this).scrollTop());
+					});
 				}
 				
 			});

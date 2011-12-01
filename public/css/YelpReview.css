@@ -1,8 +1,7 @@
 #yelpReview {
 	display: none;
 	width: 100%;
-	margin-top: 45px;
-	overflow-y: auto;
+	margin-top: -5px;
 }
 
 #yelpReview .content {
@@ -14,4 +13,5 @@
 	width: 100%;
 	height: 100%;
 	border: none;
+	overflow-y: scroll;
 }

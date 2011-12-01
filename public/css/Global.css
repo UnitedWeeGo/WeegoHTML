@@ -261,12 +261,20 @@ UL.collapseableList LI:FIRST-CHILD {
 	background-size: 70% 100%;
 }
 
+.refreshHeader .refreshArrow.up {
+	background: url('/assets/images/whiteArrowUp.png') no-repeat 4px 0px;
+}
+
 .refreshHeader.dark .refreshContent {
 	color: #333;
 }
 
 .refreshHeader.dark .refreshArrow {
 	background: url('/assets/images/grayArrow.png') no-repeat 4px 0px;
+}
+
+.refreshHeader.dark .refreshArrow.up {
+	background: url('/assets/images/grayArrowUp.png') no-repeat 4px 0px;
 }
 
 #fb-root {

@@ -66,6 +66,9 @@
 				var degree = 0;
 				
 				function rotateArrow(up) {
+					if (up) $this.find('.refreshHeader').find('.refreshArrow').addClass('up');
+					else $this.find('.refreshHeader').find('.refreshArrow').removeClass('up');
+					/*
 					$this.find('.refreshHeader').find('.refreshArrow').css({ WebkitTransform: 'rotate(' + degree + 'deg)'});
 			        $this.find('.refreshHeader').find('.refreshArrow').css({ '-moz-transform': 'rotate(' + degree + 'deg)'});
 			        if (up) {
@@ -79,6 +82,7 @@
 			        		setTimeout(function() { rotateArrow(); },100);
 			        	}
 			        }
+			        */
 				}
 				
 				function doRefresh() {
