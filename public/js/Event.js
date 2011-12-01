@@ -8,6 +8,7 @@ function Event() {
 	this.creatorId = '';
 	this.acceptedParticipantList = '';
 	this.declinedParticipantList = '';
+	this.checkedInParticipantList = '';
 	this.topLocationId = null;
 	this.participantCount = '';
 	this.unreadMessageCount = '';
@@ -39,6 +40,7 @@ Event.prototype.populateWithXML = function(xml) {
 	if ($(xml).find('creatorId').text().length) this.creatorId = $(xml).find('creatorId').text();
 	if ($(xml).find('acceptedParticipantList')) this.acceptedParticipantList = $(xml).find('acceptedParticipantList').text();
 	if ($(xml).find('declinedParticipantList')) this.declinedParticipantList = $(xml).find('declinedParticipantList').text();
+	if ($(xml).find('checkedInParticipantList')) this.checkedInParticipantList = $(xml).find('checkedInParticipantList').text();
 	if ($(xml).find('eventInfo').attr('topLocationId')) this.topLocationId = $(xml).find('eventInfo').attr('topLocationId');
 	if ($(xml).find('eventInfo').attr('count')) this.participantCount = $(xml).find('eventInfo').attr('count');
 	if ($(xml).find('feedMessages').attr('unreadMessageCount').length) this.unreadMessageCount = $(xml).find('feedMessages').attr('unreadMessageCount');
@@ -194,7 +196,7 @@ Event.prototype.locationList = function() {
 		}
 	}
 	if (this.getEventState() < Event.state.decided) {
-		output += '<li class="locationCell callToAction"><div class="locationInfo">Add location(s)</div></li>';
+		output += '<li class="locationCell callToAction"><div class="yelpLogo"></div><div class="locationInfo">Add location(s)</div></li>';
 	}
 	else {
 		if (this.allLocations.length > 0) {
@@ -244,8 +246,9 @@ Event.prototype.participantListItems = function() {
 	for (var i=0; i<this.allParticipants.length; i++) {
 		var p = this.allParticipants[i];
 		var status = null;
-		if (this.didDeclineEvent(p.email)) status = "COUNT ME OUT";
 		if (!this.didAcceptEvent(p.email) && !this.didDeclineEvent(p.email)) status = "PENDING";
+		if (this.didDeclineEvent(p.email)) status = "COUNT ME OUT";
+		if (this.didCheckInEvent(p.email)) status = "CHECKED IN";
 		output += p.displayForEventDetail(status);
 	}
 	return output;
@@ -385,6 +388,16 @@ Event.prototype.didDeclineEvent = function(id) {
 	var e = (id) ? id : Model.getInstance().loginParticipant.email;
 	for (var i=0; i<arr.length; i++) {
 		if (e == arr[i]) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Event.prototype.didCheckInEvent = function(id) {
+	var arr = this.checkedInParticipantList.split(",");
+	for (var i=0; i<arr.length; i++) {
+		if (id == arr[i]) {
 			return true;
 		}
 	}

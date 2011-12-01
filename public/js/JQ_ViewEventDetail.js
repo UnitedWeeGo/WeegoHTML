@@ -201,6 +201,7 @@
 						eventDetail.find('.feedButton').find('.feedBubble').html('');
 					}
 					enableLocationButtons();
+					enableMapButton();
 					enableVoteButtons();
 					enableAddFriendsButton();
 					enableFeedButton();
@@ -220,9 +221,23 @@
 						var id = $(this).attr("id");
 						$(this).find(".locationInfo").unbind('click');
 						$(this).find(".locationInfo").click(function() {
-							ViewController.getInstance().showAddLocations(id);
+							var loc = o.event.getLocationById(id);
+							if (id && loc.locationType == 'yelp') {
+								ViewController.getInstance().showYelpReview(loc);
+							} else {
+								ViewController.getInstance().showAddLocations(id);
+							}
 						});
 					});
+				}
+				
+				function enableMapButton() {
+					$this.find(".decidedMapCell").unbind('click');
+					if (o.event.getEventState() >= Event.state.decided) {
+						$this.find(".decidedMapCell").click(function() {
+							ViewController.getInstance().showAddLocations(o.event.getWinningLocation().locationId);
+						});
+					}
 				}
 
 				function enableVoteButtons() {
@@ -372,7 +387,7 @@
 					if (o.event.didAcceptEvent() && !o.event.didDeclineEvent() && o.event.getEventState() >= Event.state.decided && o.event.getEventState() < Event.state.ended && o.distanceToLoc < 200) {
 						$this.find('.actionSheet').append('<div class="button black checkIn">Check me in</div>');
 					}
-					$this.find('.actionSheet').append('<div class="button black reportLocation">Report Location</div>');
+					$this.find('.actionSheet').append('<div class="button black reportLocation">Share my location</div>');
 					
 					$this.find('.actionSheet').append('<div class="button black cancelActionSheet">Cancel</div>');
 					$this.find('.actionSheetBlocker').css('display','block');

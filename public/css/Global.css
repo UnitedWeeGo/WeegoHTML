@@ -127,6 +127,25 @@ LI .eventInfo {
 	padding: 0;
 }
 
+.locationInfo .rating {
+	display: block;
+	width: 200px;
+	font-size: 1.2em;
+	font-style: italic;
+	margin-top: 3px;
+	padding: 0;
+}
+
+.locationInfo .rating IMG {
+	display: block;
+	float: left;
+	margin: 0 5px 0 0;
+}
+
+.locationInfo .rating .ratingText {
+	display: block;
+}
+
 UL.participantList LI {
 	padding-top: 6px !important;
 }
@@ -199,6 +218,14 @@ UL.collapseableList LI:FIRST-CHILD {
 
 .callToAction .locationInfo {
 	min-height: 0;
+}
+
+.callToAction .yelpLogo {
+	display: block;
+	float: right;
+	width: 110px;
+	height: 21px;
+	background: url('/assets/images/logo_yelp.png') -5px -6px no-repeat;
 }
 
 .refreshHeader {

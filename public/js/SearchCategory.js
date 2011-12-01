@@ -5,7 +5,7 @@ function SearchCategory() {
 	this.type = null;
 }
 
-SearchCategory.prototype.populateWithObject = function(obj) {
+SearchCategory.prototype.populateWithSG = function(obj) {
 	this.category = obj.category;
 	this.category_id = obj.category_id;
 	this.subcategory = obj.subcategory;
@@ -13,5 +13,5 @@ SearchCategory.prototype.populateWithObject = function(obj) {
 }
 
 SearchCategory.prototype.getKeyValue = function() {
-	return (this.subcategory.length > 0) ? this.subcategory : this.category;
+	return (this.subcategory && this.subcategory.length > 0) ? this.subcategory : this.category;
 }

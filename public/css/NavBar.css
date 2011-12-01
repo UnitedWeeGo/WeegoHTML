@@ -46,6 +46,10 @@
 	margin-top: 13px;
 }
 
+#navBar .titleText.yelp {
+	margin-top: 6px;
+}
+
 #navBar.home .titleText {
 	color: #FFF;
 }

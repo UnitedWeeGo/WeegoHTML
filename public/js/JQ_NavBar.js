@@ -1,7 +1,7 @@
 (function($) {
 	
 	var defaults = {
-		state: {home:100, dashboard:200, prefs:300, eventDetail:400, eventDetailCountMeIn:401, addLocations:500, createEvent:600, addFriends:700}
+		state: {home:100, dashboard:200, prefs:300, eventDetail:400, eventDetailCountMeIn:401, addLocations:500, createEvent:600, addFriends:700, yelpReview:800}
 	};
 	
 	var methods = {
@@ -82,13 +82,18 @@
 						case o.state.addLocations :
 							$this.addClass('event');
 							$this.append('<div class="backButton arrow"><img src="/assets/images/icon_backArrow_dark_01.png" /></div>');
-							$this.append('<div class="weegoTitle"><div class="titleText">Add Locations</div></div>');
+							$this.append('<div class="weegoTitle"><div class="titleText yelp"><img src="/assets/images/logo_yelp.png" /></div></div>');
 							break;
 						case o.state.addFriends :
 							$this.addClass('event');
 							$this.append('<div class="backButton arrow"><img src="/assets/images/icon_backArrow_dark_01.png" /></div>');
 							$this.append('<div class="weegoTitle"><div class="titleText">Add Friends</div></div>');
 							$this.append('<div class="doneButton">Done</div>');
+							break;
+						case o.state.yelpReview :
+							$this.addClass('event');
+							$this.append('<div class="backButton arrow"><img src="/assets/images/icon_backArrow_dark_01.png" /></div>');
+							$this.append('<div class="weegoTitle"><div class="titleText yelp"><img src="/assets/images/logo_yelp.png" /></div></div>');
 							break;
 					}
 					setTitleCenter();
@@ -158,6 +163,13 @@
 			methods.init.apply(this, arguments);
 			return this.each(function() {
 				this.setNav(defaults.state.prefs);
+			});
+		},
+		
+		yelpReview: function() {
+			methods.init.apply(this, arguments);
+			return this.each(function() {
+				this.setNav(defaults.state.yelpReview);
 			});
 		},
 		

@@ -153,7 +153,12 @@
 						var id = $(this).attr("id");
 						$(this).find(".locationInfo").unbind('click');
 						$(this).find(".locationInfo").click(function() {
-							ViewController.getInstance().showAddLocations(id);
+							var loc = o.event.getLocationById(id);
+							if (id && loc.locationType == 'yelp') {
+								ViewController.getInstance().showYelpReview(loc);
+							} else {
+								ViewController.getInstance().showAddLocations(id);
+							}
 						});
 					});
 				}

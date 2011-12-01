@@ -27,7 +27,7 @@
 			
 			mapBounds: null,
 			
-			sgCategories: null
+			locCategories: null
 	};
 	
 	var methods = {
@@ -110,23 +110,43 @@
 					
 					setEvents();
 					
-					o.sgCategories = new Array();
-					
+					getCategories();
+				};
+				
+				update();
+				
+				function getCategories() {
+					o.locCategories = new Array();
+//					getCategoriesSimpleGeo();
+					getCategoriesYelp();
+				}
+				
+				function getCategoriesSimpleGeo() {
 					o.client.getFeatureCategories(function(err, data){
 						if (err) {
 							console.log(err);
 						} else {
 							for (var i=39; i<data.length; i++) {
 								var sc = new SearchCategory();
-								sc.populateWithObject(data[i]);
-								o.sgCategories.push(sc);
+								sc.populateWithSG(data[i]);
+								o.locCategories.push(sc);
 								//console.log(sc.subcategory);
 							}
 						}
 					});
-				};
+				}
 				
-				update();
+				function getCategoriesYelp() {
+					var url = domain + "/categories.php";
+					var params = {registeredId:ruid};
+					$.get(url, params, function(data) {
+						for (var i=0; i<data.length; i++) {
+							var sc = new SearchCategory();
+							sc.category = data[i];
+							o.locCategories.push(sc);
+						}
+					});
+				}
 				
 				function setViewSize() {
 					$this.find('.content').css('height',document.documentElement.clientHeight - resizeOffset);
@@ -334,13 +354,15 @@
 				function setEvents() {
 					$this.find('#locationSearch').find('#submit').unbind('click');
 					$this.find('#locationSearch').find('#submit').click(function() {
-						searchSimpleGeo();
+						beginSearch();
 					});
 					
+					$this.find('#locationSearchField').unbind('keyup');
 					$this.find('#locationSearchField').keyup(function(e) {
+						console.log("keyup");
 						if (e.which == 13) {
 							jQuery(this).blur();
-							searchSimpleGeo();
+							beginSearch();
 						} else {
 							filterCategories();
 						}
@@ -352,6 +374,7 @@
 						placeMarkers();
 					});
 					
+					$this.find('#locationSearchField').unbind('focusin');
 					$this.find('#locationSearchField').focusin(function(){
 						if ($(this).hasClass('default')) {
 							$(this).val('');
@@ -364,17 +387,19 @@
 					var results = new Array();
 					var re = $this.find('#locationSearchField').val().toLowerCase();
 					if (re.length > 1) {
-						for (var i=0; i<o.sgCategories.length; i++) {
-							var sc = o.sgCategories[i];
+						for (var i=0; i<o.locCategories.length; i++) {
+							var sc = o.locCategories[i];
 							if (sc.getKeyValue().toLowerCase().indexOf(re) > -1) {
 								results.push(sc);
 							}
 						}
 					}
+					/*
 					for (var i=0; i<results.length; i++) {
 						var sc = results[i];
 						console.log(sc.getKeyValue() +" : "+ sc.category_id);
 					}
+					*/
 					if (results.length > 0) {
 						$this.find('#categoryListContainer').find('.listContent').html('');
 						$this.find('#categoryListContainer').find('.listContent').append('<ul class="categoryList">');
@@ -385,7 +410,7 @@
 						$this.find('#categoryListContainer').css('display', 'block');
 						$this.find('#categoryListContainer').find('.categoryList').find('.categoryItem').click(function() {
 							$this.find('#locationSearchField').val($(this).text());
-							searchSimpleGeo();
+							beginSearch();
 						});
 						resetScroll();
 					} else {
@@ -401,28 +426,33 @@
 				}
 
 				function showLocationDetail(loc) {
-					$this.find('#locationDetail').css('display', 'block');
-					$this.find('#locationDetail').html("");
-				//	$this.find('#locationDetail').find(".voteButton").removeClass("iVotedFor");
-				//	$this.find('#locationDetail').find(".voteButton").removeClass("notVotedFor");
-				//	$this.find('#locationDetail').find(".voteButton").unbind('click');
-					var iVotedFor = o.event.iVotedFor(loc.locationId);
-					$this.find('#locationDetail').append(loc.displayForLocationDetail());
-					if (!loc.locationId) {
-						$this.find('#locationDetail').find(".voteButton").click(function() {
-							addLocation(loc);
-						});
-					} else { 
-						if (iVotedFor) $this.find('#locationDetail').find(".voteButton").addClass("iVotedFor");
-						else $this.find('#locationDetail').find(".voteButton").addClass("notVotedFor");
-						if (o.event.getEventState() < Event.state.decided) {
+					if (loc) {
+						$this.find('#locationDetail').css('display', 'block');
+						$this.find('#locationDetail').html("");
+						var iVotedFor = o.event.iVotedFor(loc.locationId);
+						$this.find('#locationDetail').append(loc.displayForLocationDetail());
+						if (!loc.locationId) {
 							$this.find('#locationDetail').find(".voteButton").click(function() {
-								toggleVoteForLocation(loc);
+								addLocation(loc);
 							});
-						} else {
-							$this.find('#locationDetail').find(".voteButton").removeClass("iVotedFor");
-							$this.find('#locationDetail').find(".voteButton").removeClass("notVotedFor");
-							$this.find('#locationDetail').find(".voteButton").addClass("decidedVoteButton");
+						} else { 
+							if (iVotedFor) $this.find('#locationDetail').find(".voteButton").addClass("iVotedFor");
+							else $this.find('#locationDetail').find(".voteButton").addClass("notVotedFor");
+							if (o.event.getEventState() < Event.state.decided) {
+								$this.find('#locationDetail').find(".voteButton").click(function() {
+									toggleVoteForLocation(loc);
+								});
+							} else {
+								$this.find('#locationDetail').find(".voteButton").removeClass("iVotedFor");
+								$this.find('#locationDetail').find(".voteButton").removeClass("notVotedFor");
+								$this.find('#locationDetail').find(".voteButton").addClass("decidedVoteButton");
+							}
+						}
+						$this.find('#locationDetail').find(".locationInfo").unbind('click');
+						if (loc.locationType == 'yelp') {
+							$this.find('#locationDetail').find(".locationInfo").click(function() {
+								ViewController.getInstance().showYelpReview(loc,true);
+							});
 						}
 					}
 				}
@@ -436,15 +466,24 @@
 					$this.find('#categoryListContainer').css('display', 'none');
 					$this.find('#categoryListContainer').find('.listContent').html('');
 				}
-
-				function searchSimpleGeo() {
-					$this.find('#categoryListContainer').css('display', 'none');
-					$this.find('#categoryListContainer').find('.listContent').html('');
-					o.originalLocations = o.event.allLocations.slice();
-					o.newLocations = new Array();
+				
+				function beginSearch() {
 					var searchText = $this.find('#locationSearchField').val();
 					var searchTextNoWhite = searchText.replace(/ /g,'');
 					if (searchTextNoWhite.length == 0 || $this.find('#locationSearchField').hasClass('default')) return;
+					$this.find('#categoryListContainer').css('display', 'none');
+					$this.find('#categoryListContainer').find('.listContent').html('');
+					o.searchResults = new Array();
+					o.newLocations = new Array();
+//					searchSimpleGeo();
+					searchYelp();
+//					searchGoogle();
+				}
+
+				function searchSimpleGeo() {
+					o.originalLocations = o.event.allLocations.slice();
+					o.newLocations = new Array();
+					var searchText = $this.find('#locationSearchField').val();
 					var latlng = o.map.getCenter();
 					var lat = latlng.lat();
 					var lng = latlng.lng();
@@ -454,12 +493,43 @@
 						} else {
 							o.mapBounds = new google.maps.LatLngBounds();
 							o.searchResults = new Array();
-							for (var i in data.features) {
-								var feature = data.features[i];
+							console.log(data.features.length);
+							if (data.features.length > 0) {
+								for (var i in data.features) {
+									var feature = data.features[i];
+									var loc = new Location();
+									loc.populateWithSGFeature(feature);
+									if (!o.markers[loc.g_id]) {
+										o.searchResults.push(loc);
+									}
+									var latlng = new google.maps.LatLng(loc.latitude, loc.longitude);
+									o.mapBounds.extend(latlng);
+								}
+								o.map.fitBounds(o.mapBounds);
+								o.newSearchResultsDisplay = true;
+								placeMarkers();
+								o.newSearchResultsDisplay = false;
+							} else {
+								// Degrade to google
+								searchGoogle();
+							}
+						}
+					});
+				}
+				
+				function searchGoogle() {
+					var latLngBounds = o.map.getBounds();
+					var boundsStr = latLngBounds.getSouthWest().lat()+','+latLngBounds.getSouthWest().lng()+'|'+latLngBounds.getNorthEast().lat()+','+latLngBounds.getNorthEast().lng();
+					var searchText = $this.find('#locationSearchField').val();
+					var gc = new google.maps.Geocoder();
+					console.log(gc);
+					gc.geocode({address:searchText, bounds:o.map.getBounds()}, function(data, status) {
+						if (status == "OK") {
+							for (var i in data) {
 								var loc = new Location();
-								loc.populateWithSGFeature(feature);
+								loc.populateWithGoogleResult(data[i]);
 								if (!o.markers[loc.g_id]) {
-									o.searchResults.push(loc);
+										o.searchResults.push(loc);
 								}
 								var latlng = new google.maps.LatLng(loc.latitude, loc.longitude);
 								o.mapBounds.extend(latlng);
@@ -468,7 +538,39 @@
 							o.newSearchResultsDisplay = true;
 							placeMarkers();
 							o.newSearchResultsDisplay = false;
+						} else {
+							alert("No matches found near this location.\nTry another place name or address (or move the map and try again)");
 						}
+					});
+				}
+				
+				function searchYelp() {
+					var latLngBounds = o.map.getBounds();
+					var sw = latLngBounds.getSouthWest();
+					var ne = latLngBounds.getNorthEast();
+					var boundsStr = sw.lat() +','+ sw.lng() +'|'+ ne.lat() +','+ ne.lng();
+					var searchStr = $this.find('#locationSearchField').val();
+					
+					var url = domain + "/search.yelp.php";
+					var params = {registeredId:ruid, term:searchStr, bounds:boundsStr};
+					$.get(url, params, function(data) {
+						console.log(data);
+						for (var i=data.businesses.length-1; i>=0; i--) {
+							var loc = new Location();
+							loc.populateWithYelpResult(data.businesses[i]);
+							if (!o.markers[loc.g_id]) {
+									o.searchResults.push(loc);
+							}
+							var latlng = new google.maps.LatLng(loc.latitude, loc.longitude);
+							o.mapBounds.extend(latlng);
+						}
+						o.map.fitBounds(o.mapBounds);
+						o.newSearchResultsDisplay = true;
+						o.startingLocation = o.searchResults[o.searchResults.length-1];
+						o.selectedLocation = o.startingLocation;
+						showLocationDetail(o.startingLocation);
+						placeMarkers();
+						o.newSearchResultsDisplay = false;
 					});
 				}
 
