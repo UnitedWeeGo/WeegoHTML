@@ -102,7 +102,7 @@ Location.prototype.populateWithYelpResult = function(obj) {
 	this.mobileYelpUrl = obj.mobile_url;
 	this.locationType = 'yelp';
 	var pn = obj.phone;
-	if (pn.indexOf('+1-') > -1) pn.replace('+1-','');
+	if (pn && pn.indexOf('+1-') > -1) pn.replace('+1-','');
 	this.formatted_phone_number = pn;
 }
 
