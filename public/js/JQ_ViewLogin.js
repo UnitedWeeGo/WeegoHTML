@@ -126,6 +126,8 @@
 //						document.getElementById('working').style.display = "none";
 						ruid = $(data).find('ruid').text();
 						$.cookie('ruid',ruid);
+						$.cookie({'canAutoCheckin': true});
+						$.cookie({'canAutoReportLocation': true});
 						Model.getInstance().createLoginParticipant($(data).find('participant'));
 						ViewController.getInstance().showDashboard();
 					}

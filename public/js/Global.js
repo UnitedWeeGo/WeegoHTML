@@ -2,6 +2,8 @@ var domain = 'https://api.unitedweego.com';
 //var domain = 'http://beta.weegoapp.com/public';
 var resizeOffset = 44;
 var ruid = '';
+var canAutoCheckin = null;
+var canAutoReportLocation = null;
 
 window.onresize = function() {
 //	ViewController.getInstance().resizeViews();
@@ -26,6 +28,15 @@ window.onload = function () {
 			head.appendChild(fb_js);
 			ViewController.getInstance().showView(Model.appState.login, null);
 		}
+		if (!$.cookie('canAutoCheckin').length) {
+			$.cookie({'canAutoCheckin': true});
+		}
+		canAutoCheckin = ($.cookie('canAutoCheckin') == 'true');
+		if (!$.cookie('canAutoReportLocation').length) {
+			$.cookie({'canAutoReportLocation': true});
+		}
+		canAutoReportLocation = ($.cookie('canAutoReportLocation') == 'true');
+		console.log($.cookie());
     });
     startAutoCheckinLocationReporting();
 }
@@ -59,8 +70,26 @@ function startAutoCheckinLocationReporting() {
 function checkinAndReportLocation() {
 	Model.getInstance().updateGeoLocation();
 	// Make prefs for these
-	tryAutoCheckin();
-	tryAutoLocationReporting();
+	if (canAutoCheckin) {
+		console.log('tryAutoCheckin');
+		tryAutoCheckin();
+	}
+	if (canAutoReportLocation) {
+		console.log('tryAutoLocationReporting');
+		tryAutoLocationReporting();
+	}
+}
+
+function setCanAutoReportLocation(state) {
+	canAutoReportLocation = state;
+	$.cookie({'canAutoReportLocation': state});
+	var myLocation = Model.getInstance().getGeoLocation();
+	reportLocation(myLocation.lat(),myLocation.lng(),state);
+}
+
+function setCanAutoCheckin(state) {
+	canAutoCheckin = state;
+	$.cookie({'canAutoCheckin': state});
 }
 
 function tryAutoCheckin() {
@@ -111,9 +140,10 @@ function handleCheckInResponse(data) {
 	}
 }
 
-function reportLocation(lat,lng) {
+function reportLocation(lat,lng,disable) {
+	var shouldDisable = (disable) ? "true" : "false";
 	var url = domain + "/report.location.php";
-	$.get(url, {registeredId:ruid, latitude:lat, longitude:lng, disableLocationReporting:"false"}, function(data) {
+	$.get(url, {registeredId:ruid, latitude:lat, longitude:lng, disableLocationReporting:shouldDisable}, function(data) {
 		handleReportLocationResponse(data);
 	});
 }

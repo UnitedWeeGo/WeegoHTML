@@ -30,13 +30,35 @@
 	margin: 0 auto;
 }
 
-#prefs UL.legalLinksList LI {
+#prefs UL.legalLinksList LI, #prefs UL.controlList LI {
 	padding: 14px 10px 12px 12px !important;
 }
 
-#prefs UL.legalLinksList LI H3 {
+#prefs UL.legalLinksList LI H3, #prefs UL.controlList LI H3 {
 	font-weight: bold;
 	font-size: 1.4em;
 	margin: 0;
 	padding: 0;
+}
+
+#prefs UL.controlList LI .toggle {
+	float: right;
+	font-size: 1.4em;
+	font-weight: bold;
+}
+
+#prefs UL.controlList LI .on {
+	display: none;
+}
+
+#prefs UL.controlList LI .off {
+	display: block;
+}
+
+#prefs UL.controlList LI.on .on {
+	display: block;
+}
+
+#prefs UL.controlList LI.on .off {
+	display: none;
 }
