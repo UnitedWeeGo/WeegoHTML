@@ -352,7 +352,7 @@
 				
 				function handleGeoLocationUpdated() {
 					o.myLocation = Model.getInstance().getGeoLocation();
-					if (o.event && o.myLocation && o.event.getWinningLocation()) {
+					if (o.event && o.myLocation && o.event.getWinningLocation() && o.event.getEventState() >= Event.state.decided) {
 						var latlng = new google.maps.LatLng(o.event.getWinningLocation().latitude, o.event.getWinningLocation().longitude);
 						o.distanceToLoc = google.maps.geometry.spherical.computeDistanceBetween(o.myLocation, latlng);
 						var marker0 = new google.maps.Marker({

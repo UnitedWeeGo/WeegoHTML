@@ -74,10 +74,13 @@
 						myLatlng = new google.maps.LatLng(37.77493,-122.419416);
 						zoomLevel = 2;
 					}
+					var zoomControl = (window.Android) ? true : false;
 					var myOptions = {
 						zoom: zoomLevel,
 						center: myLatlng,
 						disableDefaultUI: true,
+						zoomControl: zoomControl,
+						zoomControlOptions: {position:google.maps.ControlPosition.LEFT_CENTER},
 						mapTypeId: google.maps.MapTypeId.ROADMAP
 					};
 					
@@ -120,6 +123,7 @@
 				};
 				
 				update();
+				setBindings();
 				
 				function getCategories() {
 					o.locCategories = new Array();
@@ -748,8 +752,45 @@
 					showLocationDetail(o.selectedLocation);
 					placeMarkers();
 				}
+				
+				function setInitialLocation() {
+					Model.getInstance().updateGeoLocation();			
+				}
+				
+				function handleGeoLocationUpdated() {
+					o.myLocation = Model.getInstance().getGeoLocation();
+					var marker0 = new google.maps.Marker({
+						position: o.myLocation,
+						map:o.map,
+						icon: new google.maps.MarkerImage('/assets/images/POIs_me_default.png',
+													new google.maps.Size(20, 20),
+													new google.maps.Point(0,0), //origin
+													new google.maps.Point(12, 10)), //anchor
+						animation: null
+					});
+					o.mapBounds.extend(o.myLocation);
+					if (o.event.allLocations.length == 0) {
+						o.map.setCenter(o.myLocation);
+//						o.map.panToBounds(o.mapBounds);
+						o.map.setZoom(14);
+					} else {
+						o.map.fitBounds(o.mapBounds);
+					}
+				}
+				
+				function handleGeoLocationException() {
+					
+				}
+				
+				function setBindings() {
+//					$(window).bind('countMeInClick', handleCountMeInClick);
+//					$(window).bind('moreButtonClick', handleMoreButtonClick);
+					
+					$(window).bind('geoLocationUpdated', handleGeoLocationUpdated);
+					$(window).bind('geoLocationException', handleGeoLocationException);
+				}
 
-				function setInitialLocation(resetBounds) {
+/*				function setInitialLocation(resetBounds) {
 					var browserSupportFlag = new Boolean();
 					
 					// Try W3C Geolocation (Preferred)
@@ -814,7 +855,7 @@
 					}
 				//    callback.map.setCenter(initialLocation);
 				}
-				
+*/				
 
 				
 			});

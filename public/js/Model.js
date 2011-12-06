@@ -126,9 +126,9 @@ Model.prototype.getModelDataAsJSON = function() {
 	}
 	if (acceptedEvents > 0) filteredData = filteredData.substring(0,filteredData.length-1);
 	filteredData += ']}';
-	console.log(filteredData);
+//	console.log(filteredData);
 	var obj = eval('(' + filteredData + ')');
-	console.log(obj);
+//	console.log(obj);
 	sendModel(filteredData);
 }
 
