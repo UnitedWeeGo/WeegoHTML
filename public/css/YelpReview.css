@@ -2,16 +2,17 @@
 	display: none;
 	width: 100%;
 	margin-top: -5px;
+	overflow-y: scroll;
 }
 
 #yelpReview .content {
 	display: block;
-	height: 100%;
+	height: 10000px;
 }
 
 #yelpReview .content IFRAME {
 	width: 100%;
 	height: 100%;
 	border: none;
-	overflow-y: scroll;
+	
 }

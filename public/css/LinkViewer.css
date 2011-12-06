@@ -9,7 +9,15 @@
 	height: 100%;
 }
 
+#linkViewer .content .contentContainer {
+	display: block;
+	width: 100%;
+	height: 10000px;
+	overflow-y: auto;
+}
+
 #linkViewer .content IFRAME {
+	display: block;
 	width: 100%;
 	height: 100%;
 	border: none;

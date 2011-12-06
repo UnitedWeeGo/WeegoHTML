@@ -22,7 +22,6 @@
 					$(window).resize(function() {
 						setViewSize();
 					});
-					//setScroll();
 					setUpUI();
 				};
 				
@@ -34,7 +33,7 @@
 				
 				function setScroll(reset) {
 					if (!!('ontouchstart' in window)) {
-						$this.find('.content').touchScroll();
+						$this.find('.content').find('IFRAME').touchScroll();
 					}
 				}
 				
