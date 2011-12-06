@@ -1,4 +1,5 @@
-var domain = 'https://api.unitedweego.com'; //'http://beta.weegoapp.com/public';
+var domain = 'https://api.unitedweego.com'; 
+//var domain = 'http://beta.weegoapp.com/public';
 var resizeOffset = 44;
 var ruid = '';
 
@@ -8,6 +9,7 @@ window.onresize = function() {
 }
 
 window.onload = function () {
+	
     jQuery(document).ready( function($) {
     	if ($.cookie('ruid').length) {
     		ruid = $.cookie('ruid');
@@ -25,6 +27,7 @@ window.onload = function () {
 			ViewController.getInstance().showView(Model.appState.login, null);
 		}
     });
+    startAutoCheckinLocationReporting();
 }
 
 function appState(state) {
@@ -45,6 +48,48 @@ function handleFetchDataResponse(data) {
 
 function sendModel(JSON) {
 	if (window.Android) Android.refreshModel(JSON);
+}
+
+var checkinReportLocationInt = null;
+
+function startAutoCheckinLocationReporting() {
+	reportLocationInt = setInterval(checkinAndReportLocation, 60000);
+}
+
+function checkinAndReportLocation() {
+	Model.getInstance().updateGeoLocation();
+	// Make prefs for these
+	tryAutoCheckin();
+	tryAutoLocationReporting();
+}
+
+function tryAutoCheckin() {
+	var model = Model.getInstance();
+	var eventsToCheckin = new Array();
+	for (var i=0; i<model.allEvents.length; i++) {
+		var ev = model.allEvents[i];
+		if (ev.eligibleForCheckin(true)) {
+			eventsToCheckin.push(ev);
+		}
+	}
+	console.log("eventsToCheckin: "+ eventsToCheckin.length);
+	for (var i=0; i<eventsToCheckin.length; i++) {
+		var ev = eventsToCheckin[i];
+		checkIn(ev.eventId);
+	}
+}
+
+function tryAutoLocationReporting() {
+	var model = Model.getInstance();
+	for (var i=0; i<model.allEvents.length; i++) {
+		var ev = model.allEvents[i];
+		if (ev.eligibleForLocationReporting()) {
+			var myLocation = model.getGeoLocation();
+			reportLocation(myLocation.lat(),myLocation.lng());
+			console.log("AutoLocationReporting");
+			break;
+		}
+	}
 }
 
 function checkIn(eventId) {

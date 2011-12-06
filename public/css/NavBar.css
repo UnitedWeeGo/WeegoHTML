@@ -33,6 +33,20 @@
 	margin: 7px 0 0 15px;
 }
 
+#navBar .cancelButton {
+	display: block;
+	float: left;
+	width: 60px;
+	height: 31px;
+	background: url('/assets/images/button_clear_default.png') no-repeat;
+	margin: 6px 0 0 8px;
+	padding: 9px 0 0 0;
+	text-align: center;
+	color: #777;
+	font-weight: bold;
+	font-size: 1.2em;
+}
+
 #navBar .weegoTitle {
 	display: block;
 	float: left;

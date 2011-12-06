@@ -77,12 +77,15 @@ Location.prototype.populateWithSGFeature = function(obj) {
 
 Location.prototype.populateWithGoogleResult = function(obj) {
 	this.name = "Name Me!";
-    this.formatted_address = this.formatAddress(obj.formatted_address);
+    this.formatted_address = obj.formatted_address;
     console.log(obj);
     this.latitude = obj.geometry.location.lat();
     this.longitude = obj.geometry.location.lng();
     this.locationType = 'address';
-//    this.g_id = obj.id;
+    var id = this.formatted_address;
+    id = id.replace(/, /gi, "-");
+    id = id.replace(/ /gi, "-");
+    this.g_id = id;
 }
 
 Location.prototype.populateWithYelpResult = function(obj) {
@@ -106,6 +109,12 @@ Location.prototype.populateWithYelpResult = function(obj) {
 	this.formatted_phone_number = pn;
 }
 
+Location.prototype.iAddedLocation = function() {
+	console.log(this);
+	if (this.addedById == Model.getInstance().loginParticipant.email || (this.addedById == "")) return true;
+	return false;
+}
+
 Location.prototype.displayForEventDetail = function() {
 	var displayAddress = '';
 	if (this.locationType == 'yelp') {
@@ -114,8 +123,8 @@ Location.prototype.displayForEventDetail = function() {
 	} else {
 		displayAddress = this.formatAddress(this.formatted_address);
 	}
-	var output =	'<li class="locationCell" id="'+ this.locationId +'">'+
-						'<div class="voteButton"></div>'+
+	var output =	'<li class="locationCell" id="'+ this.locationId +'">';
+	output +=			'<div class="voteButton"></div>'+
 						'<div class="locationInfo">'+
 							'<h3>'+ this.name +'</h3>'+
 							'<p>'+ displayAddress +'</p>';
@@ -134,9 +143,10 @@ Location.prototype.displayForLocationDetail = function(showVotedFor) {
 		displayAddress = this.formatAddress(this.formatted_address);
 	}
 	var votedForClass = (showVotedFor) ? " iVotedFor" : "";
-	var output = 	'<div class="voteButton'+ votedForClass +'"></div>'+
-					'<div class="locationInfo">'+
-						'<h3>'+ this.name +'</h3>'+
+	var output = 	'<div class="voteButton'+ votedForClass +'"></div>';
+	if (this.locationType == 'address' && this.iAddedLocation()) output += '<div class="editButton"></div>';
+	output +=		'<div class="locationInfo">'+
+						'<h3>'+ unescape(this.name) +'</h3>'+
 						'<p>'+ displayAddress +'</p>';
 	if (this.ratingImgUrl) output += '<div class="rating"><img src="'+ this.ratingImgUrl +'" /><div class="ratingText">'+ this.numRatings +' ratings<div</div></div>';					
 	output +=		'</div>';
@@ -146,7 +156,7 @@ Location.prototype.displayForLocationDetail = function(showVotedFor) {
 Location.prototype.xmlForUpload = function(tempId) {
 	var tempIdStr = (tempId) ? ' tempId="'+ tempId +'"' : '';
 	var xmlStr =	'<location'+ tempIdStr +' latitude="'+ this.latitude +'" longitude="'+ this.longitude +'">'+
-						'<name>'+ this.name +'</name>'+
+						'<name>'+ this.name.replace('&','%26') +'</name>'+
 						'<vicinity>'+ this.vicinity +'</vicinity>'+
 						'<g_id>'+ this.g_id +'</g_id>'+
 						'<g_reference></g_reference>'+
@@ -156,6 +166,22 @@ Location.prototype.xmlForUpload = function(tempId) {
 	if (this.rating) xmlStr += 			'<rating>'+ this.rating +'</rating>';
 	if (this.numRatings) xmlStr += 		'<review_count>'+ this.numRatings +'</review_count>';
 	if (this.mobileYelpUrl) xmlStr += 	'<mobile_yelp_url>'+ this.mobileYelpUrl +'</mobile_yelp_url>';
+	xmlStr +=		'</location>';
+	return xmlStr;
+}
+
+Location.prototype.xmlForUpdate = function() {
+	var xmlStr =	'<location locationId="'+ this.locationId +'" latitude="'+ this.latitude +'" longitude="'+ this.longitude +'">'+
+						'<name>'+ this.name.replace('&','%26') +'</name>'+
+						'<vicinity>'+ this.vicinity +'</vicinity>'+
+						'<g_id>'+ this.g_id +'</g_id>'+
+						'<g_reference></g_reference>'+
+						'<location_type>'+ this.locationType +'</location_type>'+
+						'<formatted_address>'+ this.formatted_address +'</formatted_address>'+
+						'<formatted_phone_number>'+ this.formatted_phone_number +'</formatted_phone_number>';
+	xmlStr += 			'<rating></rating>';
+	xmlStr += 			'<review_count></review_count>';
+	xmlStr += 			'<mobile_yelp_url></mobile_yelp_url>';
 	xmlStr +=		'</location>';
 	return xmlStr;
 }

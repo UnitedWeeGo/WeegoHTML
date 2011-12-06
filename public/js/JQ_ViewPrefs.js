@@ -43,6 +43,19 @@
 					$this.find('.content').append('<ul class="collapseableList participantList">');
 					var p = Model.getInstance().loginParticipant;
 					$this.find('.content').find('.participantList').append('<li><img src="'+ p.avatarURL +'"><h3>'+ p.getFullName() +'</h3>');
+					$this.find('.content').append('<ul class="collapseableList legalLinksList">');
+					$this.find('.content').find('.legalLinksList').append('<li class="terms"><h3>Terms</h3>');
+					$this.find('.content').find('.legalLinksList').append('<li class="privacy"><h3>Privacy Policy</h3>');
+					$this.find('.content').find('.legalLinksList').find('.terms').unbind('click');
+					$this.find('.content').find('.legalLinksList').find('.terms').click(function(){
+						ViewController.getInstance().showLinkViewer('terms');
+					});
+					
+					$this.find('.content').find('.legalLinksList').find('.privacy').unbind('click');
+					$this.find('.content').find('.legalLinksList').find('.privacy').click(function(){
+						ViewController.getInstance().showLinkViewer('privacy');
+					});
+					
 					$this.find('.content').append('<div class="fbButton"><div class="text">Logout</div></div>');
 					$this.find('.content').find('.fbButton').bind('click', function() {
 						ruid = null;

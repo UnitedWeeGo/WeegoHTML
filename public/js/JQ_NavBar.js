@@ -1,7 +1,7 @@
 (function($) {
 	
 	var defaults = {
-		state: {home:100, dashboard:200, prefs:300, eventDetail:400, eventDetailCountMeIn:401, addLocations:500, createEvent:600, addFriends:700, yelpReview:800}
+		state: {home:100, dashboard:200, prefs:300, eventDetail:400, eventDetailCountMeIn:401, addLocations:500, createEvent:600, addFriends:700, yelpReview:800, editLocationName:900, terms:1000, privacy:1100}
 	};
 	
 	var methods = {
@@ -27,7 +27,7 @@
 				update();
 				
 				function setTitleCenter() {
-					$this.find('.weegoTitle').css('width',document.documentElement.clientWidth - 116);
+					$this.find('.weegoTitle').css('width',document.documentElement.clientWidth - 126);
 				}
 				
 				var setNav = this.setNav = function setNav(state) {
@@ -75,7 +75,7 @@
 							break;
 						case o.state.createEvent :
 							$this.addClass('event');
-							$this.append('<div class="backButton"><img src="/assets/images/icon_home_01.png" /></div>');
+							$this.append('<div class="cancelButton">Cancel</div>');
 							$this.append('<div class="weegoTitle"><div class="titleText">Create Event</div></div>');
 							$this.append('<div class="doneButton">Done</div>');
 							break;
@@ -95,6 +95,30 @@
 							$this.append('<div class="backButton arrow"><img src="/assets/images/icon_backArrow_dark_01.png" /></div>');
 							$this.append('<div class="weegoTitle"><div class="titleText yelp"><img src="/assets/images/logo_yelp.png" /></div></div>');
 							break;
+						case o.state.editLocationName :
+							$this.addClass('event');
+							$this.append('<div class="cancelButton">Cancel</div>');
+							$this.append('<div class="weegoTitle"><div class="titleText">Edit Location Name</div></div>');
+							$this.append('<div class="doneButton">Done</div>');
+							$(this).find(".cancelButton").unbind('click');
+							$(this).find(".cancelButton").click(function() {
+								cancelEditButtonClick();
+							});
+							$(this).find(".doneButton").unbind('click');
+							$(this).find(".doneButton").click(function() {
+								doneEditButtonClick();
+							});
+							break;
+						case o.state.terms :
+							$this.addClass('event');
+							$this.append('<div class="backButton arrow"><img src="/assets/images/icon_backArrow_dark_01.png" /></div>');
+							$this.append('<div class="weegoTitle"><div class="titleText">Terms</div></div>');
+							break;
+						case o.state.privacy :
+							$this.addClass('event');
+							$this.append('<div class="backButton arrow"><img src="/assets/images/icon_backArrow_dark_01.png" /></div>');
+							$this.append('<div class="weegoTitle"><div class="titleText">Privacy Policy</div></div>');
+							break;
 					}
 					setTitleCenter();
 				}
@@ -105,6 +129,14 @@
 				
 				function moreButtonClick() {
 					$(window).trigger('moreButtonClick');
+				}
+				
+				function cancelEditButtonClick() {
+					$(window).trigger('cancelEditButtonClick');
+				}
+				
+				function doneEditButtonClick() {
+					$(window).trigger('doneEditButtonClick');
 				}
 				
 			});
@@ -170,6 +202,27 @@
 			methods.init.apply(this, arguments);
 			return this.each(function() {
 				this.setNav(defaults.state.yelpReview);
+			});
+		},
+		
+		editLocationName: function() {
+			methods.init.apply(this, arguments);
+			return this.each(function() {
+				this.setNav(defaults.state.editLocationName);
+			});
+		},
+		
+		terms: function() {
+			methods.init.apply(this, arguments);
+			return this.each(function() {
+				this.setNav(defaults.state.terms);
+			});
+		},
+		
+		privacy: function() {
+			methods.init.apply(this, arguments);
+			return this.each(function() {
+				this.setNav(defaults.state.privacy);
 			});
 		},
 		

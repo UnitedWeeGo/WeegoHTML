@@ -49,6 +49,12 @@
 						setViewSize();
 					});
 					
+					if (o.event.getEventState() < Event.state.decided) {
+						$this.find('#locationSearch').css('display','block');
+					} else {
+						$this.find('#locationSearch').css('display','none');
+					}
+					
 					setViewSize();
 	
 					o.initialDisplayFinished = false;
@@ -151,7 +157,9 @@
 				function setViewSize() {
 					$this.find('.content').css('height',document.documentElement.clientHeight - resizeOffset);
 					$this.find('#locationSearchField').css('width',document.documentElement.clientWidth - $this.find('#locationSearch').find('.buttons').outerWidth() - 32);
-					$this.find('#map_canvas').css('height', document.documentElement.clientHeight - (resizeOffset + 36));
+					$this.find('#locationDetail').css('width',document.documentElement.clientWidth - 16);
+					var hAdjustment = (o.event.getEventState() < Event.state.decided) ? 36 : 0;
+					$this.find('#map_canvas').css('height', document.documentElement.clientHeight - (resizeOffset + hAdjustment));
 					$this.find('#categoryListContainer').css('height', document.documentElement.clientHeight - (resizeOffset + 36));
 				}
 				
@@ -427,6 +435,7 @@
 
 				function showLocationDetail(loc) {
 					if (loc) {
+						hideNameEdit();
 						$this.find('#locationDetail').css('display', 'block');
 						$this.find('#locationDetail').html("");
 						var iVotedFor = o.event.iVotedFor(loc.locationId);
@@ -454,6 +463,70 @@
 								ViewController.getInstance().showYelpReview(loc,true);
 							});
 						}
+						$(window).unbind('cancelEditButtonClick');
+						$(window).unbind('doneEditButtonClick');
+						$this.find('#locationEdit').find('INPUT').unbind('keyup');
+						$this.find('#locationDetail').find('.editButton').unbind('click');
+						$this.find('#locationDetail').find('.editButton').click(function(){
+							showNameEdit();
+						});
+					}
+				}
+				
+				function showNameEdit() {
+					$this.find('#locationDetail').css('display','none');
+					$this.find('#locationSearch').css('display','none');
+					$this.find('#locationEdit').css('display','block');
+					$this.find('#locationEdit').find('INPUT').val('');
+					$this.find('#locationEdit').find('INPUT').focus();
+					var hAdjustment = 0;
+					$this.find('#map_canvas').css('height', document.documentElement.clientHeight - (resizeOffset + hAdjustment));
+					ViewController.getInstance().showEditLocationNav();
+					$(window).bind('cancelEditButtonClick', hideNameEdit);
+					$(window).bind('doneEditButtonClick', doneNameEdit);
+					$this.find('#locationEdit').find('INPUT').unbind('keyup');
+					$this.find('#locationEdit').find('INPUT').keyup(function(e) {
+						console.log("keyup");
+						if (e.which == 13) {
+							jQuery(this).blur();
+							doneNameEdit();
+						}
+					});
+				}
+				
+				function hideNameEdit() {
+					$(window).unbind('cancelEditButtonClick');
+					$(window).unbind('doneEditButtonClick');
+					$this.find('#locationEdit').find('INPUT').unbind('keyup');
+					$this.find('#locationDetail').css('display','block');
+					$this.find('#locationSearch').css('display','block');
+					$this.find('#locationEdit').css('display','none');
+					var hAdjustment = 36;
+					$this.find('#map_canvas').css('height', document.documentElement.clientHeight - (resizeOffset + hAdjustment));
+					ViewController.getInstance().showAddLocationNav();
+				}
+				
+				function doneNameEdit() {
+					$(window).unbind('doneEditButtonClick');
+					var editText = $this.find('#locationEdit').find('INPUT').val();
+					var editTextNoWhite = editText.replace(/ /g,'');
+					if (editTextNoWhite.length > 0) {
+						o.selectedLocation.name = editText;
+						hideNameEdit();
+						showLocationDetail(o.selectedLocation);
+						if (Model.getInstance().currentAppState == Model.appState.eventDetail && o.selectedLocation.locationId && o.selectedLocation.tempId == null) {
+							var xmlStr =	'<event id="'+ o.event.eventId +'">';
+							xmlStr +=		'<locations>';
+							xmlStr +=			o.selectedLocation.xmlForUpdate();
+							xmlStr +=		'</locations>';
+							xmlStr +=	'</event>';
+							var url = domain + "/xml.location.php";
+							var params = {registeredId:ruid, xml:xmlStr};
+							if (o.event.lastUpdatedTimestamp) params.timestamp = o.event.lastUpdatedTimestamp;
+							$.post(url, params, function(data) {
+								//handleGetSingleEvent(data);
+							});
+						}
 					}
 				}
 
@@ -471,12 +544,14 @@
 					var searchText = $this.find('#locationSearchField').val();
 					var searchTextNoWhite = searchText.replace(/ /g,'');
 					if (searchTextNoWhite.length == 0 || $this.find('#locationSearchField').hasClass('default')) return;
+					var reAddress = new RegExp(/^[0-9]+ .*/);
+					console.log(reAddress.test(searchText));
 					$this.find('#categoryListContainer').css('display', 'none');
 					$this.find('#categoryListContainer').find('.listContent').html('');
 					o.searchResults = new Array();
 					o.newLocations = new Array();
 //					searchSimpleGeo();
-					searchYelp();
+					searchYelp(reAddress.test(searchText));
 //					searchGoogle();
 				}
 
@@ -525,7 +600,8 @@
 					console.log(gc);
 					gc.geocode({address:searchText, bounds:o.map.getBounds()}, function(data, status) {
 						if (status == "OK") {
-							for (var i in data) {
+							console.log(data);
+							for (var i=data.length-1; i>=0; i--) {
 								var loc = new Location();
 								loc.populateWithGoogleResult(data[i]);
 								if (!o.markers[loc.g_id]) {
@@ -536,6 +612,10 @@
 							}
 							o.map.fitBounds(o.mapBounds);
 							o.newSearchResultsDisplay = true;
+							o.startingLocation = o.searchResults[o.searchResults.length-1];
+							o.selectedLocation = o.startingLocation;
+							showLocationDetail(o.startingLocation);
+							console.log(o.searchResults);
 							placeMarkers();
 							o.newSearchResultsDisplay = false;
 						} else {
@@ -544,7 +624,7 @@
 					});
 				}
 				
-				function searchYelp() {
+				function searchYelp(secondarySearch) {
 					var latLngBounds = o.map.getBounds();
 					var sw = latLngBounds.getSouthWest();
 					var ne = latLngBounds.getNorthEast();
@@ -564,13 +644,17 @@
 							var latlng = new google.maps.LatLng(loc.latitude, loc.longitude);
 							o.mapBounds.extend(latlng);
 						}
-						o.map.fitBounds(o.mapBounds);
-						o.newSearchResultsDisplay = true;
-						o.startingLocation = o.searchResults[o.searchResults.length-1];
-						o.selectedLocation = o.startingLocation;
-						showLocationDetail(o.startingLocation);
-						placeMarkers();
-						o.newSearchResultsDisplay = false;
+						if (!secondarySearch) {
+							o.map.fitBounds(o.mapBounds);
+							o.newSearchResultsDisplay = true;
+							o.startingLocation = o.searchResults[o.searchResults.length-1];
+							o.selectedLocation = o.startingLocation;
+							showLocationDetail(o.startingLocation);
+							placeMarkers();
+							o.newSearchResultsDisplay = false;
+						} else {
+							searchGoogle();
+						}
 					});
 				}
 

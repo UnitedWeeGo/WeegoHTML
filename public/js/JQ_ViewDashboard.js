@@ -124,6 +124,7 @@
 					sortEvents();
 					setUpUI();
 					Model.getInstance().getModelDataAsJSON();
+					checkinAndReportLocation(); // Global function
 				}
 				
 				function sortEvents() {

@@ -459,6 +459,19 @@ Event.prototype.showCountMeIn = function() {
 	return (!this.didAcceptEvent() || this.didDeclineEvent());
 }
 
+Event.prototype.eligibleForCheckin = function(auto) {
+	var distanceForCheckin = (auto) ? 50 : 200;
+	var myLocation = Model.getInstance().getGeoLocation();
+	if (!myLocation) return false;
+	var latlng = new google.maps.LatLng(this.getWinningLocation().latitude, this.getWinningLocation().longitude);
+	var distanceToLoc = google.maps.geometry.spherical.computeDistanceBetween(myLocation, latlng);
+	return (!this.hasBeenCheckedIn && this.didAcceptEvent() && !this.didDeclineEvent() && this.getEventState() >= Event.state.decided && this.getEventState() < Event.state.ended && distanceToLoc < distanceForCheckin && this.minutesToGoUntilEventStarts() <= 30);
+}
+
+Event.prototype.eligibleForLocationReporting = function(auto) {
+	return (!this.hasBeenCheckedIn && this.didAcceptEvent() && !this.didDeclineEvent() && this.getEventState() >= Event.state.decided && this.getEventState() < Event.state.ended && this.minutesToGoUntilEventStarts() <= 30 && this.minutesToGoUntilEventStarts() >= -60);
+}
+
 Event.prototype.xmlForUpload = function() {
 	var eventDateGMT = new Date(this.eventDate);
 	eventDateGMT.setMinutes(eventDateGMT.getMinutes() + eventDateGMT.getTimezoneOffset());

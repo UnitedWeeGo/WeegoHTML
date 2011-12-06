@@ -178,6 +178,7 @@
 					}
 					setUpUI();
 					ViewController.getInstance().showEventDetail(o.event.eventId, false, o.event.showCountMeIn(), true);
+					checkinAndReportLocation(); // Global function
 				}
 
 				function setUpUI() {
@@ -351,7 +352,7 @@
 				
 				function handleGeoLocationUpdated() {
 					o.myLocation = Model.getInstance().getGeoLocation();
-					if (o.myLocation) {
+					if (o.event && o.myLocation && o.event.getWinningLocation()) {
 						var latlng = new google.maps.LatLng(o.event.getWinningLocation().latitude, o.event.getWinningLocation().longitude);
 						o.distanceToLoc = google.maps.geometry.spherical.computeDistanceBetween(o.myLocation, latlng);
 						var marker0 = new google.maps.Marker({
@@ -369,7 +370,7 @@
 				}
 				
 				function handleGeoLocationException() {
-
+					
 				}
 				
 				function setBindings() {
@@ -388,10 +389,13 @@
 						$this.find('.actionSheet').append('<div class="button grey countMeOut">I\'m not coming</div>');
 					}
 //					$this.find('.actionSheet').append('<div class="button red removeEvent">Remove event</div>');
-					if (o.event.didAcceptEvent() && !o.event.didDeclineEvent() && o.event.getEventState() >= Event.state.decided && o.event.getEventState() < Event.state.ended && o.distanceToLoc < 200) {
+					if (o.event.eligibleForCheckin()) {
 						$this.find('.actionSheet').append('<div class="button black checkIn">Check me in</div>');
 					}
-					$this.find('.actionSheet').append('<div class="button black reportLocation">Share my location</div>');
+					
+					if (o.event.eligibleForLocationReporting()) {
+						$this.find('.actionSheet').append('<div class="button black reportLocation">Share my location</div>');
+					}
 					
 					$this.find('.actionSheet').append('<div class="button black cancelActionSheet">Cancel</div>');
 					$this.find('.actionSheetBlocker').css('display','block');

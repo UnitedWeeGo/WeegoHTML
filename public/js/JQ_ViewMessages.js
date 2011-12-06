@@ -202,7 +202,7 @@
 					if (woWhiteSpace.length > 0) {
 						var now = new Date();
 						var url = domain + "/mod.feedmessage.php";
-						$.get(url, {registeredId:ruid, eventId:o.event.eventId, message:escape(text)}, function(data) { //, timestamp:now.format('yyyy-m-dd h:MM:ss')
+						$.get(url, {registeredId:ruid, eventId:o.event.eventId, message:text}, function(data) { //, timestamp:now.format('yyyy-m-dd h:MM:ss')
 							handleSendMessageResponse(data);
 						});
 					}

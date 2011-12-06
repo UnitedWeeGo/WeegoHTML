@@ -96,6 +96,41 @@
 	padding: 0;
 }
 
+#addLocations #locationDetail .editButton {
+	display: block;
+	float: right;
+	width: 28px;
+	height: 28px;
+	background: url('/assets/images/button_edit_dark_default.png') 0px 0px no-repeat;
+}
+
+#addLocations #locationEdit {
+	position: absolute;
+	display: none;
+	width: 100%;
+	padding: 8px;
+	
+  	background: rgb(0, 0, 0) transparent;
+	/* RGBa with 0.6 opacity */
+	background: rgba(0, 0, 0, 0.6);
+	/* For IE 5.5 - 7*/
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000, endColorstr=#99000000);
+	/* For IE 8*/
+	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000, endColorstr=#99000000)";
+
+  	z-index: 11;
+  	color: #FFF;
+}
+
+#addLocations #locationEdit INPUT {
+	width: 100%;
+	background: transparent;
+	border: none;
+	color: #FFF;
+	font-size: 1.6em;
+	outline: none;
+}
+
 #addLocations #categoryListContainer {
 	position: absolute;
 	display: none;

@@ -29,3 +29,14 @@
 	width: 150px;
 	margin: 0 auto;
 }
+
+#prefs UL.legalLinksList LI {
+	padding: 14px 10px 12px 12px !important;
+}
+
+#prefs UL.legalLinksList LI H3 {
+	font-weight: bold;
+	font-size: 1.4em;
+	margin: 0;
+	padding: 0;
+}

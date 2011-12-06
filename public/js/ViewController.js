@@ -32,6 +32,7 @@ ViewController.prototype.showLogin = function() {
 	$('#yelpReview').css("display", "none");
 	$('#createEvent').css("display", "none");
 	$('#prefs').css("display", "none");
+	$('#linkViewer').css("display", "none");
 	$('#login').login();
 	$('#homeBackground').css('opacity',1);
 }
@@ -50,6 +51,7 @@ ViewController.prototype.showDashboard = function() {
 	$('#yelpReview').css("display", "none");
 	$('#createEvent').css("display", "none");
 	$('#prefs').css("display", "none");
+	$('#linkViewer').css("display", "none");
 	$('#dashboard').dashboard();
 	$('#homeBackground').css('opacity',1);
 	$('#navBar').navBar('dashboard');
@@ -76,6 +78,7 @@ ViewController.prototype.showEventDetail = function(eventId, reset, showCountMeI
 	$('#yelpReview').css("display", "none");
 	$('#createEvent').css("display", "none");
 	$('#prefs').css("display", "none");
+	$('#linkViewer').css("display", "none");
 	if (!skipReload) $('#eventDetail').eventDetail({eventId:eventId, reset:reset});
 	$('#homeBackground').css('opacity',0);
 	if (showCountMeInButton) $('#navBar').navBar('eventDetailCountMeIn');
@@ -97,6 +100,7 @@ ViewController.prototype.showAddLocations = function(locationId) {
 	$('#yelpReview').css("display", "none");
 	$('#createEvent').css("display", "none");
 	$('#prefs').css("display", "none");
+	$('#linkViewer').css("display", "none");
 	$('#addLocations').addLocations({event:Model.getInstance().currentEvent, locationId:locationId});
 	$('#navBar').navBar('addLocations');
 	$('#navBar').find('.backButton').unbind('click');
@@ -120,6 +124,7 @@ ViewController.prototype.showAddFriends = function() {
 	$('#yelpReview').css("display", "none");
 	$('#createEvent').css("display", "none");
 	$('#prefs').css("display", "none");
+	$('#linkViewer').css("display", "none");
 	$('#addFriends').addFriends({event:Model.getInstance().currentEvent});
 	$('#navBar').navBar('addFriends');
 	$('#navBar').find('.backButton').unbind('click');
@@ -157,6 +162,7 @@ ViewController.prototype.showYelpReview = function(loc, fromMap) {
 	$('#yelpReview').css("display", "block");
 	$('#createEvent').css("display", "none");
 	$('#prefs').css("display", "none");
+	$('#linkViewer').css("display", "none");
 	$('#yelpReview').yelpReview({url:loc.mobileYelpUrl});
 	$('#homeBackground').css('opacity',0);
 	$('#navBar').navBar('yelpReview');
@@ -187,13 +193,15 @@ ViewController.prototype.showCreateEvent = function() {
 	$('#yelpReview').css("display", "none");
 	$('#createEvent').css("display", "block");
 	$('#prefs').css("display", "none");
+	$('#linkViewer').css("display", "none");
 	$('#createEvent').createEvent();
 	$('#homeBackground').css('opacity',0);
 	$('#navBar').navBar('createEvent');
-	$('#navBar').find('.backButton').unbind('click');
-	$('#navBar').find('.backButton').click(function() {
+	$('#navBar').find('.cancelButton').unbind('click');
+	$('#navBar').find('.cancelButton').click(function() {
 		ViewController.getInstance().showDashboard();
 	});
+	$('#navBar').find('.doneButton').unbind('click');
 	$('#navBar').find('.doneButton').click(function() {
 		$('#createEvent').createEvent('done');
 	});
@@ -212,12 +220,59 @@ ViewController.prototype.showPrefs = function() {
 	$('#yelpReview').css("display", "none");
 	$('#createEvent').css("display", "none");
 	$('#prefs').css("display", "block");
+	$('#linkViewer').css("display", "none");
 	$('#prefs').prefs();
 	$('#homeBackground').css('opacity',1);
 	$('#navBar').navBar('prefs');
 	$('#navBar').find('.backButton').unbind('click');
 	$('#navBar').find('.backButton').click(function() {
 		ViewController.getInstance().showDashboard();
+	});
+}
+
+ViewController.prototype.showLinkViewer = function(state) {
+	$('#login').css("display", "none");
+	$('#navBar').css("display", "block");
+	$('#dashboard').css("display", "none");
+	$('#eventDetail').css("display", "none");
+	$('#addLocations').css("display", "none");
+	$('#addFriends').css("display", "none");
+	$('#messages').css("display", "none");
+	$('#yelpReview').css("display", "none");
+	$('#createEvent').css("display", "none");
+	$('#prefs').css("display", "none");
+	$('#linkViewer').css("display", "block");
+	var url = '';
+	switch (state) {
+		case 'terms':
+			url = 'http://www.unitedweego.com/terms.html';
+			break;
+		case 'privacy':
+			url = 'http://www.unitedweego.com/privacy.html';
+			break;
+	}
+	$('#linkViewer').linkViewer({url:url});
+	$('#homeBackground').css('opacity',0);
+	$('#navBar').navBar(state);
+	$('#navBar').find('.backButton').unbind('click');
+	$('#navBar').find('.backButton').click(function() {
+		ViewController.getInstance().showPrefs();
+	});
+}
+
+ViewController.prototype.showEditLocationNav = function() {
+	$('#navBar').navBar('editLocationName');
+}
+
+ViewController.prototype.showAddLocationNav = function() {
+	$('#navBar').navBar('addLocations');
+	$('#navBar').find('.backButton').unbind('click');
+	$('#navBar').find('.backButton').click(function() {
+		if (Model.getInstance().currentAppState == Model.appState.createEvent) {
+			ViewController.getInstance().showCreateEvent();
+		} else {
+			ViewController.getInstance().showEventDetail(Model.getInstance().currentEvent.eventId);
+		}
 	});
 }
 
