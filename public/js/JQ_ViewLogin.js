@@ -23,7 +23,11 @@
 						
 					});
 					setUpUI();
-					setUpFB();
+					if (!window.Android) {
+						setUpFB();
+					} else {
+						showLoginFacebook();
+					}
 				};
 				
 				update();
