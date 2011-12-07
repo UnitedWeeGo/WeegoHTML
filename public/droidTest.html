@@ -14,7 +14,7 @@
 function requestFBLoginFromWrapper() {
 	if (window.Android) Android.fbLoginRequested();
 	else {
-		$(this).find('#ruidDisplay').html("Not Android");
+		$('#ruidDisplay').html("Not Android");
 	}
 }
 
@@ -40,7 +40,7 @@ function loginWithFacebookAccessToken(token) {
 function handleLoginResponse(data) {
 	if ($(data).find('response').attr('code') == "201") {
 		var ruid = $(data).find('ruid').text();
-		$(this).find('#ruidDisplay').html(ruid);
+		$('#ruidDisplay').html(ruid);
 	}
 }
 </script>
