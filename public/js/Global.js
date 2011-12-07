@@ -20,12 +20,14 @@ window.onload = function () {
     		Model.getInstance().createLoginParticipantFromCookie();
     		ViewController.getInstance().showView(state, eventId);
     	} else {
-    		var head = document.getElementsByTagName('head')[0];
-    		var fb_js = document.createElement('script');
-    		fb_js.async = true;
-  			fb_js.type = 'text/javascript';
-  			fb_js.src = document.location.protocol + '//connect.facebook.net/en_US/all.js';
-			head.appendChild(fb_js);
+    		if (!window.Android) {
+				var head = document.getElementsByTagName('head')[0];
+				var fb_js = document.createElement('script');
+				fb_js.async = true;
+				fb_js.type = 'text/javascript';
+				fb_js.src = document.location.protocol + '//connect.facebook.net/en_US/all.js';
+				head.appendChild(fb_js);
+			}
 			ViewController.getInstance().showView(Model.appState.login, null);
 		}
 		if (!$.cookie('canAutoCheckin').length) {
