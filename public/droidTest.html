@@ -1,0 +1,53 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<title>weego: decide where to go</title>
+	
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta names="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+	
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+	
+<script type="text/javascript">
+function requestFBLoginFromWrapper() {
+	if (window.Android) Android.fbLoginRequested();
+	else {
+		$(this).find('#ruidDisplay').html("Not Android");
+	}
+}
+
+function fbLoginResponse(response, isError) {
+	if (isError) {
+	
+	} else {
+		onFBLogin(response);
+	}
+}
+
+function onFBLogin (token) {
+	if (token.length > 0) {
+		loginWithFacebookAccessToken(token);
+	}
+}
+
+function loginWithFacebookAccessToken(token) {
+	var url = domain + "/xml.facebook.php";	
+	$.post(url, {access_token:token}, handleLoginResponse);
+}
+
+function handleLoginResponse(data) {
+	if ($(data).find('response').attr('code') == "201") {
+		var ruid = $(data).find('ruid').text();
+		$(this).find('#ruidDisplay').html(ruid);
+	}
+}
+</script>
+	
+</head>
+<body>
+	<a href="javascript:"requestFBLoginFromWrapper()">TEST LOGIN</a>
+	<div id="ruidDisplay"></div>
+</body>
+</html>
