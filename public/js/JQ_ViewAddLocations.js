@@ -74,7 +74,7 @@
 						myLatlng = new google.maps.LatLng(37.77493,-122.419416);
 						zoomLevel = 2;
 					}
-					var zoomControl = (window.Android) ? true : false;
+					var zoomControl = true; //(window.Android) ? true : false;
 					var myOptions = {
 						zoom: zoomLevel,
 						center: myLatlng,

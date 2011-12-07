@@ -87,14 +87,18 @@
 					ui.append('<div class="fbButton"><div class="text"><img src="/assets/images/icon_facebook.png" />Login with Facebook</div></div>');
 					ui.find('.fbButton').bind('click', function() {
 						showLoginFacebookInProgress();
-						FB.login(function(response) {
-							if (response.authResponse) {
-								o.fb_token = response.authResponse.accessToken;
-								onFBLogin();  
-							} else {
-								showLoginFacebook();
-							}
-						}, {scope:'email,offline_access,publish_checkins,user_checkins,friends_checkins,user_birthday'});  	
+						if (window.Android) {
+							requestFBLoginFromWrapper();
+						} else {
+							FB.login(function(response) {
+								if (response.authResponse) {
+									o.fb_token = response.authResponse.accessToken;
+									onFBLogin(o.fb_token);  
+								} else {
+									showLoginFacebook();
+								}
+							}, {scope:'email,offline_access,publish_checkins,user_checkins,friends_checkins,user_birthday'});  	
+						}
 					});
 				}
 				
@@ -103,34 +107,6 @@
 					ui.html('');
 					ui.find('.fbButton').unbind('click');
 					ui.append('<div class="fbButton"><div class="text"><img src="/assets/images/icon_facebook.png" />Logging in...</div></div>');
-				}
-				
-				function onFBLogin () {
-					if (o.fb_token.length > 0) {
-						loginWithFacebookAccessToken();
-					}
-				}
-				
-				function loginWithFacebookAccessToken() {
-//					document.getElementById('fbSignup').style.display = "none";
-//					document.getElementById('working').style.display = "block";
-//					document.getElementById('working').innerHTML = '<h2>Please Wait...</h2>';
-				
-					var url = domain + "/xml.facebook.php";
-					
-					$.post(url, {access_token:o.fb_token}, handleLoginResponse);
-				}
-				
-				function handleLoginResponse(data) {
-					if ($(data).find('response').attr('code') == "201") {
-//						document.getElementById('working').style.display = "none";
-						ruid = $(data).find('ruid').text();
-						$.cookie('ruid',ruid);
-						$.cookie({'canAutoCheckin': true});
-						$.cookie({'canAutoReportLocation': true});
-						Model.getInstance().createLoginParticipant($(data).find('participant'));
-						ViewController.getInstance().showDashboard();
-					}
 				}
 				
 			});

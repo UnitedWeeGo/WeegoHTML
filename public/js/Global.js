@@ -42,7 +42,41 @@ window.onload = function () {
 }
 
 function appState(state) {
-//	if (Android) Android.something();
+//	if (window.Android) Android.something();
+}
+
+function requestFBLoginFromWrapper() {
+	if (window.Android) Android.fbLoginRequested();
+}
+
+function fbLoginResponse(response, isError) {
+	if (isError) {
+	
+	} else {
+		onFBLogin(response);
+	}
+}
+
+function onFBLogin (token) {
+	if (token.length > 0) {
+		loginWithFacebookAccessToken(token);
+	}
+}
+
+function loginWithFacebookAccessToken(token) {
+	var url = domain + "/xml.facebook.php";	
+	$.post(url, {access_token:token}, handleLoginResponse);
+}
+
+function handleLoginResponse(data) {
+	if ($(data).find('response').attr('code') == "201") {
+		ruid = $(data).find('ruid').text();
+		$.cookie('ruid',ruid);
+		$.cookie({'canAutoCheckin': true});
+		$.cookie({'canAutoReportLocation': true});
+		Model.getInstance().createLoginParticipant($(data).find('participant'));
+		ViewController.getInstance().showDashboard();
+	}
 }
 
 function fetchData() {
