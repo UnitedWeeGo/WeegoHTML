@@ -97,18 +97,18 @@
 						canAutoCheckin = null;
 						$.cookie({'canAutoReportLocation': null});
 						canAutoReportLocation = null;
-						try {
-							if (!window.android) {
+						if (!window.Android) {
+							try {
 								FB.logout(function(response) {
 									ViewController.getInstance().showView(Model.appState.login, null);
 								});
-							} else {
-								reportLogoutToWrapper();
-								ViewController.getInstance().showView(Model.appState.login, null);
+							} catch (e) {
+								window.location.reload();
 							}
-						} catch (e) {
-							window.location.reload();
-						}
+						} else {
+							reportLogoutToWrapper();
+							ViewController.getInstance().showView(Model.appState.login, null);
+						}						
 					});
 				}
 				
