@@ -98,9 +98,14 @@
 						$.cookie({'canAutoReportLocation': null});
 						canAutoReportLocation = null;
 						try {
-							FB.logout(function(response) {
+							if (!window.android) {
+								FB.logout(function(response) {
+									ViewController.getInstance().showView(Model.appState.login, null);
+								});
+							} else {
+								reportLogoutToWrapper();
 								ViewController.getInstance().showView(Model.appState.login, null);
-							});
+							}
 						} catch (e) {
 							window.location.reload();
 						}

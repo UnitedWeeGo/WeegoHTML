@@ -51,6 +51,10 @@ function requestFBLoginFromWrapper() {
 	if (window.Android) Android.fbLoginRequested();
 }
 
+function reportLogoutToWrapper() {
+	if (window.Android) Android.fbLogoutRequested();
+}
+
 function fbLoginResponse(response, isError) {
 	if (isError) {
 	
@@ -104,7 +108,7 @@ function startAutoCheckinLocationReporting() {
 }
 
 function checkinAndReportLocation() {
-	Model.getInstance().updateGeoLocation();
+	Model.getInstance().updateGeoLocation(true);
 	// Make prefs for these
 	if (canAutoCheckin) {
 		console.log('tryAutoCheckin');
