@@ -11,7 +11,7 @@ window.onresize = function() {
 }
 
 window.onload = function () {
-	
+	setTimeout(function() { window.scrollTo(0, 1); }, 100);
     jQuery(document).ready( function($) {
     	if ($.cookie('ruid').length) {
     		ruid = $.cookie('ruid');
@@ -21,6 +21,7 @@ window.onload = function () {
     		ViewController.getInstance().showView(state, eventId);
     	} else {
     		if (!window.Android) {
+    			console.log("loading facebook");
 				var head = document.getElementsByTagName('head')[0];
 				var fb_js = document.createElement('script');
 				fb_js.async = true;

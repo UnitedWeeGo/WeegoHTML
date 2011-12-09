@@ -26,6 +26,7 @@
 					if (!window.Android) {
 						setUpFB();
 					} else {
+						console.log("Android: JQ_ViewLogin.js update()");
 						showLoginFacebook();
 					}
 				};
@@ -41,6 +42,7 @@
 				}
 				
 				function setUpFB() {
+					console.log("setUpFB");
 					window.fbAsyncInit = function() {
 						FB.init({ appId: '221300981231092', 
 							status: true, 
@@ -79,7 +81,7 @@
 							});
 						});
 						ui.find('.yes').bind('click', function() {
-							onFBLogin();
+							onFBLogin(o.fb_token);
 						});
 						
 					});
