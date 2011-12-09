@@ -13,7 +13,7 @@ window.onresize = function() {
 window.onload = function () {
 	setTimeout(function() {
 		if (navigator.userAgent.indexOf("iPhone") || navigator.userAgent.indexOf("Android")) {
-			$("BODY").css('height', document.documentElement.clientHeight + resizeOffset);
+			$("HTML").css('height', document.documentElement.clientHeight + resizeOffset);
 		}
 		window.scrollTo(0, 1); 
 	}, 100);
