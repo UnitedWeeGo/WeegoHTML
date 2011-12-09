@@ -11,7 +11,7 @@ window.onresize = function() {
 }
 
 window.onload = function () {
-	setTimeout(function() { window.scrollTo(0, 1); }, 100);
+	setTimeout(function() { window.scrollTo(0, 50); }, 100);
     jQuery(document).ready( function($) {
     	if ($.cookie('ruid').length) {
     		ruid = $.cookie('ruid');
@@ -39,7 +39,6 @@ window.onload = function () {
 			$.cookie({'canAutoReportLocation': true});
 		}
 		canAutoReportLocation = ($.cookie('canAutoReportLocation') == 'true');
-		console.log($.cookie());
     });
     startAutoCheckinLocationReporting();
 }
