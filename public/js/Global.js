@@ -1,6 +1,6 @@
 var domain = 'https://api.unitedweego.com'; 
 //var domain = 'http://beta.weegoapp.com/public';
-var resizeOffset = 0; //44;
+var resizeOffset = -44; //44;
 var ruid = '';
 var canAutoCheckin = null;
 var canAutoReportLocation = null;
