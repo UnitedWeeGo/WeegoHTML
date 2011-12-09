@@ -11,7 +11,11 @@ window.onresize = function() {
 }
 
 window.onload = function () {
-	setTimeout(function() { window.scrollTo(0, 50); }, 100);
+	setTimeout(function() {
+		alert(navigator.userAgent);
+		alert(document.documentElement.clientHeight);
+		window.scrollTo(0, 1); 
+	}, 100);
     jQuery(document).ready( function($) {
     	if ($.cookie('ruid').length) {
     		ruid = $.cookie('ruid');
