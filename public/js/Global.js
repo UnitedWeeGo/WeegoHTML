@@ -12,8 +12,9 @@ window.onresize = function() {
 
 window.onload = function () {
 	setTimeout(function() {
-		alert(navigator.userAgent);
-		alert(document.documentElement.clientHeight);
+		if (navigator.userAgent.indexOf("iPhone") || navigator.userAgent.indexOf("Android")) {
+			$("BODY").css('height', document.documentElement.clientHeight + resizeOffset);
+		}
 		window.scrollTo(0, 1); 
 	}, 100);
     jQuery(document).ready( function($) {
