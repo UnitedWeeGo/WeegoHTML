@@ -34,7 +34,7 @@
 				update();
 				
 				function setViewSize() {
-					$this.find('.content').css('height',document.documentElement.clientHeight - resizeOffset);
+					$this.find('.contentContainer').css('height', window.innerHeight - resizeOffset); //document.documentElement.clientHeight - resizeOffset);
 					$this.find('.refreshHeader').find('.refreshContent').css('width', document.documentElement.clientWidth - 74);
 				}
 				

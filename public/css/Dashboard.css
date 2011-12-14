@@ -1,13 +1,17 @@
 #dashboard {
 	display: none;
 	width: 100%;
-	margin-top: 45px;
+	margin-top: 46px;
+}
+
+#dashboard .contentContainer {
+	display: fixed;
+	height: 100%;
 	overflow-y: auto;
 }
 
 #dashboard .content {
 	display: block;
-	height: 100%;
 	border-top: 1px solid #2881BB;
 }
 
