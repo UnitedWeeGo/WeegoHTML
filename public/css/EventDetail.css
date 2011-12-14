@@ -31,7 +31,7 @@
 }
 
 #eventDetail .feedButton {
-	position: absolute;
+	position: fixed;
 	bottom: 0px;
 	width: 100%;
 	height: 43px;
@@ -81,7 +81,7 @@
 }
 
 #eventDetail .actionSheet {
-	position: absolute;
+	position: fixed;
 	display: none;
 	bottom: 0px;
 	left: 0px;
