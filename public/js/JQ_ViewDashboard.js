@@ -27,18 +27,17 @@
 						setViewSize();
 					});
 					setViewSize();
-					setScroll();
 					getDashboardEvents();
 				};
 				
 				update();
 				
 				function setViewSize() {
-					$this.find('.contentContainer').css('height', window.innerHeight - resizeOffset); //document.documentElement.clientHeight - resizeOffset);
 					$this.find('.refreshHeader').find('.refreshContent').css('width', document.documentElement.clientWidth - 74);
 				}
 				
 				function setScroll(reset) {
+					alert("setScroll");
 					if (!!('ontouchstart' in window)) {
 						$this.find('.content:first-child').touchScroll();
 						$this.find('.content').unbind('touchScroll');
@@ -68,21 +67,6 @@
 				function rotateArrow(up) {
 					if (up) $this.find('.refreshHeader').find('.refreshArrow').addClass('up');
 					else $this.find('.refreshHeader').find('.refreshArrow').removeClass('up');
-					/*
-					$this.find('.refreshHeader').find('.refreshArrow').css({ WebkitTransform: 'rotate(' + degree + 'deg)'});
-			        $this.find('.refreshHeader').find('.refreshArrow').css({ '-moz-transform': 'rotate(' + degree + 'deg)'});
-			        if (up) {
-			        	if (degree < 180) {
-			        		degree += 20;
-			        		setTimeout(function() { rotateArrow(true); },100);
-			        	}
-			        } else {
-			        	if (degree > 0) {
-			        		degree -= 20;
-			        		setTimeout(function() { rotateArrow(); },100);
-			        	}
-			        }
-			        */
 				}
 				
 				function doRefresh() {
@@ -106,21 +90,16 @@
 				
 				function handleGetDashboardEvents(data) {
 					Model.getInstance().populateEventsWithXML(data);
-/*
-					var allEventsXML = $(data).find('event');
-					o.allEvents = new Array();
-					for (var i=0; i<allEventsXML.length; i++) {
-						var evXML = allEventsXML[i];
-						var ev = new Event();
-						ev.populateWithXML(evXML);
-						o.allEvents.push(ev);
-					}
-*/
+
 					o.reloading = false;
 					degree = 0;
+					
+					/*
 					if (!!('ontouchstart' in window)) {
 						$this.find('.content').touchScroll('setRestPosition', 0);
 					}
+					*/
+					
 					sortEvents();
 					setUpUI();
 					Model.getInstance().getModelDataAsJSON();
@@ -220,7 +199,7 @@
 						}
 					});
 					setViewSize();
-					setScroll();
+					updatePageContainerScroll(); // Global function
 				}
 				
 				function handleEventCellClick(eventId) {

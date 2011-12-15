@@ -35,11 +35,11 @@
 					$(window).resize(function() {
 						setViewSize();
 					});
-					setScroll();
+//					setScroll();
 					if (o.reset) {
 						o.reset = false;
 						o.otherLocationsShowing = false;
-						resetScroll();
+//						resetScroll();
 					}
 					$this.find('.content').html("");
 					getSingleEvent();
@@ -146,9 +146,11 @@
 					}
 					o.reloading = false;
 					degree = 0;
+					/*
 					if (!!('ontouchstart' in window)) {
 						$this.find('.content').touchScroll('setRestPosition', 0);
 					}
+					*/
 					Model.getInstance().currentEvent = o.event;
 					Model.getInstance().getModelDataAsJSON();
 				}
@@ -211,7 +213,8 @@
 					enableAddFriendsButton();
 					enableFeedButton();
 					setViewSize();
-					setScroll();
+					updatePageContainerScroll(); // Global function
+//					setScroll();
 				}
 				
 				function enableFeedButton() {
@@ -291,7 +294,7 @@
 						$this.find('UL.locationList').addClass('hideLocations');
 						$this.find('LI.showLocations').css('display', 'list-item');
 					}
-					setScroll();
+//					setScroll();
 				}
 				
 				function setupMap() {

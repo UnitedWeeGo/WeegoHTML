@@ -53,100 +53,108 @@
 <body>
 	<div id="homeBackground"></div>
 	
-	<div id="login">
-		<div id="logo"><img src="/assets/images/logo_lrg_01.png" /></div>
-		<div id="fbSignup"></div>
-	</div>
+	<div id="uiContainer">
 	
-	<div id="navBar"></div>
-	
-	<div id="dashboard">
-		<div class="content"></div>
-	</div>
-	
-	<div id="eventDetail">
-		<div class="content"></div>
-		<div class="feedButton">
-			<div class="feedTitle">
-				<div class="feedBubble"></div>
-				<div class="title">Messages</div>
-			</div>
+		<div id="login">
+			<div id="logo"><img src="/assets/images/logo_lrg_01.png" /></div>
+			<div id="fbSignup"></div>
 		</div>
-		<div class="actionSheetBlocker"></div>
-		<div class="actionSheet"></div>
-	</div>
-	
-	<div id="addLocations">
-		<div class="content">
-			<div id="locationSearch">
-				<input type="text" id="locationSearchField" class="default" />
-				<div class="buttons">
-					<input type="button" id="cancel" value="Cancel" />
-					<input type="button" id="submit" value="Search" />
+		
+		<div id="navBar"></div>
+		
+		<div id="pageContainer">
+		
+			<div id="dashboard">
+				<div class="content"></div>
+			</div>
+			
+			<div id="eventDetail">
+				<div class="content"></div>
+				<div class="feedButton">
+					<div class="feedTitle">
+						<div class="feedBubble"></div>
+						<div class="title">Messages</div>
+					</div>
+				</div>
+				<div class="actionSheetBlocker"></div>
+				<div class="actionSheet"></div>
+			</div>
+			
+			<div id="addLocations">
+				<div class="content">
+					<div id="locationSearch">
+						<input type="text" id="locationSearchField" class="default" />
+						<div class="buttons">
+							<input type="button" id="cancel" value="Cancel" />
+							<input type="button" id="submit" value="Search" />
+						</div>
+					</div>
+					<div id="locationEdit">
+						<input type="text" />
+					</div>
+		
+					<div id="locationDetail"></div>
+					<div id="categoryListContainer">
+						<div class="listContent"></div>
+					</div>
+					<div id="map_canvas" style="width: 100%; height: 100%;"></div>
 				</div>
 			</div>
-			<div id="locationEdit">
-				<input type="text" />
+			
+			<div id="createEvent">
+				<div class="content"></div>
 			</div>
-
-			<div id="locationDetail"></div>
-			<div id="categoryListContainer">
-				<div class="listContent"></div>
+			
+			<div id="prefs">
+				<div class="content"></div>
 			</div>
-			<div id="map_canvas" style="width: 100%; height: 100%;"></div>
-		</div>
-	</div>
-	
-	<div id="createEvent">
-		<div class="content"></div>
-	</div>
-	
-	<div id="prefs">
-		<div class="content"></div>
-	</div>
-	
-	<div id="linkViewer">
-		<div class="content"></div>
-	</div>
-	
-	<div id="addFriends">
-		<div class="participantSearch">
-			<input type="text" id="participantSearchField" class="default" />
-			<div class="buttons">
-				<input type="button" id="cancel" value="X" />
-				<input type="button" id="submit" value="Add" />
+			
+			<div id="linkViewer">
+				<div class="content"></div>
 			</div>
+			
+			<div id="addFriends">
+				<div class="participantSearch">
+					<input type="text" id="participantSearchField" class="default" />
+					<div class="buttons">
+						<input type="button" id="cancel" value="X" />
+						<input type="button" id="submit" value="Add" />
+					</div>
+				</div>
+				<div class="contentContainer">
+					<div class="content"></div>
+				</div>
+			</div>
+			
+			<div id="messages">
+				<div class="feedButton">
+					<div class="feedTitle">
+						<div class="feedBubble"></div>
+						<div class="title">Messages</div>
+					</div>
+					<div class="closeButton">Close</div>
+				</div>
+				<div class="messageInput">
+					<div class="cta">
+						<textarea rows="1" maxlength="140">Send a message</textArea>
+					</div>
+					<div class="activeInput">
+						<textarea rows="3" maxlength="140"></textArea>
+						<div class="sendButton">Send</div>
+						<div class="chars">140</div>
+					</div>
+				</div>
+				<div class="contentContainer">
+					<div class="content"></div>
+				</div>
+			</div>
+			
+			<div id="yelpReview">
+				<div class="content"></div>
+			</div>
+		
 		</div>
-		<div class="contentContainer">
-			<div class="content"></div>
-		</div>
-	</div>
 	
-	<div id="messages">
-		<div class="feedButton">
-			<div class="feedTitle">
-				<div class="feedBubble"></div>
-				<div class="title">Messages</div>
-			</div>
-			<div class="closeButton">Close</div>
-		</div>
-		<div class="messageInput">
-			<div class="cta">
-				<textarea rows="1" maxlength="140">Send a message</textArea>
-			</div>
-			<div class="activeInput">
-				<textarea rows="3" maxlength="140"></textArea>
-				<div class="sendButton">Send</div>
-				<div class="chars">140</div>
-			</div>
-		</div>
-		<div class="contentContainer">
-			<div class="content"></div>
-		</div>
-	</div>
-	
-	<div id="yelpReview">
-		<div class="content"></div>
 	</div>
 	
 	<div id="fb-root"></div>

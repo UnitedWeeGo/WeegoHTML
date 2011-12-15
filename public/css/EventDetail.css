@@ -1,13 +1,10 @@
 #eventDetail {
 	display: none;
 	width: 100%;
-	margin-top: 46px;
-	overflow-y: auto;
 }
 
 #eventDetail .content {
 	display: block;
-	height: 100%;
 	border-top: 1px solid #FFF;
 }
 

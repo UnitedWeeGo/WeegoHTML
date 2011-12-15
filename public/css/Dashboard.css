@@ -1,18 +1,11 @@
 #dashboard {
 	display: none;
 	width: 100%;
-	margin-top: 46px;
-}
-
-#dashboard .contentContainer {
-	display: fixed;
-	height: 100%;
-	overflow-y: auto;
+	border-top: 1px solid #2881BB;
 }
 
 #dashboard .content {
 	display: block;
-	border-top: 1px solid #2881BB;
 }
 
 #dashboard UL.collapseableList {

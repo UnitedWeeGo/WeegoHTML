@@ -27,7 +27,7 @@
 				update();
 				
 				function setTitleCenter() {
-					$this.find('.weegoTitle').css('width',document.documentElement.clientWidth - 126);
+					$this.find('.weegoTitle').css('width',window.innerWidth - 126);
 				}
 				
 				var setNav = this.setNav = function setNav(state) {
