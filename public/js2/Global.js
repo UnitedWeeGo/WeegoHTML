@@ -13,8 +13,9 @@ window.onresize = function() {
 
 window.onload = function () {
 	model = Model.getInstance();
-	hideAddressBar();
+//	$.cookie('ruid',null);
     jQuery(document).ready( function($) {
+    	hideAddressBar();
     	if ($.cookie('ruid').length) {
     		ruid = $.cookie('ruid');
     		var state = ($.cookie('state').length) ? $.cookie('state') : null;
@@ -53,7 +54,7 @@ function hideAddressBar() {
 		var navBarHeight = $("#navBar").height();
 		$("#contentFrame").css('height', window.innerHeight - navBarHeight);
 	}, 100);
-	setPageContainerScroll();
+//	setPageContainerScroll();
 }
 
 function setPageContainerScroll() {
