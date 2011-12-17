@@ -1,0 +1,63 @@
+#login {
+	position: absolute;
+	display: none;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	z-index: 100;
+}
+
+#login #logo {
+	width: 100%;
+	text-align: center;
+	margin: 40px 0 16px 0;
+}
+
+#login #fbSignup {
+	width: 100%;
+}
+
+#login #fbSignup H2 {
+	display: block;
+	color: #FFF;
+	margin: 0 20px;
+}
+
+#login #fbSignup .yesNo {
+	display: inline-block;
+	width: 50%;
+}
+
+#login #fbSignup .yesNo .no, #login #fbSignup .yesNo .yes, #login #fbSignup .fbButton {
+	text-align: center;
+	height: 25px;
+	padding-top: 12px;
+	font-size: 1.4em;
+	font-weight: bold;
+	color: #FFF;
+	text-shadow: 0px 1px 0px #000;
+	border: 1px solid #01244A;
+	-webkit-border-radius: 5px; -moz-border-radius: 5px;
+	margin: 0 8px;
+	background: url('/assets/images/tile_homeButton.png') repeat-x;
+}
+
+#login #fbSignup .yesNo .no {
+	margin: 0 4px 0 8px;
+/*	background-color: #F00; */
+}
+
+#login #fbSignup .yesNo .yes {
+	margin: 0 8px 0 4px;
+/*	background-color: #0F0; */
+}
+
+#login #fbSignup .fbButton .text IMG {
+	float: left;
+	margin: 0px 4px 0 0;
+}
+
+#login #fbSignup .fbButton .text {
+	width: 150px;
+	margin: 0 auto;
+}

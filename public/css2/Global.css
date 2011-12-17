@@ -1,0 +1,295 @@
+@font-face {
+	font-family: WeegoFont;
+	src: url( '/assets/fonts/MyriadPro-Light.otf' ),
+	 	 url( '/assets/fonts/MyriadPro-Light.eot' ) format("opentype");
+}
+
+@font-face {
+	font-family: WeegoFont;
+	src: url( '/assets/fonts/MyriadPro-Regular.otf' ),
+		 url( '/assets/fonts/MyriadPro-Regular.eot' ) format("opentype");
+	font-weight: bold;
+}
+
+HTML {
+	width: 100%;
+	height: 1024px;
+}
+
+BODY {
+	font-family: WeegoFont, Helvetica, sans-serif;
+	font-size: 10px;
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	height: 100%;
+	background-color: #F3F3F3;
+}
+
+#homeBackground {
+	position: fixed;
+	display: block;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: -1;
+	background: url('/assets/images/background_home_01.png') no-repeat top center fixed;
+	-webkit-background-size: 100% 100%;
+	-moz-background-size: 100% 100%;
+	-o-background-size: 100% 100%;
+	background-size: 100% 100%;
+}
+
+#contentFrame {
+	width: 100%;
+	margin-top: 45px;
+	border: none;
+}
+
+.eventInfo {
+	margin: 8px;
+	padding: 12px;
+	min-height: 50px;
+}
+
+LI .eventInfo {
+	margin: 0;
+	padding: 0;
+}
+
+.eventInfo IMG.userAvatar {
+	float: left;
+	width: 48px;
+	height: 48px;
+	border: 1px solid #333;
+	margin-right: 8px;
+}
+
+.eventInfo .textContent {
+	display: block;
+	padding: 2px 10px 0 10px;
+}
+
+.eventInfo P {
+	font-size: 1.2em;
+	margin: 0;
+	padding: 0;
+}
+
+.eventInfo H2 {
+	font-size: 1.6em;
+	margin: 0;
+	padding: 0;
+}
+
+.voteButton {
+	display: block;
+	float: left;
+	width: 50px;
+	height: 50px;
+	background-image: url('/assets/images/button_like_default.png');
+	margin-right: 8px;
+}
+
+.iVotedFor {
+	background-image: url('/assets/images/button_unlike_default.png') !important;
+}
+
+.decidedVoteButton {
+	width: 48px;
+	height: 48px;
+	border: 1px solid #CCC;
+	/*-webkit-border-radius: 2px; -moz-border-radius: 2px;*/
+}
+
+.decidedIndicator {
+	width: 29px;
+	height: 33px;
+	background-image: url('/assets/images/POIs_decided_default_sm.png');
+	margin: 3px 0 0 10px;
+}
+
+.decidedMapCell {
+	height: 140px;
+	padding : 0 !important;
+}
+
+.locationInfo {
+	min-height: 50px;
+	padding: 2px 10px 0 10px;
+}
+
+.locationInfo P {
+	font-size: 1.2em;
+	margin: 0;
+	padding: 0;
+}
+
+.locationInfo H3 {
+	font-size: 1.6em;
+	margin: 0;
+	padding: 0;
+}
+
+.locationInfo .rating {
+	display: block;
+	width: 200px;
+	font-size: 1.2em;
+	font-style: italic;
+	margin-top: 3px;
+	padding: 0;
+}
+
+.locationInfo .rating IMG {
+	display: block;
+	float: left;
+	margin: 0 5px 0 0;
+}
+
+.locationInfo .rating .ratingText {
+	display: block;
+}
+
+UL.participantList LI {
+	padding-top: 6px !important;
+}
+
+UL.participantList LI IMG {
+	float: left;
+	width: 32px;
+	height: 32px;
+	border: 1px solid #333;
+	margin-right: 8px;
+}
+
+UL.participantList LI H3 {
+	font-size: 1.6em;
+	margin: 0;
+	padding: 9px 10px 0 0;
+}
+
+.statusBlock {
+	float: right;
+	text-align: right;
+}
+
+.status {
+	float: right;
+	clear: both;
+}
+
+.status.red {
+	color: #F00;
+}
+
+.messageIndicator {
+	display: block;
+	float: right;
+	clear: both;
+	width: 19px;
+	height: 19px;
+	background: url('/assets/images/icon_feed_green.png') no-repeat;
+	text-align: center;
+	color: #FFF;
+	padding: 1px 0 0 0;
+}
+
+UL.collapseableList {
+	display: block;
+	list-style: none;
+	background-color: #F9F9F9;
+	border: 1px solid #CCC;
+	margin: 8px;
+	padding: 0;
+	-webkit-border-radius: 5px; -moz-border-radius: 5px;
+}
+
+UL.collapseableList LI {
+	display: block;
+	margin: 0;
+	padding: 12px;
+	border-top: 1px solid #E2E2E2;
+}
+
+UL.collapseableList LI:FIRST-CHILD {
+	border-top: none;
+}
+
+.callToAction {
+	font-size: 1.6em;
+	font-weight: bold;
+}
+
+.callToAction .locationInfo {
+	min-height: 0;
+}
+
+.callToAction .yelpLogo {
+	display: block;
+	float: right;
+	width: 110px;
+	height: 21px;
+	background: url('/assets/images/logo_yelp.png') -5px -6px no-repeat;
+}
+
+.refreshHeader {
+	display: block;
+	width: 100%;
+	height: 40px;
+	padding-top: 560px;
+	background-color: rgba(0,0,0,0.1);
+	margin-top: -601px;
+}
+
+.refreshHeader .refreshContent {
+	display: inline-block;
+	height: 26px;
+	width: 150px;
+	text-align: center;
+	color: #FFF;
+	font-size: 1.5em;
+	font-weight: bold;
+	margin-top: 10px;
+}
+
+.refreshHeader .refreshArrow {
+	display: inline-block;
+	float: left;
+	width: 26px;
+	height: 26px;
+	margin: 0 0 0 11px;
+	background: url('/assets/images/whiteArrow.png') no-repeat 4px 0px;
+	-webkit-background-size: 70% 100%;
+	-moz-background-size: 70% 100%;
+	-o-background-size: 70% 100%;
+	background-size: 70% 100%;
+}
+
+.refreshHeader .refreshArrow.up {
+	background: url('/assets/images/whiteArrowUp.png') no-repeat 4px 0px;
+}
+
+.refreshHeader.dark .refreshContent {
+	color: #333;
+}
+
+.refreshHeader.dark .refreshArrow {
+	background: url('/assets/images/grayArrow.png') no-repeat 4px 0px;
+}
+
+.refreshHeader.dark .refreshArrow.up {
+	background: url('/assets/images/grayArrowUp.png') no-repeat 4px 0px;
+}
+
+#fb-root {
+	display: none;
+}
+
+.ui-page {
+	min-height: 200px !important;
+}
+
+.ui-loader {
+	display: none;
+}

@@ -1,0 +1,53 @@
+BODY {
+	width: 100%;
+	margin: 0;
+	padding: 0;
+	border-top: 1px solid #2881BB;
+	background-color: transparent;
+}
+
+.content {
+	display: block;
+}
+
+UL.collapseableList {
+	border-color: #FFF;
+}
+
+UL.collapseableList LI {
+	border-top-color: #DCDCDC;
+}
+
+UL.daysEventsList {
+	display: block;
+	list-style: none;
+	margin: 8px;
+	padding: 0;
+}
+
+UL.daysEventsList LI.dashboardEvent {
+	display: block;
+	margin: 0 0 8px 0;
+	padding: 0;
+	background-color: #F9F9F9;
+	border: 1px solid #FFF;
+	-webkit-border-radius: 5px; -moz-border-radius: 5px;
+}
+
+UL.daysEventsList LI.dashboardEvent .statusBlock {
+	margin: 10px 12px 0 0;
+}
+
+UL.daysEventsList LI.dashboardEvent .eventInfo {
+	display: block;
+	margin: 0;
+	padding: 12px;
+	background-color: #F3F3F3;
+	-webkit-border-radius: 5px; -moz-border-radius: 5px;
+}
+
+UL.daysEventsList LI.dashboardEvent .winningLocation {
+	display: block;
+	margin: 0;
+	padding: 12px;
+}
