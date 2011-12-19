@@ -1,0 +1,129 @@
+BODY {
+	width: 100%;
+	margin: 0;
+	padding: 0;
+	border-top: 1px solid #FFF;
+	background-color: transparent;
+}
+
+.content {
+	display: block;
+}
+
+UL.hideLocations LI {
+	display: none;
+}
+
+UL.hideLocations LI:FIRST-CHILD {
+	display: list-item;
+}
+
+UL.hideLocations LI:LAST-CHILD {
+	display: list-item;
+}
+
+.decidedVoteButton {
+	width: 50px;
+	height: 50px;
+	border: none;
+	background-image: url('/assets/images/button_decided_default.png');
+}
+
+.feedButton {
+	position: fixed;
+	bottom: 0px;
+	width: 100%;
+	height: 43px;
+	background: url('/assets/images/bg_tile_feed_button.png') repeat-x;
+	text-align: center;
+	color: #FFF;
+	font-size: 1.6em;
+	font-weight: bold;
+}
+
+.feedButton .feedTitle {
+	display: inline-block;
+	margin: 13px 0 0 0;
+}
+
+.feedButton .feedTitle .feedBubble {
+	display: inline-block;
+	float: left;
+	width: 21px;
+	height: 22px;
+	background: url('/assets/images/icon_feed.png') no-repeat 0 0;
+	margin: 0 4px 0 0;
+	color: #333;
+	font-size: 0.7em;
+	padding: 2px 0 0 0;
+}
+
+.feedButton .feedTitle .title {
+	display: inline-block;
+	margin: 0;
+	text-shadow: 0px 1px 0px #000;
+}
+
+.feedButton.new {
+	background: url('/assets/images/bg_tile_feed_button_new.png') repeat-x;
+}
+
+.actionSheetBlocker {
+	position: absolute;
+	display: none;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0,0,0,0.5);
+	z-index: 10;
+}
+
+.actionSheet {
+	position: fixed;
+	display: none;
+	bottom: 0px;
+	left: 0px;
+	width: 100%;
+	background-color: rgba(0,0,0,0.8);
+	z-index: 11;
+}
+
+.actionSheet .button {
+	display: block;
+	height: 31px;
+	text-align: center;
+	font-size: 1.8em;
+	font-weight: bold;
+	border: 1px solid #FFF;
+	-webkit-border-radius: 5px; -moz-border-radius: 5px;
+	margin: 0 12px 12px 12px;
+	padding-top: 11px;
+}
+
+.actionSheet .button:FIRST-CHILD {
+	margin-top: 12px;
+}
+
+.actionSheet .button.grey {
+	background-color: #CCC;
+	color: #333;
+}
+
+.actionSheet .button.red {
+	background-color: #F00;
+	color: #FFF;
+}
+
+.actionSheet .button.black {
+	background-color: #000;
+	color: #FFF;
+}
+
+UL.locationList LI.callToAction {
+	padding-left: 2px;
+}
+
+UL.participantList LI.callToAction {
+	padding: 14px 10px 12px 10px !important;
+}

@@ -205,7 +205,7 @@
 				function handleEventCellClick(eventId) {
 					var ev = window.parent.model.getEventById(eventId);
 //					var showCountMeInButton = (!ev.didViewEvent() || !ev.didAcceptEvent() || ev.didDeclineEvent());
-					ViewController.getInstance().showEventDetail(eventId, true, ev.showCountMeIn());
+					window.parent.viewController.showEventDetail(eventId, true, ev.showCountMeIn());
 				}
 				
 			});

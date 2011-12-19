@@ -48,6 +48,7 @@ ViewController.prototype.showDashboard = function() {
 	$.cookie({'state': Model.getInstance().currentAppState, 'eventId': null});
 	Model.getInstance().currentEvent = null;
 	this.clearDisplay();
+	$('BODY').css('background', '#336699');
 	$('#navBar').css("display", "block");
 	$('#navBar').navBar('dashboard');
 	$('#contentFrame').attr('src','dashboard.html');
@@ -65,9 +66,12 @@ ViewController.prototype.showEventDetail = function(eventId, reset, showCountMeI
 	Model.getInstance().currentAppState = Model.appState.eventDetail;
 	$.cookie({'state': Model.getInstance().currentAppState, 'eventId': eventId});
 	this.clearDisplay();
+	$('BODY').css('background', '#F3F3F3');
 	$('#navBar').css("display", "block");
-	$('#eventDetail').css("display", "block");
-	if (!skipReload) $('#eventDetail').eventDetail({eventId:eventId, reset:reset});
+	if (!skipReload) {
+		$('#contentFrame').attr('src','eventDetail.html?eventId='+ eventId +"&reset="+ reset);
+//		$('#eventDetail').eventDetail({eventId:eventId, reset:reset});
+	}
 	$('#homeBackground').css('opacity',0);
 	if (showCountMeInButton) $('#navBar').navBar('eventDetailCountMeIn');
 	else $('#navBar').navBar('eventDetail');

@@ -5,14 +5,16 @@ var ruid = '';
 var canAutoCheckin = null;
 var canAutoReportLocation = null;
 var model = null;
+var viewController = null;
 
 window.onresize = function() {
-//	ViewController.getInstance().resizeViews();
-//	ViewController.getInstance().resetScroll();
+//	viewController.resizeViews();
+//	viewController.resetScroll();
 }
 
 window.onload = function () {
 	model = Model.getInstance();
+	viewController = ViewController.getInstance();
     jQuery(document).ready( function($) {
     	hideAddressBar();
     	if ($.cookie('ruid').length) {
@@ -20,7 +22,7 @@ window.onload = function () {
     		var state = ($.cookie('state').length) ? $.cookie('state') : null;
     		var eventId = ($.cookie('eventId').length) ? $.cookie('eventId') : null;
     		model.createLoginParticipantFromCookie();
-    		ViewController.getInstance().showView(state, eventId);
+    		viewController.showView(state, eventId);
     	} else {
     		if (!window.Android) {
     			console.log("loading facebook");
@@ -31,7 +33,7 @@ window.onload = function () {
 				fb_js.src = document.location.protocol + '//connect.facebook.net/en_US/all.js';
 				head.appendChild(fb_js);
 			}
-			ViewController.getInstance().showView(Model.appState.login, null);
+			viewController.showView(Model.appState.login, null);
 		}
 		if (!$.cookie('canAutoCheckin').length) {
 			$.cookie({'canAutoCheckin': true});
@@ -42,12 +44,14 @@ window.onload = function () {
 		}
 		canAutoReportLocation = ($.cookie('canAutoReportLocation') == 'true');
     });
-    if (ruid.length > 0) startAutoCheckinLocationReporting();
+//    if (ruid.length > 0) startAutoCheckinLocationReporting();
 }
 
 function hideAddressBar() {
 	setTimeout(function() {
+		$("HTML").css('height', 1024);
 		window.scrollTo(0, 1);
+		alert(window.innerHeight);
 		$("HTML").css('height', window.innerHeight);
 		$("#homeBackground").css('height', window.innerHeight);
 		var navBarHeight = $("#navBar").height();
@@ -107,7 +111,7 @@ function handleLoginResponse(data) {
 		$.cookie({'canAutoCheckin': true});
 		$.cookie({'canAutoReportLocation': true});
 		model.createLoginParticipant($(data).find('participant'));
-		ViewController.getInstance().showDashboard();
+		viewController.showDashboard();
 	}
 	if (ruid.length > 0) startAutoCheckinLocationReporting();
 }

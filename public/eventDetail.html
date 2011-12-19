@@ -1,0 +1,35 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<title>weego: decide where to go</title>
+	
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+	<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=geometry&sensor=true"></script>
+	<script src="/js2/JQ_ViewEventDetail.js" type="text/javascript" charset="utf-8"></script>
+	<script src="/js2/Event.js" type="text/javascript" charset="utf-8"></script>
+	
+	<link rel="stylesheet" href="/css2/Global.css" type="text/css" media="screen" title="no title" charset="utf-8">
+	<link rel="stylesheet" href="/css2/EventDetail.css" type="text/css" media="screen" title="no title" charset="utf-8">
+	
+<script type="text/javascript">
+
+window.onload = function() {
+	var sStr = document.location.search.substring(1, document.location.search.length);
+	var pairs = sStr.split("&");
+	var params = new Array();
+	for (var i=0; i<pairs.length; i++) {
+		var nv = pairs[i].split("=");
+		params[nv[0]] = nv[1];
+	}
+	$('BODY').eventDetail({eventId:params["eventId"], reset:(params["reset"] == "true")});
+}
+
+</script>
+	
+</head>
+<body>
+	<div class="content"></div>
+</body>
+</html>
