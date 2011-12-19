@@ -13,7 +13,6 @@ window.onresize = function() {
 
 window.onload = function () {
 	model = Model.getInstance();
-//	$.cookie('ruid',null);
     jQuery(document).ready( function($) {
     	hideAddressBar();
     	if ($.cookie('ruid').length) {
