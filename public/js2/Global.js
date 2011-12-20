@@ -51,7 +51,6 @@ function hideAddressBar() {
 	setTimeout(function() {
 		$("HTML").css('height', 1024);
 		window.scrollTo(0, 1);
-		alert(window.innerHeight);
 		$("HTML").css('height', window.innerHeight);
 		$("#homeBackground").css('height', window.innerHeight);
 		var navBarHeight = $("#navBar").height();
