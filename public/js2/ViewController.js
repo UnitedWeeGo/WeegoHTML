@@ -51,6 +51,7 @@ ViewController.prototype.showDashboard = function() {
 	$('BODY').css('background', '#336699');
 	$('#navBar').css("display", "block");
 	$('#navBar').navBar('dashboard');
+	alert('showDashboard');
 	$('#contentFrame').attr('src','dashboard.html');
 	$('#navBar').find('.prefsButton').unbind('click');
 	$('#navBar').find('.prefsButton').click(function() {

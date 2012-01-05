@@ -26,7 +26,7 @@
 					$(window).resize(function() {
 						setViewSize();
 					});
-					setViewSize();
+//					setViewSize();
 					getDashboardEvents();
 				};
 				
@@ -83,12 +83,18 @@
 				
 				function getDashboardEvents() {
 					var url = window.parent.domain + "/get.event.dashboard.php";
+					alert("getDashboardEvents: "+ window.parent.ruid);
+					$this.ajaxError(function(e, jqxhr, settings, exception) {
+						alert("ajaxError: "+ exception);
+						getDashboardEvents();
+					});
 					$.get(url, {registeredId:window.parent.ruid}, function(data) {
 						handleGetDashboardEvents(data);
 					});
 				}
 				
 				function handleGetDashboardEvents(data) {
+					alert('handleGetDashboardEvents');
 					window.parent.model.populateEventsWithXML(data);
 
 					o.reloading = false;
