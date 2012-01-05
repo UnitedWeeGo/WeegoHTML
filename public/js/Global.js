@@ -1,6 +1,6 @@
 var domain = 'https://api.unitedweego.com'; 
 //var domain = 'http://beta.weegoapp.com/public';
-var resizeOffset = -44; //44;
+var resizeOffset = 44;
 var ruid = '';
 var canAutoCheckin = null;
 var canAutoReportLocation = null;
@@ -11,12 +11,7 @@ window.onresize = function() {
 }
 
 window.onload = function () {
-	setTimeout(function() {
-		if (navigator.userAgent.indexOf("iPhone") || navigator.userAgent.indexOf("Android")) {
-			$("BODY").css('height', document.documentElement.clientHeight - resizeOffset);
-		}
-		window.scrollTo(0, 1); 
-	}, 100);
+	
     jQuery(document).ready( function($) {
     	if ($.cookie('ruid').length) {
     		ruid = $.cookie('ruid');
@@ -25,15 +20,12 @@ window.onload = function () {
     		Model.getInstance().createLoginParticipantFromCookie();
     		ViewController.getInstance().showView(state, eventId);
     	} else {
-    		if (!window.Android) {
-    			console.log("loading facebook");
-				var head = document.getElementsByTagName('head')[0];
-				var fb_js = document.createElement('script');
-				fb_js.async = true;
-				fb_js.type = 'text/javascript';
-				fb_js.src = document.location.protocol + '//connect.facebook.net/en_US/all.js';
-				head.appendChild(fb_js);
-			}
+    		var head = document.getElementsByTagName('head')[0];
+    		var fb_js = document.createElement('script');
+    		fb_js.async = true;
+  			fb_js.type = 'text/javascript';
+  			fb_js.src = document.location.protocol + '//connect.facebook.net/en_US/all.js';
+			head.appendChild(fb_js);
 			ViewController.getInstance().showView(Model.appState.login, null);
 		}
 		if (!$.cookie('canAutoCheckin').length) {
@@ -44,6 +36,7 @@ window.onload = function () {
 			$.cookie({'canAutoReportLocation': true});
 		}
 		canAutoReportLocation = ($.cookie('canAutoReportLocation') == 'true');
+		console.log($.cookie());
     });
     startAutoCheckinLocationReporting();
 }
@@ -54,11 +47,6 @@ function appState(state) {
 
 function requestFBLoginFromWrapper() {
 	if (window.Android) Android.fbLoginRequested();
-}
-
-function reportLogoutToWrapper() {
-	console.log("reportLogoutToWrapper fbLogoutRequested()");
-	if (window.Android) Android.fbLogoutRequested();
 }
 
 function fbLoginResponse(response, isError) {
@@ -113,8 +101,9 @@ function startAutoCheckinLocationReporting() {
 	reportLocationInt = setInterval(checkinAndReportLocation, 60000);
 }
 
-function checkinAndReportLocation() { 
-	Model.getInstance().updateGeoLocation(true);
+function checkinAndReportLocation() {
+	Model.getInstance().updateGeoLocation();
+	// Make prefs for these
 	if (canAutoCheckin) {
 		console.log('tryAutoCheckin');
 		tryAutoCheckin();

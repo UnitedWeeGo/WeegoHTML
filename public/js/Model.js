@@ -75,7 +75,7 @@ Model.prototype.getGeoLocation = function() {
 	return this.myLocation;
 }
 
-Model.prototype.updateGeoLocation = function(isAuto) {
+Model.prototype.updateGeoLocation = function() {
 	var browserSupportFlag = new Boolean();
 	var myLocation = null;
 	var callback = this;
@@ -101,7 +101,7 @@ Model.prototype.updateGeoLocation = function(isAuto) {
 	// Browser doesn't support Geolocation
 	} else {
 		browserSupportFlag = false;
-		if (!isAuto) this.handleNoGeolocation(browserSupportFlag);
+		this.handleNoGeolocation(browserSupportFlag);
 	}
 }
 
