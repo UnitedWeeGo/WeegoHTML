@@ -22,14 +22,14 @@
 					$(window).resize(function() {
 						setViewSize();
 					});
+					setScroll();
 					setUpUI();
 				};
 				
 				update();
 				
 				function setViewSize() {
-					alert(window.innerHeight);
-					$this.find('.content').css('height',window.innerHeight - resizeOffset);
+					$this.find('.content').css('height',document.documentElement.clientHeight - resizeOffset);
 				}
 				
 				function setScroll(reset) {
@@ -110,8 +110,6 @@
 							ViewController.getInstance().showView(Model.appState.login, null);
 						}						
 					});
-					setViewSize();
-					setScroll();
 				}
 				
 			});

@@ -18,8 +18,11 @@ ViewController.prototype.showView = function(state, eventId) {
 	}
 }
 
-ViewController.prototype.clearDisplay = function() {
-	$('#login').css("display", "none");
+ViewController.prototype.showLogin = function() {
+	Model.getInstance().currentAppState = Model.appState.login;
+	$.cookie({'state': Model.getInstance().currentAppState, 'eventId': null});
+	Model.getInstance().currentEvent = null;
+	$('#login').css("display", "block");
 	$('#navBar').css("display", "none");
 	$('#dashboard').css("display", "none");
 	$('#eventDetail').css("display", "none");
@@ -30,15 +33,6 @@ ViewController.prototype.clearDisplay = function() {
 	$('#createEvent').css("display", "none");
 	$('#prefs').css("display", "none");
 	$('#linkViewer').css("display", "none");
-}
-
-ViewController.prototype.showLogin = function() {
-	Model.getInstance().currentAppState = Model.appState.login;
-	$.cookie({'state': Model.getInstance().currentAppState, 'eventId': null});
-	Model.getInstance().currentEvent = null;
-	this.clearDisplay();
-	$('#login').css("display", "block");
-	$('#navBar').css("display", "none");
 	$('#login').login();
 	$('#homeBackground').css('opacity',1);
 }
@@ -47,9 +41,17 @@ ViewController.prototype.showDashboard = function() {
 	Model.getInstance().currentAppState = Model.appState.dashboard;
 	$.cookie({'state': Model.getInstance().currentAppState, 'eventId': null});
 	Model.getInstance().currentEvent = null;
-	this.clearDisplay();
+	$('#login').css("display", "none");
 	$('#navBar').css("display", "block");
 	$('#dashboard').css("display", "block");
+	$('#eventDetail').css("display", "none");
+	$('#addLocations').css("display", "none");
+	$('#addFriends').css("display", "none");
+	$('#messages').css("display", "none");
+	$('#yelpReview').css("display", "none");
+	$('#createEvent').css("display", "none");
+	$('#prefs').css("display", "none");
+	$('#linkViewer').css("display", "none");
 	$('#dashboard').dashboard();
 	$('#homeBackground').css('opacity',1);
 	$('#navBar').navBar('dashboard');
@@ -66,9 +68,17 @@ ViewController.prototype.showDashboard = function() {
 ViewController.prototype.showEventDetail = function(eventId, reset, showCountMeInButton, skipReload) {
 	Model.getInstance().currentAppState = Model.appState.eventDetail;
 	$.cookie({'state': Model.getInstance().currentAppState, 'eventId': eventId});
-	this.clearDisplay();
+	$('#login').css("display", "none");
 	$('#navBar').css("display", "block");
+	$('#dashboard').css("display", "none");
 	$('#eventDetail').css("display", "block");
+	$('#addLocations').css("display", "none");
+	$('#addFriends').css("display", "none");
+	$('#messages').css("display", "none");
+	$('#yelpReview').css("display", "none");
+	$('#createEvent').css("display", "none");
+	$('#prefs').css("display", "none");
+	$('#linkViewer').css("display", "none");
 	if (!skipReload) $('#eventDetail').eventDetail({eventId:eventId, reset:reset});
 	$('#homeBackground').css('opacity',0);
 	if (showCountMeInButton) $('#navBar').navBar('eventDetailCountMeIn');
@@ -80,9 +90,17 @@ ViewController.prototype.showEventDetail = function(eventId, reset, showCountMeI
 }
 
 ViewController.prototype.showAddLocations = function(locationId) {
-	this.clearDisplay();
+	$('#login').css("display", "none");
 	$('#navBar').css("display", "block");
+	$('#dashboard').css("display", "none");
+	$('#eventDetail').css("display", "none");
 	$('#addLocations').css("display", "block");
+	$('#addFriends').css("display", "none");
+	$('#messages').css("display", "none");
+	$('#yelpReview').css("display", "none");
+	$('#createEvent').css("display", "none");
+	$('#prefs').css("display", "none");
+	$('#linkViewer').css("display", "none");
 	$('#addLocations').addLocations({event:Model.getInstance().currentEvent, locationId:locationId});
 	$('#navBar').navBar('addLocations');
 	$('#navBar').find('.backButton').unbind('click');
@@ -96,9 +114,17 @@ ViewController.prototype.showAddLocations = function(locationId) {
 }
 
 ViewController.prototype.showAddFriends = function() {
-	this.clearDisplay();
+	$('#login').css("display", "none");
 	$('#navBar').css("display", "block");
+	$('#dashboard').css("display", "none");
+	$('#eventDetail').css("display", "none");
+	$('#addLocations').css("display", "none");
 	$('#addFriends').css("display", "block");
+	$('#messages').css("display", "none");
+	$('#yelpReview').css("display", "none");
+	$('#createEvent').css("display", "none");
+	$('#prefs').css("display", "none");
+	$('#linkViewer').css("display", "none");
 	$('#addFriends').addFriends({event:Model.getInstance().currentEvent});
 	$('#navBar').navBar('addFriends');
 	$('#navBar').find('.backButton').unbind('click');
@@ -126,9 +152,17 @@ ViewController.prototype.hideMessages = function() {
 }
 
 ViewController.prototype.showYelpReview = function(loc, fromMap) {
-	this.clearDisplay();
+	$('#login').css("display", "none");
 	$('#navBar').css("display", "block");
+	$('#dashboard').css("display", "none");
+	$('#eventDetail').css("display", "none");
+	$('#addLocations').css("display", "none");
+	$('#addFriends').css("display", "none");
+	$('#messages').css("display", "none");
 	$('#yelpReview').css("display", "block");
+	$('#createEvent').css("display", "none");
+	$('#prefs').css("display", "none");
+	$('#linkViewer').css("display", "none");
 	$('#yelpReview').yelpReview({url:loc.mobileYelpUrl});
 	$('#homeBackground').css('opacity',0);
 	$('#navBar').navBar('yelpReview');
@@ -149,9 +183,17 @@ ViewController.prototype.showYelpReview = function(loc, fromMap) {
 ViewController.prototype.showCreateEvent = function() {
 	Model.getInstance().currentAppState = Model.appState.createEvent;
 	$.cookie({'state': null, 'eventId': null});
-	this.clearDisplay();
+	$('#login').css("display", "none");
 	$('#navBar').css("display", "block");
+	$('#dashboard').css("display", "none");
+	$('#eventDetail').css("display", "none");
+	$('#addLocations').css("display", "none");
+	$('#addFriends').css("display", "none");
+	$('#messages').css("display", "none");
+	$('#yelpReview').css("display", "none");
 	$('#createEvent').css("display", "block");
+	$('#prefs').css("display", "none");
+	$('#linkViewer').css("display", "none");
 	$('#createEvent').createEvent();
 	$('#homeBackground').css('opacity',0);
 	$('#navBar').navBar('createEvent');
@@ -168,9 +210,17 @@ ViewController.prototype.showCreateEvent = function() {
 ViewController.prototype.showPrefs = function() {
 	Model.getInstance().currentAppState = Model.appState.prefs;
 	$.cookie({'state': null, 'eventId': null});
-	this.clearDisplay();
+	$('#login').css("display", "none");
 	$('#navBar').css("display", "block");
+	$('#dashboard').css("display", "none");
+	$('#eventDetail').css("display", "none");
+	$('#addLocations').css("display", "none");
+	$('#addFriends').css("display", "none");
+	$('#messages').css("display", "none");
+	$('#yelpReview').css("display", "none");
+	$('#createEvent').css("display", "none");
 	$('#prefs').css("display", "block");
+	$('#linkViewer').css("display", "none");
 	$('#prefs').prefs();
 	$('#homeBackground').css('opacity',1);
 	$('#navBar').navBar('prefs');
@@ -181,8 +231,16 @@ ViewController.prototype.showPrefs = function() {
 }
 
 ViewController.prototype.showLinkViewer = function(state) {
-	this.clearDisplay();
+	$('#login').css("display", "none");
 	$('#navBar').css("display", "block");
+	$('#dashboard').css("display", "none");
+	$('#eventDetail').css("display", "none");
+	$('#addLocations').css("display", "none");
+	$('#addFriends').css("display", "none");
+	$('#messages').css("display", "none");
+	$('#yelpReview').css("display", "none");
+	$('#createEvent').css("display", "none");
+	$('#prefs').css("display", "none");
 	$('#linkViewer').css("display", "block");
 	var url = '';
 	switch (state) {

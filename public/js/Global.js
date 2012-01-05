@@ -1,6 +1,6 @@
 var domain = 'https://api.unitedweego.com'; 
 //var domain = 'http://beta.weegoapp.com/public';
-var resizeOffset = 45;
+var resizeOffset = -44; //44;
 var ruid = '';
 var canAutoCheckin = null;
 var canAutoReportLocation = null;
@@ -11,20 +11,11 @@ window.onresize = function() {
 }
 
 window.onload = function () {
-/*	if (navigator.userAgent.indexOf("iPhone") || navigator.userAgent.indexOf("Android")) {
-		//alert(window.outerHeight);
-		//$("HTML").css('height', document.documentElement.clientHeight);
-		$("#homeBackground").css('height', document.documentElement.clientHeight + 60);
-	}
-*/
 	setTimeout(function() {
-		window.scrollTo(0, 1);
-		//alert(window.outerHeight);
-		//if (navigator.userAgent.indexOf("iPhone") || navigator.userAgent.indexOf("Android")) {
-			//alert(window.outerHeight);
-			$("HTML").css('height', window.innerHeight);
-			$("#homeBackground").css('height', window.innerHeight);
-		//}
+		if (navigator.userAgent.indexOf("iPhone") || navigator.userAgent.indexOf("Android")) {
+			$("BODY").css('height', document.documentElement.clientHeight - resizeOffset);
+		}
+		window.scrollTo(0, 1); 
 	}, 100);
     jQuery(document).ready( function($) {
     	if ($.cookie('ruid').length) {

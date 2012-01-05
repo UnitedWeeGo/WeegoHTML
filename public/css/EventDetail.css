@@ -1,7 +1,7 @@
 #eventDetail {
 	display: none;
 	width: 100%;
-	margin-top: 46px;
+	margin-top: 45px;
 	overflow-y: auto;
 }
 
@@ -31,7 +31,7 @@
 }
 
 #eventDetail .feedButton {
-	position: fixed;
+	position: absolute;
 	bottom: 0px;
 	width: 100%;
 	height: 43px;
@@ -81,7 +81,7 @@
 }
 
 #eventDetail .actionSheet {
-	position: fixed;
+	position: absolute;
 	display: none;
 	bottom: 0px;
 	left: 0px;
